@@ -166,7 +166,13 @@ function checklistMarkedCount(atividade, checklistDict) {
   return marked.filter((id) => allowed.has(id)).length;
 }
 
-function renderTopicList(topicos, completedSet, activeTopicId, onSelectTopic) {
+function renderTopicList(
+  topicos,
+  completedSet,
+  activeTopicId,
+  onSelectTopic,
+  onOpenTopicTheory
+) {
   const nav = document.getElementById("topicList");
   if (!nav) return;
   const sorted = [...topicos].sort((a, b) => a.ordem - b.ordem);
@@ -174,20 +180,36 @@ function renderTopicList(topicos, completedSet, activeTopicId, onSelectTopic) {
     .map((t) => {
       const done = topicDone(t, completedSet);
       const active = t.id === activeTopicId;
+      const hasTheory = topicHasTheory(t);
+      const theoryBtn = hasTheory
+        ? `<button type="button" class="btn-topic-theory" data-topic-theory="${escapeHtml(t.id)}" aria-label="Abrir teoria: ${escapeHtml(t.titulo)}">Teoria</button>`
+        : "";
       return `
-        <button type="button" class="topic-btn ${active ? "topic-btn--active" : ""} ${done ? "topic-btn--done" : ""}" data-topic-id="${t.id}">
-          <span class="topic-btn__badge">${t.ordem}</span>
-          <span class="topic-btn__text">
-            <span class="topic-btn__title">${escapeHtml(t.titulo)}</span>
-            <span class="topic-btn__ctx ${sidebarContextoClass(t.contexto)}">${escapeHtml(t.contexto)}</span>
-          </span>
-          <span class="check" aria-hidden="true">✓</span>
-        </button>`;
+        <div class="topic-block">
+          <button type="button" class="topic-btn ${active ? "topic-btn--active" : ""} ${done ? "topic-btn--done" : ""}" data-topic-id="${t.id}">
+            <span class="topic-btn__badge">${t.ordem}</span>
+            <span class="topic-btn__text">
+              <span class="topic-btn__title">${escapeHtml(t.titulo)}</span>
+              <span class="topic-btn__ctx ${sidebarContextoClass(t.contexto)}">${escapeHtml(t.contexto)}</span>
+            </span>
+            <span class="check" aria-hidden="true">✓</span>
+          </button>
+          ${theoryBtn}
+        </div>`;
     })
     .join("");
 
   nav.querySelectorAll(".topic-btn").forEach((btn) => {
-    btn.addEventListener("click", () => onSelectTopic(/** @type {HTMLElement} */ (btn).dataset.topicId));
+    btn.addEventListener("click", () =>
+      onSelectTopic(/** @type {HTMLElement} */ (btn).dataset.topicId)
+    );
+  });
+  nav.querySelectorAll("[data-topic-theory]").forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const id = /** @type {HTMLElement} */ (btn).dataset.topicTheory;
+      if (id) onOpenTopicTheory(id);
+    });
   });
 }
 
@@ -312,8 +334,18 @@ function renderChecklistSidebar(atividade, checklistDict) {
 }
 
 function renderChecklistActivity(ctx, topico, atividade) {
-  const { completedSet, theoryVisitedSet, checklistDict, selectionsDict, onPrev, onNext, paint, topicos, onSelectTopic } =
-    ctx;
+  const {
+    completedSet,
+    theoryVisitedSet,
+    checklistDict,
+    selectionsDict,
+    onPrev,
+    onNext,
+    paint,
+    topicos,
+    onSelectTopic,
+    onOpenTopicTheory,
+  } = ctx;
   const view = document.getElementById("activityView");
   if (!view) return;
 
@@ -324,13 +356,6 @@ function renderChecklistActivity(ctx, topico, atividade) {
   const codeHtml = atividade.codigo
     ? `<div class="code-block"><pre>${escapeHtml(atividade.codigo)}</pre></div>`
     : "";
-
-  const theoryAgainRow =
-    topicHasTheory(topico) && theoryVisitedSet.has(topico.id)
-      ? `<div class="activity-theory-row">
-      <button type="button" class="btn btn--theory-again" id="btnTheoryAgain"><svg class="btn-theory-back" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/><path d="M19 12H9"/></svg><span>Ver teoria deste tópico novamente</span></button>
-    </div>`
-      : "";
 
   const passosHtml = (atividade.passos || [])
     .map((p, i) => {
@@ -362,7 +387,6 @@ function renderChecklistActivity(ctx, topico, atividade) {
         <span class="pill">${idxInTopic} / ${totalInTopic} neste tópico</span>
         <span class="pill">Passo a passo (checklist)</span>
       </div>
-      ${theoryAgainRow}
       <h2>${escapeHtml(topico.titulo)}</h2>
       <p class="activity-desc">${escapeHtml(atividade.descricao)}</p>
       ${codeHtml}
@@ -373,13 +397,6 @@ function renderChecklistActivity(ctx, topico, atividade) {
         ${allMarked ? `<span class="nav-hint">Checklist completa.</span>` : ""}
       </div>
     </article>`;
-
-  document.getElementById("btnTheoryAgain")?.addEventListener("click", () => {
-    theoryVisitedSet.delete(topico.id);
-    persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
-    clearFeedbackHint();
-    paint();
-  });
 
   view.querySelectorAll(".checklist__check").forEach((inp) => {
     inp.addEventListener("change", () => {
@@ -392,7 +409,7 @@ function renderChecklistActivity(ctx, topico, atividade) {
       checklistDict[atividade.id] = [...s];
       syncChecklistCompletion(topicos, completedSet, checklistDict);
       persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
-      renderTopicList(topicos, completedSet, topico.id, onSelectTopic);
+      renderTopicList(topicos, completedSet, topico.id, onSelectTopic, onOpenTopicTheory);
       updateProgress(topicos, completedSet);
       renderChecklistSidebar(atividade, checklistDict);
       if (allDone(topicos, completedSet)) showCongratulations();
@@ -434,10 +451,6 @@ function renderActivity(ctx) {
   const inputName = multi ? `opt-${atividade.id}` : `opt-${atividade.id}`;
 
   const savedSel = new Set(selectionsDict[atividade.id] || []);
-  const historyHtml =
-    savedSel.size > 0
-      ? `<p class="activity-history" role="status">Histórico neste dispositivo: seleção anterior <strong>${escapeHtml([...savedSel].sort().join(", "))}</strong>.</p>`
-      : "";
 
   const optionsHtml = atividade.opcoes
     .map((o) => {
@@ -458,13 +471,6 @@ function renderActivity(ctx) {
         ? "Múltipla escolha (uma ou mais corretas)"
         : "Múltipla escolha";
 
-  const theoryAgainRow =
-    topicHasTheory(topico) && theoryVisitedSet.has(topico.id)
-      ? `<div class="activity-theory-row">
-      <button type="button" class="btn btn--theory-again" id="btnTheoryAgain"><svg class="btn-theory-back" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/><path d="M19 12H9"/></svg><span>Ver teoria deste tópico novamente</span></button>
-    </div>`
-      : "";
-
   view.innerHTML = `
     <article class="activity-card">
       <div class="activity-meta">
@@ -472,10 +478,8 @@ function renderActivity(ctx) {
         <span class="pill">Questão ${idxInTopic} / ${totalInTopic} neste tópico</span>
         <span class="pill">${escapeHtml(tipoLabel)}</span>
       </div>
-      ${theoryAgainRow}
       <h2>${escapeHtml(topico.titulo)}</h2>
       <p class="activity-desc">${escapeHtml(atividade.descricao)}</p>
-      ${historyHtml}
       ${codeHtml}
       <div class="options" id="optionsRoot">${optionsHtml}</div>
       <div class="actions">
@@ -485,13 +489,6 @@ function renderActivity(ctx) {
         ${already ? `<span class="nav-hint">Já concluída — pode revisar ou avançar.</span>` : ""}
       </div>
     </article>`;
-
-  document.getElementById("btnTheoryAgain")?.addEventListener("click", () => {
-    theoryVisitedSet.delete(topico.id);
-    persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
-    clearFeedbackHint();
-    paint();
-  });
 
   const optionsRoot = document.getElementById("optionsRoot");
   optionsRoot?.addEventListener("change", () => {
@@ -510,7 +507,7 @@ function renderActivity(ctx) {
     if (ok) {
       completedSet.add(atividade.id);
       persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
-      renderTopicList(ctx.topicos, completedSet, topico.id, ctx.onSelectTopic);
+      renderTopicList(ctx.topicos, completedSet, topico.id, ctx.onSelectTopic, ctx.onOpenTopicTheory);
       updateProgress(ctx.topicos, completedSet);
       if (allDone(ctx.topicos, completedSet)) {
         showCongratulations();
@@ -720,10 +717,21 @@ async function main() {
     }
   }
 
+  function onOpenTopicTheory(topicId) {
+    const idx = flat.findIndex((x) => x.topico.id === topicId);
+    if (idx >= 0) {
+      currentIndex = idx;
+      theoryVisitedSet.delete(topicId);
+      persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
+      clearFeedbackHint();
+      paint();
+    }
+  }
+
   function paint() {
     if (allDone(topicos, completedSet)) {
       updateProgress(topicos, completedSet);
-      renderTopicList(topicos, completedSet, activeTopicId(), onSelectTopic);
+      renderTopicList(topicos, completedSet, activeTopicId(), onSelectTopic, onOpenTopicTheory);
       showCongratulations();
       return;
     }
@@ -737,6 +745,7 @@ async function main() {
       checklistDict,
       selectionsDict,
       onSelectTopic,
+      onOpenTopicTheory,
       paint,
       onPrev: () => {
         if (currentIndex > 0) {
@@ -754,7 +763,7 @@ async function main() {
       },
     };
 
-    renderTopicList(topicos, completedSet, activeTopicId(), onSelectTopic);
+    renderTopicList(topicos, completedSet, activeTopicId(), onSelectTopic, onOpenTopicTheory);
     updateProgress(topicos, completedSet);
 
     if (shouldShowTheory()) {
@@ -768,7 +777,7 @@ async function main() {
 
   if (allDone(topicos, completedSet)) {
     updateProgress(topicos, completedSet);
-    renderTopicList(topicos, completedSet, activeTopicId(), onSelectTopic);
+    renderTopicList(topicos, completedSet, activeTopicId(), onSelectTopic, onOpenTopicTheory);
     showCongratulations();
   } else {
     paint();

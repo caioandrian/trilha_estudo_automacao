@@ -1,0 +1,569 @@
+{
+  "titulo": "Trilha básica: lógica e automação de testes",
+  "topicos": [
+    {
+      "id": "fundamentos-js",
+      "ordem": 1,
+      "titulo": "JavaScript: variáveis e tipos",
+      "contexto": "Lógica de programação",
+      "teoria": {
+        "titulo": "Teoria: variáveis e tipos em JavaScript",
+        "paragrafos": [
+          "Variáveis são nomes aos quais você associa valores na memória. Em automação de testes, você usa variáveis para guardar dados de entrada, URLs, texto esperado ou o resultado de um passo intermediário.",
+          "Use `let` quando o valor pode mudar (contadores, flags). Use `const` quando não quer reatribuir o nome — muito comum para `cy` configs, URLs base e objetos de configuração. Evite `var` em código novo porque o escopo é menos previsível.",
+          "Tipos comuns são número, string, boolean, objeto, array, `null` e `undefined`. Em testes você combina texto (assertions), coleções de elementos ou dados vindos da API/UI.",
+          "Array é uma lista ordenada de valores indexada a partir do 0 — ideal para guardar conjuntos de cenários, dados de tabela ou IDs. Com `const lista = [ ... ]` você fixa a referência (não pode trocar por outro array), mas ainda pode mudar o conteúdo do array com métodos como `push`, `pop`, `shift`, `unshift` e `splice`."
+        ],
+        "codigo": "// Variáveis simples\nlet tentativas = 0;\nconst baseUrl = 'https://api.exemplo.com';\n\n// Array: declaração e mutação do conteúdo\nconst tags = ['smoke', 'regressao'];\ntags.push('e2e');        // insere no final\ntags.unshift('critico'); // insere no início\nconst ultima = tags.pop(); // remove do final\nconst primeira = tags.shift(); // remove do início",
+        "links": [
+          { "titulo": "MDN — Guia de JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide" },
+          { "titulo": "MDN — Array", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array" },
+          { "titulo": "MDN — Aprender JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript" },
+          { "titulo": "javascript.info (inglês, muito didático)", "url": "https://javascript.info/" }
+        ]
+      },
+      "atividades": [
+        {
+          "id": "js-var-1",
+          "tipo": "multipla_escolha",
+          "descricao": "Em JavaScript, qual palavra-chave é recomendada para declarar uma variável cujo valor pode mudar, com escopo de bloco (como dentro de um if ou for)?",
+          "codigo": null,
+          "opcoes": [
+            { "id": "A", "texto": "var" },
+            { "id": "B", "texto": "let" },
+            { "id": "C", "texto": "const" },
+            { "id": "D", "texto": "def" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "`let` cria variáveis mutáveis respeitando escopo de bloco. `const` também tem escopo de bloco, mas o vínculo não pode ser reatribuído. `var` tem escopo de função e comportamentos legados menos previsíveis.",
+          "codigoExplicacao": "let contador = 0;\ncontador = contador + 1;"
+        },
+        {
+          "id": "js-const-1",
+          "tipo": "multipla_correta",
+          "descricao": "Sobre `const` em JavaScript, selecione uma ou mais afirmações corretas.",
+          "codigo": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno';",
+          "opcoes": [
+            { "id": "A", "texto": "O objeto em si não pode ser substituído por outro objeto após a declaração." },
+            { "id": "B", "texto": "Propriedades internas do objeto podem ser alteradas." },
+            { "id": "C", "texto": "const impede qualquer modificação no valor referenciado." },
+            { "id": "D", "texto": "O trecho acima é válido e `usuario.nome` passa a ser 'Bruno'." }
+          ],
+          "corretas": ["A", "B", "D"],
+          "explicacao": "`const` congela a referência, não a mutabilidade profunda do objeto. Você não pode fazer `usuario = {}` de novo, mas pode alterar `usuario.nome`.",
+          "codigoExplicacao": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno'; // OK\n// usuario = {}; // TypeError"
+        },
+        {
+          "id": "js-array-1",
+          "tipo": "multipla_correta",
+          "descricao": "Sobre arrays em JavaScript: como declarar e inserir/remover valores. Marque uma ou mais alternativas corretas.",
+          "codigo": "const fila = ['a', 'b'];\nfila.push('c');\nconst x = fila.pop();\nconst y = fila.shift();\nfila.unshift('z');",
+          "opcoes": [
+            { "id": "A", "texto": "`const numeros = [];` declara um array vazio (o nome não pode ser reatribuído a outro array, mas o conteúdo pode mudar)." },
+            { "id": "B", "texto": "`push(item)` adiciona um elemento ao final do array." },
+            { "id": "C", "texto": "`pop()` remove o último elemento do array e o retorna." },
+            { "id": "D", "texto": "`shift()` remove o primeiro elemento do array e o retorna." },
+            { "id": "E", "texto": "`unshift(item)` insere um elemento no início do array." },
+            { "id": "F", "texto": "`array.append(x)` é o método padrão para inserir no final (como push)." }
+          ],
+          "corretas": ["A", "B", "C", "D", "E"],
+          "explicacao": "Arrays em JS usam `push`/`pop` nas pontas direita e esquerda; `unshift`/`shift` fazem o mesmo nas extremidades opostas. Não existe `append` como método nativo de Array.",
+          "codigoExplicacao": "const n = [];\nn.push(1);\nn.unshift(0); // [0, 1]\nn.pop();       // remove 1\nn.shift();     // remove 0"
+        }
+      ]
+    },
+    {
+      "id": "loops-storage",
+      "ordem": 2,
+      "titulo": "Loops e localStorage",
+      "contexto": "Lógica de programação",
+      "teoria": {
+        "titulo": "Teoria: repetições e dados no navegador",
+        "paragrafos": [
+          "Loops (`for`, `while`, métodos em arrays como `forEach`) repetem código enquanto uma condição faz sentido. Em testes automatizados, repetições podem estar escondidas no framework — por exemplo Cypress re-tenta comandos até timeout — mas você ainda deve entender quando um laço resolveria problema de dados (lista de cenários ou de linhas na tabela).",
+          "`localStorage` mantém texto associado a chaves até o usuário limpar dados do site ou o código remover; `sessionStorage` é parecido, mas perdura só na sessão da aba. Em testes não dependa só de dados persistidos manualmente entre execuções: prefira mocks ou dados controlados quando possível.",
+          "`JSON.stringify` e `JSON.parse` aparecem muito quando se grava objeto como string ou se lê de storage/API."
+        ],
+        "codigo": "for (let i = 0; i < 3; i++) {\n  console.log('passo', i);\n}\n\nlocalStorage.setItem('preferencia', 'escuro');\nconst tema = localStorage.getItem('preferencia');",
+        "links": [
+          { "titulo": "MDN — loops e repetições", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Loops_and_iteration" },
+          { "titulo": "MDN — localStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage" },
+          { "titulo": "MDN — JSON.parse / JSON.stringify", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/JSON" }
+        ]
+      },
+      "atividades": [
+        {
+          "id": "loop-1",
+          "tipo": "multipla_correta",
+          "descricao": "Como podemos criar um laço de repetição em JavaScript? Selecione uma ou mais opções corretas.",
+          "codigo": "// Exemplos de estruturas comuns\nfor (let i = 0; i < 3; i++) { }\nwhile (condicao) { }\nlista.forEach(item => { });",
+          "opcoes": [
+            { "id": "A", "texto": "Loop()" },
+            { "id": "B", "texto": "repete()" },
+            { "id": "C", "texto": "for" },
+            { "id": "D", "texto": "forEach (em arrays)" }
+          ],
+          "corretas": ["C", "D"],
+          "explicacao": "JavaScript oferece `for`, `while`, `do...while`, e métodos de array como `forEach`, `map`, etc. Não existem funções globais `Loop()` ou `repete()` padrão.",
+          "codigoExplicacao": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}\n\n['a','b'].forEach(letra => console.log(letra));"
+        },
+        {
+          "id": "storage-1",
+          "tipo": "multipla_escolha",
+          "descricao": "Qual API do navegador armazena pares chave/valor como strings de forma persistente entre recarregamentos da mesma origem?",
+          "codigo": "localStorage.setItem('tema', 'escuro');\nconsole.log(localStorage.getItem('tema'));",
+          "opcoes": [
+            { "id": "A", "texto": "sessionStorage" },
+            { "id": "B", "texto": "localStorage" },
+            { "id": "C", "texto": "indexedDB sempre que precisamos de string" },
+            { "id": "D", "texto": "cookie sem expiração" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "`localStorage` persiste até ser limpo pelo código ou pelo usuário. `sessionStorage` vale só na aba atual. Cookies têm modelo diferente (tamanho, envio ao servidor).",
+          "codigoExplicacao": "localStorage.setItem('token', 'abc123');\nconst t = localStorage.getItem('token');"
+        }
+      ]
+    },
+    {
+      "id": "desafios-codigo",
+      "ordem": 3,
+      "titulo": "Desafios: o código roda?",
+      "contexto": "Lógica de programação",
+      "atividades": [
+        {
+          "id": "des-1",
+          "tipo": "desafio_codigo",
+          "descricao": "Analise o trecho. Ele executa sem lançar erro em um ambiente JavaScript moderno?",
+          "codigo": "const x = 1;\nx = 2;\nconsole.log(x);",
+          "opcoes": [
+            { "id": "A", "texto": "Sim, imprime 2" },
+            { "id": "B", "texto": "Não, ocorre erro ao tentar reatribuir const" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "Variáveis declaradas com `const` não podem ser reatribuídas. Isso gera TypeError em modo estrito comum em engines atuais.",
+          "codigoExplicacao": "let x = 1;\nx = 2; // OK"
+        },
+        {
+          "id": "des-2",
+          "tipo": "desafio_codigo",
+          "descricao": "Este código acessa um índice fora do tamanho do array. O que acontece?",
+          "codigo": "const nums = [10, 20];\nconsole.log(nums[5]);",
+          "opcoes": [
+            { "id": "A", "texto": "Lança exceção e interrompe o script" },
+            { "id": "B", "texto": "Retorna undefined sem erro" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "Em JavaScript, ler `array[indiceInexistente]` retorna `undefined`; não é um erro por si só.",
+          "codigoExplicacao": "const nums = [10, 20];\nconsole.log(nums[5]); // undefined"
+        },
+        {
+          "id": "des-3",
+          "tipo": "desafio_codigo",
+          "descricao": "O uso de `await` neste arquivo (top-level) é válido em módulos ES no navegador?",
+          "codigo": "// arquivo: medias.js (type=\"module\")\nconst dados = await fetch('/api');",
+          "opcoes": [
+            { "id": "A", "texto": "Sim, em script type=module top-level await é suportado em navegadores modernos" },
+            { "id": "B", "texto": "Não, await só pode aparecer dentro de async function" }
+          ],
+          "corretas": ["A"],
+          "explicacao": "Top-level `await` é permitido em módulos ES (`<script type=\"module\">`). Em scripts clássicos sem `async` wrapper, não.",
+          "codigoExplicacao": "<script type=\"module\">\n  const r = await fetch('/data.json');\n</script>"
+        },
+        {
+          "id": "des-4",
+          "tipo": "desafio_codigo",
+          "descricao": "JSON.parse em string inválida: o que ocorre?",
+          "codigo": "JSON.parse('{ nome: \"teste\" }');",
+          "opcoes": [
+            { "id": "A", "texto": "Converte normalmente para objeto" },
+            { "id": "B", "texto": "Lança SyntaxError (JSON exige chaves em aspas duplas e formato estrito)" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "JSON não aceita chaves sem aspas como em objetos JS literais. A string precisa ser por exemplo '{\"nome\":\"teste\"}'.",
+          "codigoExplicacao": "JSON.parse('{\"nome\":\"teste\"}'); // OK"
+        },
+        {
+          "id": "des-5",
+          "tipo": "desafio_codigo",
+          "descricao": "Chamar função antes da declaração function: funciona?",
+          "codigo": "ola();\nfunction ola() { console.log('oi'); }",
+          "opcoes": [
+            { "id": "A", "texto": "Sim, declarações function são içadas (hoisting)" },
+            { "id": "B", "texto": "Não, ReferenceError porque ainda não foi definida" }
+          ],
+          "corretas": ["A"],
+          "explicacao": "Function declarations são içadas integralmente. Com `const ola = () => {}` a ordem importaria.",
+          "codigoExplicacao": "ola();\nfunction ola() { console.log('oi'); } // imprime oi"
+        }
+      ]
+    },
+    {
+      "id": "cypress-basico",
+      "ordem": 4,
+      "titulo": "Cypress: conceitos e interface",
+      "contexto": "Cypress / Automação de teste",
+      "teoria": {
+        "titulo": "Teoria: o que é o Cypress",
+        "paragrafos": [
+          "Cypress automatiza navegadores para testes end-to-end: abre página, acha elementos, interage como um usuário e verifica comportamento. Ao contrário de um script Puppeteer solto que você mesmo orquestra, Cypress traz comandos já pensados para teste (`visit`, `get`, `click`, etc.) com fila inteligente e novas tentativas (retry).",
+          "Ao rodar `npx cypress open`, você pode escolher E2E ou Component Testing — nesta trilha priorizamos E2E. O runner lista arquivos `*.cy.js`/`*.cy.ts` em `cypress/e2e` (nome padrão v10+). Timeouts configuráveis evitam testes flaky sem motivo quando o DOM demora aparecer.",
+          "Seletores: IDs e classes são frágeis; atributos `data-cy` ou `data-testid` desacoplam o teste das mudanças visuais inocentes.",
+          "Use a documentação oficial (links abaixo) para aprofundar após este resumo."
+        ],
+        "codigo": "// exemplo da API fluenta\ncy.visit('/login')\ncy.get('[data-cy=usuario]').type('qa@site.com')\ncy.get('[data-cy=entrar]').click()",
+        "links": [
+          { "titulo": "Cypress — documentação oficial", "url": "https://docs.cypress.io/" },
+          { "titulo": "Cypress — guia ”Why Cypress”", "url": "https://docs.cypress.io/guides/overview/why-cypress" },
+          { "titulo": "Cypress Cloud (opcional)", "url": "https://www.cypress.io/cloud/" }
+        ]
+      },
+      "atividades": [
+        {
+          "id": "cy-1",
+          "tipo": "multipla_escolha",
+          "descricao": "O que é o Cypress na prática de automação de testes?",
+          "codigo": null,
+          "opcoes": [
+            { "id": "A", "texto": "Um servidor de banco de dados relacional" },
+            { "id": "B", "texto": "Framework de testes end-to-end que roda no navegador e controla a aplicação" },
+            { "id": "C", "texto": "Substituto do Git para versionamento" },
+            { "id": "D", "texto": "Compilador de TypeScript para Java" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "Cypress é focado em testes E2E (e outros fluxos) executando no contexto do browser, com API fluente (`cy.*`).",
+          "codigoExplicacao": "// Exemplo mínimo\ncy.visit('https://exemplo.com');"
+        },
+        {
+          "id": "cy-2",
+          "tipo": "multipla_escolha",
+          "descricao": "Ao abrir o Cypress pela primeira vez com `npx cypress open`, qual interface costuma aparecer para escolher modo e specs?",
+          "codigo": null,
+          "opcoes": [
+            { "id": "A", "texto": "Apenas terminal sem UI" },
+            { "id": "B", "texto": "Launchpad / Test Runner com escolha E2E ou Component Testing" },
+            { "id": "C", "texto": "Visual Studio Code embutido" },
+            { "id": "D", "texto": "Somente o Chrome DevTools" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "O fluxo guiado permite configurar E2E ou component tests e depois abre o runner com lista de specs.",
+          "codigoExplicacao": "npx cypress open"
+        },
+        {
+          "id": "cy-3",
+          "tipo": "multipla_correta",
+          "descricao": "Quais afirmativas descrevem bem interações comuns na API do Cypress?",
+          "codigo": "cy.get('#login').click();\ncy.get('[data-cy=email]').type('a@b.com');",
+          "opcoes": [
+            { "id": "A", "texto": "`cy.get` localiza elementos no DOM" },
+            { "id": "B", "texto": "`.click()` e `.type()` encadeiam ações no elemento sujeito" },
+            { "id": "C", "texto": "`cy.get` sempre retorna síncrono na mesma linha sem fila de comandos" },
+            { "id": "D", "texto": "Comandos são enfileirados e o Cypress tenta aguardar o elemento existir (retry)" }
+          ],
+          "corretas": ["A", "B", "D"],
+          "explicacao": "Cypress usa fila de comandos e retry padrão em muitos casos; não é um encadeamento totalmente síncrono como DOM direto.",
+          "codigoExplicacao": "cy.get('button').should('be.visible').click();"
+        }
+      ]
+    },
+    {
+      "id": "cypress-pratica",
+      "ordem": 5,
+      "titulo": "Cypress: comandos práticos",
+      "contexto": "Cypress / Automação de teste",
+      "teoria": {
+        "titulo": "Teoria: comandos básicos do dia a dia",
+        "paragrafos": [
+          "`cy.visit(url)` navega até a página. `cy.get(seletor)` localiza elementos; associe sempre com assertions (`should`) para transformar comando em garantia automatizada.",
+          "Interações: `click()`, `dblclick()`, `type()`, `clear()`, `check()`, `select()`. Assertions comuns incluem texto (`contain`), visibilidade (`be.visible`), existência (`exist`) ou valor (`have.value`).",
+          "Evite `cy.wait(5000)` fixo; prefira `should` até alcançar o estado esperado. Para espera dinâmica com rede combine `cy.intercept` com `.as('alias')` e `cy.wait('@alias')` só quando trabalhar fluxos AJAX/fetch bem definidos."
+        ],
+        "codigo": "cy.visit('/produtos')\ncy.get('[data-cy=lista]').should('be.visible')\ncy.intercept('GET', '/api/items', { fixture: 'items.json' }).as('listItems')\ncy.wait('@listItems')\ncy.get('[data-cy=item]').first().should('contain', 'Notebook')",
+        "links": [
+          { "titulo": "Cypress — API (índice de comandos)", "url": "https://docs.cypress.io/api/table-of-contents" },
+          { "titulo": "cy.visit", "url": "https://docs.cypress.io/api/commands/visit" },
+          { "titulo": "cy.intercept", "url": "https://docs.cypress.io/api/commands/intercept" },
+          { "titulo": "cy.wait (alias de rede)", "url": "https://docs.cypress.io/api/commands/wait" }
+        ]
+      },
+      "atividades": [
+        {
+          "id": "cy-p1",
+          "tipo": "multipla_escolha",
+          "descricao": "Como abrir uma página no teste Cypress?",
+          "codigo": null,
+          "opcoes": [
+            { "id": "A", "texto": "cy.open('https://...')" },
+            { "id": "B", "texto": "cy.visit('https://...') ou cy.visit('/rota')" },
+            { "id": "C", "texto": "window.location = url dentro de cy.exec apenas" },
+            { "id": "D", "texto": "browser.goto(url)" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "`cy.visit` carrega a URL (absoluta ou relativa ao `baseUrl` do cypress.config).",
+          "codigoExplicacao": "cy.visit('/dashboard');"
+        },
+        {
+          "id": "cy-p2",
+          "tipo": "multipla_escolha",
+          "descricao": "Qual comando captura um elemento pelo seletor CSS?",
+          "codigo": null,
+          "opcoes": [
+            { "id": "A", "texto": "cy.find('#id')" },
+            { "id": "B", "texto": "cy.get('#meu-id')" },
+            { "id": "C", "texto": "cy.selectElement('#id')" },
+            { "id": "D", "texto": "cy.query('#id')" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "`cy.get` aceita seletores CSS, data attributes, etc. Boas práticas incluem `data-cy` para estabilidade.",
+          "codigoExplicacao": "cy.get('[data-cy=submit]').click();"
+        },
+        {
+          "id": "cy-p3",
+          "tipo": "multipla_escolha",
+          "descricao": "Como validar que um elemento contém determinado texto?",
+          "codigo": "cy.get('.msg');",
+          "opcoes": [
+            { "id": "A", "texto": "cy.get('.msg').should('contain', 'Salvo')" },
+            { "id": "B", "texto": "cy.get('.msg').assertText('Salvo')" },
+            { "id": "C", "texto": "cy.validate('.msg', 'Salvo')" },
+            { "id": "D", "texto": "cy.get('.msg').text() === 'Salvo' na mesma linha sem should" }
+          ],
+          "corretas": ["A"],
+          "explicacao": "Asserções idiomáticas usam `.should` com matchers do Chai jQuery ou encadeamentos como `contain`.",
+          "codigoExplicacao": "cy.get('.msg').should('contain', 'Salvo');"
+        },
+        {
+          "id": "cy-p4",
+          "tipo": "multipla_escolha",
+          "descricao": "Como validar que um campo de input tem o valor esperado?",
+          "codigo": "cy.get('#email');",
+          "opcoes": [
+            { "id": "A", "texto": "cy.get('#email').should('have.value', 'a@b.com')" },
+            { "id": "B", "texto": "cy.get('#email').should('contain', 'a@b.com')" },
+            { "id": "C", "texto": "cy.get('#email').value('a@b.com')" },
+            { "id": "D", "texto": "cy.get('#email').text('a@b.com')" }
+          ],
+          "corretas": ["A"],
+          "explicacao": "Inputs usam a propriedade `value`; `have.value` é o matcher adequado.",
+          "codigoExplicacao": "cy.get('#email').clear().type('a@b.com').should('have.value', 'a@b.com');"
+        },
+        {
+          "id": "cy-p5",
+          "tipo": "multipla_escolha",
+          "descricao": "Espera forçada (não recomendada como primeira opção): qual comando fixa milissegundos?",
+          "codigo": null,
+          "opcoes": [
+            { "id": "A", "texto": "cy.pause(2000)" },
+            { "id": "B", "texto": "cy.wait(2000) com número fixo" },
+            { "id": "C", "texto": "cy.sleep(2000)" },
+            { "id": "D", "texto": "cy.delay(2000)" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "`cy.wait(ms)` força espera. Prefira esperar elementos (`should`, `get`) ou aliases de rede.",
+          "codigoExplicacao": "cy.wait(500); // use com parcimônia"
+        },
+        {
+          "id": "cy-p6",
+          "tipo": "multipla_correta",
+          "descricao": "Espera dinâmica com rede: marque as opções que combinam com intercept + alias.",
+          "codigo": "cy.intercept('GET', '/api/user', { fixture: 'user.json' }).as('getUser');\ncy.visit('/perfil');\ncy.wait('@getUser');\ncy.get('[data-cy=nome]').should('be.visible');",
+          "opcoes": [
+            { "id": "A", "texto": "`cy.intercept` pode stubar ou observar requisições" },
+            { "id": "B", "texto": "`.as('getUser')` define um alias referenciado com `@` em cy.wait" },
+            { "id": "C", "texto": "`cy.wait('@getUser')` espera a requisição associada ao alias completar" },
+            { "id": "D", "texto": "`cy.get('@getUser')` busca elemento no DOM com id getUser" }
+          ],
+          "corretas": ["A", "B", "C"],
+          "explicacao": "Aliases de rede usam `@` em `cy.wait`, não em `cy.get`. `cy.get` continua sendo para seletores DOM.",
+          "codigoExplicacao": "cy.intercept('POST', '/login').as('login');\ncy.get('form').submit();\ncy.wait('@login');"
+        }
+      ]
+    },
+    {
+      "id": "cypress-projeto",
+      "ordem": 6,
+      "titulo": "Cypress: novo projeto do zero",
+      "contexto": "Cypress / Automação de teste",
+      "atividades": [
+        {
+          "id": "cy-proj-checklist",
+          "tipo": "checklist_trilha",
+          "descricao": "Siga na ordem que preferir — marque ao concluir de fato cada etapa na sua máquina. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
+          "codigo": "# Pasta do projeto\nmkdir meu-projeto-cypress\n\ncd meu-projeto-cypress\n\n# NPM\nnpm init -y\nnpm install cypress --save-dev\n\n# Primeira execução (GUI)\nnpx cypress open",
+          "passos": [
+            {
+              "id": "chk-nr",
+              "texto": "Verificar Node.js instalado no terminal (`node -v`) e NPM disponível (`npm -v`).",
+              "detalhes": [
+                "Node.js inclui o NPM. Esses comandos precisam funcionar no CMD ou PowerShell; se aparecer comando não encontrado, instale Node.",
+                "No Windows, baixe o instalador LTS em https://nodejs.org/ (botão recomendado). Execute o .msi e conclua o assistente mantendo a opção de registrar no PATH quando oferecida.",
+                "Feche todos os terminais, abra um novo e teste de novo `node -v` e `npm -v`. Documentação NPM: https://docs.npmjs.com/"
+              ]
+            },
+            {
+              "id": "chk-pasta",
+              "texto": "Criar uma pasta para os testes (ex.: meu-projeto-cypress) e entrar nela com `cd`.",
+              "detalhes": [
+                "No CMD: `mkdir meu-projeto-cypress` depois `cd meu-projeto-cypress`. No PowerShell o mesmo vale; use caminhos com aspas se houver espaços no nome (`cd \"C:\\Meus Projetos\\qa\"`).",
+                "Você pode criar a pasta pelo Explorador de Arquivos e depois abrir o terminal nela: no Explorador, barra de endereço, digite `cmd` e Enter.",
+                "O `package.json` e a pasta `cypress/` serão criados nos próximos passos dentro desta pasta."
+              ]
+            },
+            {
+              "id": "chk-init",
+              "texto": "Gerar package.json nesta pasta (`npm init -y`).",
+              "detalhes": [
+                "`npm init -y` cria um `package.json` mínimo sem perguntas interativas (o -y aceita padrões).",
+                "Abra o arquivo no editor e confira nome e versão do projeto; altere depois se quiser.",
+                "Sem este arquivo, o `npm install` do próximo passo não teria onde registrar o Cypress."
+              ]
+            },
+            {
+              "id": "chk-install",
+              "texto": "Instalar Cypress em devDependencies (`npm install cypress --save-dev`).",
+              "detalhes": [
+                "O download pode demorar na primeira vez; o NPM baixa o binário adequado ao seu sistema.",
+                "`--save-dev` grava o Cypress em devDependencies: ideal para testes, não para produção.",
+                "Se houver erro de rede ou proxy corporativo, consulte a documentação do Cypress e as opções de registry do NPM (https://docs.npmjs.com/cli/v11/using-npm/registry)."
+              ]
+            },
+            {
+              "id": "chk-open",
+              "texto": "Rodar pela primeira vez o assistente com `npx cypress open` e concluir a configuração E2E sugerida.",
+              "detalhes": [
+                "`npx` executa o CLI do Cypress sem instalação global. Na primeira execução, o assistente pergunta o tipo de teste (escolha E2E para esta trilha).",
+                "Selecione o navegador suportado e deixe o wizard criar pastas e arquivos padrão.",
+                "Se o firewall ou antivírus bloquear, autorize o Cypress ou consulte a seção de troubleshooting na documentação oficial."
+              ]
+            },
+            {
+              "id": "chk-estrutura",
+              "texto": "Confirmar na árvore de arquivos a pasta `cypress/` (`e2e`, `fixtures`, `support`) e o arquivo `cypress.config.js` ou `cypress.config.ts` na raiz.",
+              "detalhes": [
+                "`cypress/e2e` guarda os arquivos de teste; `fixtures` serve para dados estáticos de teste; `support` costuma ter `e2e.js` ou `commands.js` para configuração global.",
+                "O `cypress.config.*` na raiz define opções como `baseUrl`, timeouts e pastas customizadas.",
+                "Se alguma pasta não existir, rode de novo o assistente ou crie manualmente seguindo o guia Getting Started do Cypress."
+              ]
+            },
+            {
+              "id": "chk-scripts",
+              "texto": "Opcional — adicionar no `package.json` um script útil como `\"cy:open\": \"cypress open\"`.",
+              "detalhes": [
+                "Em `package.json`, dentro de `\"scripts\"`, adicione por exemplo `\"cy:open\": \"cypress open\"` e `\"cy:run\": \"cypress run\"` para linha de comando sem digitar npx toda vez.",
+                "Depois use `npm run cy:open` na pasta do projeto.",
+                "Mantenha vírgulas JSON válidas entre entradas; erros de sintaxe impedem o NPM de ler o arquivo."
+              ]
+            },
+            {
+              "id": "chk-spec",
+              "texto": "Criar ou editar um spec em `cypress/e2e` (por exemplo usar `cy.visit` em alguma URL pública) e executar o teste no Test Runner.",
+              "detalhes": [
+                "Um spec mínimo pode conter `describe`/`it` e um `cy.visit('https://example.com')` seguido de uma asserção simples com `cy.contains` ou `cy.get(...).should(...)`.",
+                "No Test Runner, clique no arquivo `.cy.js` ou `.cy.ts` para ver o navegador executar o teste.",
+                "Se a página bloquear automação, teste outra URL pública só para validar o ambiente (ex.: documentação estática)."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "github",
+      "ordem": 7,
+      "titulo": "GitHub: enviar seu projeto",
+      "contexto": "GitHub / Versionamento",
+      "atividades": [
+        {
+          "id": "gh-checklist",
+          "tipo": "checklist_trilha",
+          "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push. Marque só após cada ação estar feita no seu ambiente; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
+          "codigo": ":: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\ngit add .\ngit commit -m \"chore: primeiro commit\"\ngit branch -M main\n\n:: Depois que o repositório existir no GitHub\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit push -u origin main",
+          "passos": [
+            {
+              "id": "gh-cfg",
+              "texto": "Configurar identidade global do Git (`git config --global user.name \"...\"` e `git config --global user.email \"...\"`) no CMD ou PowerShell.",
+              "detalhes": [
+                "Essas configurações definem autor e e-mail que aparecerão nos commits.",
+                "Exemplo: git config --global user.name \"Maria Silva\" e git config --global user.email maria@exemplo.com (use suas informações).",
+                "Para conferir depois: `git config --global --list`. Instale o Git for Windows em https://git-scm.com/download/win caso o comando `git` não exista.",
+                "Documentação oficial: https://git-scm.com/docs/git-config"
+              ]
+            },
+            {
+              "id": "gh-cd",
+              "texto": "Abrir terminal na pasta raiz do projeto que você quer versionar (`cd caminho\\da\\pasta`).",
+              "detalhes": [
+                "No CMD e PowerShell você navega pastas com `cd`. Use `dir` ou `ls` para listar o conteúdo e confirmar que está na pasta certa antes de `git init`.",
+                "Caminhos com espaços exigem aspas: `cd \"C:\\Users\\Eu\\Desktop\\Meu projeto\"`.",
+                "No VS Code / Cursor você pode usar Terminal > New Terminal já abrindo na raiz da pasta do workspace."
+              ]
+            },
+            {
+              "id": "gh-init",
+              "texto": "Inicializar repositório local com `git init` (somente na primeira vez, se ainda não existe `.git`).",
+              "detalhes": [
+                "`git init` cria a pasta oculta `.git` onde o Git guarda o histórico local.",
+                "Não rode de novo dentro de um clone existente pensando que atualiza projeto remoto.",
+                "Se já existe `.git`, pule esta etapa e vá para add/commit conforme estado dos arquivos."
+              ]
+            },
+            {
+              "id": "gh-ignore",
+              "texto": "Criar ou revisar `.gitignore` incluindo ao menos `node_modules` e quaisquer arquivos de ambiente (.env).",
+              "detalhes": [
+                "Crie um arquivo chamado `.gitignore` na raiz do repo e adicione linhas como node_modules/, .env, dist/, coberturas de build e arquivos sensíveis.",
+                "Arquivos ignorados não entram no `git add` por padrão e evitam subir dependências enormes ou segredos.",
+                "Modelos comuns: https://github.com/github/gitignore — adapte ao seu stack (Node, Cypress, etc.)."
+              ]
+            },
+            {
+              "id": "gh-commit",
+              "texto": "Adicionar arquivos (`git add .` ou seletivamente) e criar primeiro commit (`git commit -m \"mensagem\"`).",
+              "detalhes": [
+                "`git add .` coloca na área de stage tudo que não está ignorado; use `git status` para revisar antes de commitar.",
+                "A mensagem do commit deve descrever a mudança; para o primeiro commit algo como \"chore: primeiro commit\" é aceitável.",
+                "Se o Git reclamar de identidade, volte ao passo de `git config --global`."
+              ]
+            },
+            {
+              "id": "gh-repo",
+              "texto": "No site do GitHub, criar um repositório vazio para este projeto e copiar a URL HTTPS (ou SSH).",
+              "detalhes": [
+                "Entre em https://github.com/ com sua conta, New repository, defina nome e visibilidade (público/privado).",
+                "Para este fluxo, pode deixar sem README/licença se quiser evitar conflito no primeiro push (ou depois faça pull se criar com README).",
+                "Guia de criação: https://docs.github.com/pt/repositories/creating-and-managing-repositories/creating-a-new-repository — copie a URL HTTPS mostrada após criar."
+              ]
+            },
+            {
+              "id": "gh-remote",
+              "texto": "Associar o remoto (`git remote add origin <URL_COPIADO>`).",
+              "detalhes": [
+                "Substitua <URL_COPIADO> pela URL que o GitHub exibiu (formato https://github.com/usuario/repositorio.git).",
+                "Se errar a URL, use `git remote remove origin` e adicione de novo.",
+                "`git remote -v` lista os remotos configurados."
+              ]
+            },
+            {
+              "id": "gh-branch",
+              "texto": "Garantir branch principal chamada main (`git branch -M main`), se sua versão do Git/GitHub esperar esse padrão.",
+              "detalhes": [
+                "`git branch -M main` renomeia a branch atual para main (maiúsculas importam só no nome literal).",
+                "Se você já trabalha na main com esse nome, o comando apenas confirma o padrão.",
+                "Repositórios antigos podem usar master; adapte também o comando de push ao nome real (`git push -u origin master`)."
+              ]
+            },
+            {
+              "id": "gh-push",
+              "texto": "Enviar o histórico com `git push -u origin main` (ou `-u origin master` conforme nome da branch), autenticando se o GitHub pedir.",
+              "detalhes": [
+                "Na primeira vez o GitHub pode pedir login por HTTPS usando token pessoal (PAT), não só senha da conta.",
+                "Como criar um token: https://docs.github.com/pt/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token",
+                "Alternativa SSH: configure chave SSH e use a URL git@github.com:usuario/repo.git no remote.",
+                "Após push bem-sucedido, atualize o repositório no navegador e confira seus arquivos."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

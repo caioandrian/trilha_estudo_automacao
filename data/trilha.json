@@ -96,7 +96,7 @@
           "id": "loop-1",
           "tipo": "multipla_correta",
           "descricao": "Como podemos criar um laço de repetição em JavaScript? Selecione uma ou mais opções corretas.",
-          "codigo": "// Exemplos de estruturas comuns\nfor (let i = 0; i < 3; i++) { }\nwhile (condicao) { }\nlista.forEach(item => { });",
+          "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "Loop()" },
             { "id": "B", "texto": "repete()" },
@@ -110,16 +110,16 @@
         {
           "id": "storage-1",
           "tipo": "multipla_escolha",
-          "descricao": "Qual API do navegador armazena pares chave/valor como strings de forma persistente entre recarregamentos da mesma origem?",
-          "codigo": "localStorage.setItem('tema', 'escuro');\nconsole.log(localStorage.getItem('tema'));",
+          "descricao": "O que usamos para guardar texto no navegador entre visitas (até limpar dados do site)?",
+          "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "sessionStorage" },
+            { "id": "A", "texto": "sessionStorage (só enquanto a aba está aberta)" },
             { "id": "B", "texto": "localStorage" },
-            { "id": "C", "texto": "indexedDB sempre que precisamos de string" },
-            { "id": "D", "texto": "cookie sem expiração" }
+            { "id": "C", "texto": "Só IndexedDB" },
+            { "id": "D", "texto": "Só cookies HTTP" }
           ],
           "corretas": ["B"],
-          "explicacao": "`localStorage` persiste até ser limpo pelo código ou pelo usuário. `sessionStorage` vale só na aba atual. Cookies têm modelo diferente (tamanho, envio ao servidor).",
+          "explicacao": "`localStorage` guarda chave/valor na origem até você ou o código apagar. `sessionStorage` some ao fechar a aba.",
           "codigoExplicacao": "localStorage.setItem('token', 'abc123');\nconst t = localStorage.getItem('token');"
         }
       ]
@@ -383,6 +383,42 @@
       "ordem": 6,
       "titulo": "Cypress: novo projeto do zero",
       "contexto": "Cypress / Automação de teste",
+      "desafios": {
+        "titulo": "Desafios — Sauce Demo (Swag Labs)",
+        "introducao": [
+          "Este bloco é prático: você vai acessar o site de demonstração Swag Labs e escrever testes Cypress que navegam e verificam elementos como um usuário real.",
+          "Use o projeto que você criou na checklist deste tópico. Cada seção traz o passo a passo e, no final, um painel recolhível com o código de referência completo.",
+          "O site oficial do desafio é público e estável para treino: abra a URL abaixo no navegador para reconhecer a tela de login antes de automatizar."
+        ],
+        "siteUrl": "https://www.saucedemo.com/",
+        "credenciais": {
+          "usuario": "standard_user",
+          "senha": "secret_sauce"
+        },
+        "blocos": [
+          {
+            "titulo": "Login com Cypress",
+            "passos": [
+              "Em `cypress/e2e`, crie um spec (por exemplo `sauce-demo.cy.js`).",
+              "Com `cy.visit`, abra a URL do Sauce Demo indicada acima.",
+              "Preencha usuário e senha com os valores fornecidos nesta página. O site usa atributos `data-test`: use `cy.get('[data-test=\"username\"]').clear().type(...)` e o mesmo padrão para a senha em `[data-test=\"password\"]'`.",
+              "Clique no botão de login `[data-test=\"login-button\"]`.",
+              "Asserções sugeridas: a URL deve refletir a área logada (por exemplo conter `inventory`) e a listagem de produtos deve aparecer (ex.: pelo menos um `.inventory_item` visível)."
+            ],
+            "codigoFinal": "describe('Sauce Demo — login', () => {\n  it('autentica com standard_user', () => {\n    cy.visit('https://www.saucedemo.com/')\n    cy.get('[data-test=\"username\"]').type('standard_user')\n    cy.get('[data-test=\"password\"]').type('secret_sauce')\n    cy.get('[data-test=\"login-button\"]').click()\n    cy.url().should('include', 'inventory')\n    cy.get('.inventory_item').first().should('be.visible')\n  })\n})"
+          },
+          {
+            "titulo": "Validar tela de carrinho",
+            "passos": [
+              "Partindo da página logada (após o login), adicione um produto ao carrinho — por exemplo `cy.get('[data-test=\"add-to-cart-sauce-labs-backpack\"]').click()`.",
+              "Clique no ícone do carrinho no canto superior direito: `[data-test=\"shopping-cart-link\"]`.",
+              "Valide o redirecionamento: a URL deve indicar a página do carrinho (trecho `cart` ou `cart.html`).",
+              "Verifique que o botão de checkout está visível: `[data-test=\"checkout\"]` com `.should('be.visible')`."
+            ],
+            "codigoFinal": "describe('Sauce Demo — carrinho', () => {\n  it('adiciona item, abre carrinho e exibe checkout', () => {\n    cy.visit('https://www.saucedemo.com/')\n    cy.get('[data-test=\"username\"]').type('standard_user')\n    cy.get('[data-test=\"password\"]').type('secret_sauce')\n    cy.get('[data-test=\"login-button\"]').click()\n    cy.get('[data-test=\"add-to-cart-sauce-labs-backpack\"]').click()\n    cy.get('[data-test=\"shopping-cart-link\"]').click()\n    cy.url().should('include', 'cart')\n    cy.get('[data-test=\"checkout\"]').should('be.visible')\n  })\n})"
+          }
+        ]
+      },
       "atividades": [
         {
           "id": "cy-proj-checklist",

@@ -6,7 +6,9 @@ const CONTEXT_KEY = "trilha_contexto_pref";
 /** @typedef {{ id: string; tipo: string; descricao: string; codigo?: string | null; passos?: ChecklistPasso[]; opcoes?: { id: string; texto: string }[]; corretas?: string[]; explicacao?: string; codigoExplicacao?: string }} Atividade */
 /** @typedef {{ titulo: string; url: string }} TeoriaLink */
 /** @typedef {{ titulo: string; paragrafos: string[]; codigo?: string | null; links?: TeoriaLink[] }} Teoria */
-/** @typedef {{ id: string; ordem: number; titulo: string; contexto: string; teoria?: Teoria; atividades: Atividade[] }} Topico */
+/** @typedef {{ titulo: string; passos: string[]; codigoFinal: string }} DesafioBloco */
+/** @typedef {{ titulo?: string; introducao?: string[]; siteUrl?: string; credenciais?: { usuario: string; senha: string }; blocos: DesafioBloco[] }} Desafios */
+/** @typedef {{ id: string; ordem: number; titulo: string; contexto: string; teoria?: Teoria; desafios?: Desafios; atividades: Atividade[] }} Topico */
 /** @typedef {{ titulo: string; topicos: Topico[] }} TrilhaData */
 
 function loadState() {
@@ -85,6 +87,11 @@ function topicHasTheory(topico) {
   if (!t) return false;
   const paragraphs = Array.isArray(t.paragrafos) ? t.paragrafos.filter(Boolean) : [];
   return paragraphs.length > 0 || Boolean(t.codigo);
+}
+
+function topicHasDesafios(topico) {
+  const d = topico.desafios;
+  return Boolean(d && Array.isArray(d.blocos) && d.blocos.length > 0);
 }
 
 function contextNavVariantClass(/** @type {string} */ label) {
@@ -250,7 +257,8 @@ function renderTopicList(
   selectedContexto,
   onSelectTopic,
   onOpenTopicTheory,
-  onOpenTopicActivities
+  onOpenTopicActivities,
+  onOpenTopicDesafios
 ) {
   const nav = document.getElementById("topicList");
   if (!nav) return;
@@ -262,9 +270,13 @@ function renderTopicList(
       const ctxCls = topicBtnContextClass(t.contexto);
       const isCurrent = t.id === activeTopicId;
       const hasTheory = topicHasTheory(t);
+      const hasDesafios = topicHasDesafios(t);
       const kindLabel = topicSidebarKindLabel(t);
       const theoryBtn = hasTheory
         ? `<button type="button" class="btn-topic-theory" data-topic-theory="${escapeHtml(t.id)}" aria-label="Abrir teoria: ${escapeHtml(t.titulo)}">Teoria</button>`
+        : "";
+      const desafiosBtn = hasDesafios
+        ? `<button type="button" class="btn-topic-theory" data-topic-desafios="${escapeHtml(t.id)}" aria-label="Abrir desafios: ${escapeHtml(t.titulo)}">Desafios</button>`
         : "";
       const kindBtn = `<button type="button" class="btn-topic-theory" data-topic-activities="${escapeHtml(t.id)}" aria-label="Ir para: ${escapeHtml(kindLabel)} — ${escapeHtml(t.titulo)}">${escapeHtml(kindLabel)}</button>`;
       const currentAttr = isCurrent ? ' aria-current="true"' : "";
@@ -279,6 +291,7 @@ function renderTopicList(
           </button>
           ${theoryBtn}
           ${kindBtn}
+          ${desafiosBtn}
         </div>`;
     })
     .join("");
@@ -293,6 +306,13 @@ function renderTopicList(
       ev.stopPropagation();
       const id = /** @type {HTMLElement} */ (btn).dataset.topicTheory;
       if (id) onOpenTopicTheory(id);
+    });
+  });
+  nav.querySelectorAll("[data-topic-desafios]").forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const id = /** @type {HTMLElement} */ (btn).dataset.topicDesafios;
+      if (id) onOpenTopicDesafios(id);
     });
   });
   nav.querySelectorAll("[data-topic-activities]").forEach((btn) => {
@@ -402,6 +422,87 @@ function renderTheory(topico, ctx) {
   });
 }
 
+function setFeedbackDesafiosHint(/** @type {boolean} */ onlyChecklistFollows) {
+  const panel = document.getElementById("feedbackPanel");
+  if (!panel) return;
+  panel.innerHTML = onlyChecklistFollows
+    ? `<p class="feedback__hint">Conteúdo de <strong>desafios práticos</strong>. Depois use <strong>Passo a passo</strong> na barra lateral para marcar a checklist do projeto.</p>`
+    : `<p class="feedback__hint">Desafios práticos: implemente no seu projeto e volte às atividades do tópico quando quiser.</p>`;
+}
+
+function renderDesafios(topico) {
+  const view = document.getElementById("activityView");
+  const d = topico.desafios;
+  if (!view || !d || !Array.isArray(d.blocos)) return;
+
+  const introHtml = (d.introducao || [])
+    .filter(Boolean)
+    .map((p) => `<p>${escapeHtml(p)}</p>`)
+    .join("");
+
+  const creds = d.credenciais;
+  const credsHtml =
+    creds && (creds.usuario || creds.senha)
+      ? `<div class="desafios-creds" aria-label="Credenciais do site de demonstração">
+          <p class="desafios-creds__title">Credenciais (Sauce Demo)</p>
+          <p><strong>Usuário:</strong> <code>${escapeHtml(creds.usuario || "")}</code></p>
+          <p><strong>Senha:</strong> <code>${escapeHtml(creds.senha || "")}</code></p>
+        </div>`
+      : "";
+
+  const siteUrl = (d.siteUrl || "").trim();
+  const siteBlock = siteUrl
+    ? `<div class="desafios-site">
+        <p class="desafios-site__label">Acesse o site da tarefa</p>
+        <p><a href="${escapeHtml(siteUrl)}" target="_blank" rel="noopener noreferrer" class="desafios-site__link">${escapeHtml(siteUrl)}</a></p>
+      </div>`
+    : "";
+
+  const blocosHtml = d.blocos
+    .map((bloco, i) => {
+      const passos = (bloco.passos || [])
+        .filter(Boolean)
+        .map((pas) => `<li>${escapeHtml(pas)}</li>`)
+        .join("");
+      const code = (bloco.codigoFinal || "").trim();
+      const collapse =
+        code.length > 0
+          ? `<details class="desafios-code-collapse">
+          <summary class="desafios-code-collapse__summary">Código final (referência)</summary>
+          <div class="code-block desafios-code-collapse__body"><pre>${escapeHtml(code)}</pre></div>
+        </details>`
+          : "";
+      return `
+        <section class="desafios-bloco" aria-labelledby="desafio-bloco-h-${i}">
+          <h3 class="desafios-bloco__title" id="desafio-bloco-h-${i}">${escapeHtml(bloco.titulo || "Passo a passo")}</h3>
+          <ol class="desafios-passos">${passos}</ol>
+          ${collapse}
+        </section>`;
+    })
+    .join("");
+
+  const onlyChecklistFollows =
+    Array.isArray(topico.atividades) &&
+    topico.atividades.length > 0 &&
+    topico.atividades.every((a) => a.tipo === "checklist_trilha");
+
+  view.innerHTML = `
+    <div class="theory-shell">
+      <article class="theory-panel desafios-panel" aria-labelledby="desafiosHeading">
+        <div class="theory-panel__inner">
+          <span class="theory-badge desafios-badge" aria-hidden="true">◆ Desafios</span>
+          <h2 class="theory-heading" id="desafiosHeading">${escapeHtml(d.titulo || "Desafios")}</h2>
+          <div class="theory-body desafios-intro">${introHtml}</div>
+          ${siteBlock}
+          ${credsHtml}
+          ${blocosHtml}
+        </div>
+      </article>
+    </div>`;
+
+  setFeedbackDesafiosHint(onlyChecklistFollows);
+}
+
 function renderChecklistSidebar(atividade, checklistDict) {
   const panel = document.getElementById("feedbackPanel");
   if (!panel) return;
@@ -435,6 +536,7 @@ function renderChecklistActivity(ctx, topico, atividade) {
     topicos,
     onSelectTopic,
     onOpenTopicTheory,
+    onOpenTopicDesafios,
     onOpenTopicActivities,
     selectedContexto,
     contextos,
@@ -479,7 +581,6 @@ function renderChecklistActivity(ctx, topico, atividade) {
         <span class="pill">${idxInTopic} / ${totalInTopic} neste tópico</span>
         <span class="pill">Passo a passo (checklist)</span>
       </div>
-      <h2>${escapeHtml(topico.titulo)}</h2>
       <p class="activity-desc">${escapeHtml(atividade.descricao)}</p>
       ${codeHtml}
       <div class="checklist-root" role="group" aria-label="Passos do projeto">${passosHtml}</div>
@@ -510,7 +611,8 @@ function renderChecklistActivity(ctx, topico, atividade) {
           selectedContexto,
           onSelectTopic,
           onOpenTopicTheory,
-          onOpenTopicActivities
+          onOpenTopicActivities,
+          onOpenTopicDesafios
         );
         renderContextNav(contextos, selectedContexto, topicos, completedSet, onSelectContexto);
         updateProgress(topicos, completedSet);
@@ -572,7 +674,6 @@ function renderActivity(ctx) {
       <div class="activity-meta">
         <span class="pill">Questão ${idxInTopic} / ${totalInTopic} neste tópico</span>
       </div>
-      <h2>${escapeHtml(topico.titulo)}</h2>
       <p class="activity-desc">${escapeHtml(atividade.descricao)}</p>
       ${codeHtml}
       <div class="options" id="optionsRoot">${optionsHtml}</div>
@@ -617,7 +718,8 @@ function renderActivity(ctx) {
           ctx.selectedContexto,
           ctx.onSelectTopic,
           ctx.onOpenTopicTheory,
-          ctx.onOpenTopicActivities
+          ctx.onOpenTopicActivities,
+          ctx.onOpenTopicDesafios
         );
         renderContextNav(
           ctx.contextos,
@@ -792,7 +894,7 @@ async function main() {
     if (view) {
       view.innerHTML = `
         <div class="activity-card">
-          <h2>Erro ao carregar a trilha</h2>
+          <p class="activity-card__title">Erro ao carregar a trilha</p>
           <p class="activity-desc">Abra o site por um servidor local (por exemplo, na pasta do projeto: <code>npx serve</code> ou extensão Live Server), pois o navegador bloqueia <code>fetch</code> em arquivos <code>file://</code>.</p>
           <p class="activity-desc" style="margin-top:0.75rem">${escapeHtml(String(e))}</p>
         </div>`;
@@ -841,7 +943,10 @@ async function main() {
     return topicHasTheory(t) && !theoryVisitedSet.has(t.id);
   }
 
+  let desafiosFocusTopicId = /** @type {string | null} */ (null);
+
   function onSelectTopic(topicId) {
+    desafiosFocusTopicId = null;
     const idx = flat.findIndex((x) => x.topico.id === topicId);
     if (idx >= 0) {
       currentIndex = idx;
@@ -856,6 +961,7 @@ async function main() {
   }
 
   function onOpenTopicTheory(topicId) {
+    desafiosFocusTopicId = null;
     const idx = flat.findIndex((x) => x.topico.id === topicId);
     if (idx >= 0) {
       currentIndex = idx;
@@ -872,6 +978,7 @@ async function main() {
   }
 
   function onOpenTopicActivities(topicId) {
+    desafiosFocusTopicId = null;
     const idx = flat.findIndex((x) => x.topico.id === topicId);
     if (idx < 0) return;
     const top = flat[idx].topico;
@@ -889,7 +996,24 @@ async function main() {
     paint();
   }
 
+  function onOpenTopicDesafios(topicId) {
+    const idx = flat.findIndex((x) => x.topico.id === topicId);
+    if (idx < 0) return;
+    const top = flat[idx].topico;
+    if (!topicHasDesafios(top)) return;
+    desafiosFocusTopicId = topicId;
+    currentIndex = idx;
+    const ctxTop = top.contexto;
+    if (ctxTop && ctxTop !== selectedContexto) {
+      selectedContexto = ctxTop;
+      localStorage.setItem(CONTEXT_KEY, selectedContexto);
+    }
+    clearFeedbackHint();
+    paint();
+  }
+
   function onSelectContexto(contexto) {
+    desafiosFocusTopicId = null;
     if (!contextos.includes(contexto)) return;
     selectedContexto = contexto;
     localStorage.setItem(CONTEXT_KEY, selectedContexto);
@@ -914,7 +1038,8 @@ async function main() {
         selectedContexto,
         onSelectTopic,
         onOpenTopicTheory,
-        onOpenTopicActivities
+        onOpenTopicActivities,
+        onOpenTopicDesafios
       );
       showCongratulations();
       syncTopbarOffset();
@@ -934,10 +1059,12 @@ async function main() {
       onSelectTopic,
       onOpenTopicTheory,
       onOpenTopicActivities,
+      onOpenTopicDesafios,
       onSelectContexto,
       paint,
       onPrev: () => {
         if (currentIndex > 0) {
+          desafiosFocusTopicId = null;
           currentIndex--;
           const ctxTop = flat[currentIndex]?.topico.contexto;
           if (ctxTop && ctxTop !== selectedContexto) {
@@ -950,6 +1077,7 @@ async function main() {
       },
       onNext: () => {
         if (currentIndex < flat.length - 1) {
+          desafiosFocusTopicId = null;
           currentIndex++;
           const ctxTop = flat[currentIndex]?.topico.contexto;
           if (ctxTop && ctxTop !== selectedContexto) {
@@ -970,9 +1098,22 @@ async function main() {
       selectedContexto,
       onSelectTopic,
       onOpenTopicTheory,
-      onOpenTopicActivities
+      onOpenTopicActivities,
+      onOpenTopicDesafios
     );
     updateProgress(topicos, completedSet);
+
+    const curTop = currentTopicoFromIndex();
+    if (
+      curTop &&
+      desafiosFocusTopicId &&
+      desafiosFocusTopicId === curTop.id &&
+      topicHasDesafios(curTop)
+    ) {
+      renderDesafios(curTop);
+      syncTopbarOffset();
+      return;
+    }
 
     if (shouldShowTheory()) {
       const t = currentTopicoFromIndex();
@@ -995,9 +1136,9 @@ async function main() {
       selectedContexto,
       onSelectTopic,
       onOpenTopicTheory,
-      onOpenTopicActivities
+      onOpenTopicActivities,
+      onOpenTopicDesafios
     );
-    showCongratulations();
     syncTopbarOffset();
   } else {
     paint();

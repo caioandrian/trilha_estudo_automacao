@@ -20,12 +20,15 @@
             <span class="brand__icon" aria-hidden="true">◆</span>
             <h1 class="brand__title">Trilha de estudos</h1>
           </div>
-          <div class="progress-wrap" aria-live="polite">
-            <span class="progress-wrap__label">Progresso</span>
-            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-              <div class="progress-bar__fill" id="progressFill"></div>
+          <div class="topbar__progress">
+            <div class="progress-wrap" aria-live="polite">
+              <span class="progress-wrap__label">Progresso</span>
+              <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar__fill" id="progressFill"></div>
+              </div>
+              <span class="progress-wrap__pct" id="progressPct">0%</span>
             </div>
-            <span class="progress-wrap__pct" id="progressPct">0%</span>
+            <p class="progress-wrap__storage-hint">dados salvos armazenados no navegador</p>
           </div>
         </div>
         <nav class="context-nav" id="contextNav" aria-label="Áreas da trilha"></nav>

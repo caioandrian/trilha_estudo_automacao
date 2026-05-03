@@ -283,11 +283,28 @@ html[data-theme="light"] .context-nav__btn--github.context-nav__btn--active {
   letter-spacing: -0.02em;
 }
 
+.topbar__progress {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+  min-width: 200px;
+  flex: 1;
+  max-width: min(420px, 100%);
+}
+
 .progress-wrap {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  min-width: 200px;
+}
+
+.progress-wrap__storage-hint {
+  margin: 0;
+  font-size: 0.65rem;
+  color: var(--muted);
+  line-height: 1.3;
+  text-align: right;
 }
 
 .progress-wrap__label {
@@ -710,6 +727,159 @@ html[data-theme="light"] .topic-btn--current.topic-btn--ctx-github .topic-btn__t
   align-items: center;
 }
 
+.desafios-badge {
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #5eead4;
+}
+
+html[data-theme="light"] .desafios-badge {
+  color: #047857;
+  border-color: rgba(4, 120, 87, 0.35);
+}
+
+.desafios-intro {
+  margin-bottom: 0.25rem;
+}
+
+.desafios-site {
+  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.desafios-site__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.desafios-site__link {
+  color: #5eead4;
+  font-weight: 700;
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+
+.desafios-site__link:hover {
+  text-decoration: underline;
+}
+
+html[data-theme="light"] .desafios-site__link {
+  color: #047857;
+}
+
+.desafios-site p {
+  margin: 0;
+}
+
+.desafios-creds {
+  margin: 1rem 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 0.88rem;
+}
+
+.desafios-creds__title {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.desafios-creds p {
+  margin: 0.25rem 0 0;
+}
+
+.desafios-creds p:first-of-type {
+  margin-top: 0;
+}
+
+.desafios-creds code {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+}
+
+.desafios-bloco {
+  margin-top: 1.35rem;
+  padding-top: 1.15rem;
+  border-top: 1px dashed var(--border);
+}
+
+.desafios-bloco__title {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.desafios-passos {
+  margin: 0 0 0.85rem;
+  padding-left: 1.15rem;
+  color: var(--text);
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.desafios-passos li {
+  margin-bottom: 0.4rem;
+}
+
+.desafios-code-collapse {
+  margin-top: 0.35rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.desafios-code-collapse__summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.55rem 0.75rem;
+  color: var(--accent);
+  user-select: none;
+}
+
+.desafios-code-collapse__summary::-webkit-details-marker {
+  display: none;
+}
+
+.desafios-code-collapse__summary::before {
+  content: "▸ ";
+  display: inline-block;
+  transition: transform 0.15s;
+  opacity: 0.75;
+}
+
+.desafios-code-collapse[open] .desafios-code-collapse__summary::before {
+  transform: rotate(90deg);
+}
+
+.desafios-code-collapse__summary:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+html[data-theme="light"] .desafios-code-collapse__summary:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.desafios-code-collapse__body {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
 /* —— Toggle tema (canto inferior direito) —— */
 
 .theme-switch {
@@ -842,10 +1012,12 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   border-color: rgba(61, 156, 240, 0.3);
 }
 
-.activity-card h2 {
+.activity-card__title {
   margin: 0 0 0.75rem;
   font-size: 1.15rem;
   line-height: 1.35;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .activity-desc {
@@ -1208,7 +1380,9 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
     align-items: stretch;
   }
 
-  .progress-wrap {
+  .progress-wrap,
+  .topbar__progress {
     width: 100%;
+    max-width: none;
   }
 }

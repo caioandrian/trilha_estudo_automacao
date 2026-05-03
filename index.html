@@ -56,10 +56,13 @@
       <div class="layout">
         <aside class="sidebar" aria-label="Trilha de tópicos">
           <div class="sidebar__head">
-            <h2>Tópicos</h2>
             <button type="button" class="sidebar__toggle" id="sidebarToggle" aria-expanded="true" aria-controls="topicList">
-              Menu
+              <span class="sidebar__toggle-burger" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </span>
+              <span class="sidebar__toggle-label">Ver Lista</span>
             </button>
+            <h2>Tópicos</h2>
           </div>
           <nav id="topicList" class="topic-list"></nav>
         </aside>
@@ -75,9 +78,21 @@
             <h2>Quadro de resposta</h2>
           </div>
           <div class="feedback__body" id="feedbackPanel">
-            <p class="feedback__hint">Responda à atividade e clique em <strong>Verificar resposta</strong> para ver se acertou, com código e explicação.</p>
+            <p class="feedback__hint">Responda à atividade: ao marcar uma alternativa, o quadro de resposta atualiza automaticamente.</p>
           </div>
         </aside>
+      </div>
+
+      <div class="app-floating-actions" aria-label="Tema e dados salvos">
+        <div class="theme-switch" role="group" aria-label="Alternar tema claro ou escuro">
+          <span class="theme-switch__label" id="themeLabel">Tema escuro</span>
+          <button type="button" class="theme-switch__toggle" id="themeToggle" role="switch" aria-checked="false" aria-labelledby="themeLabel">
+            <span class="theme-switch__thumb" aria-hidden="true"></span>
+          </button>
+        </div>
+        <button type="button" class="app-reset-btn" id="appResetBtn">
+          Resetar progresso
+        </button>
       </div>
 
       <footer class="site-footer">
@@ -91,13 +106,6 @@
           LinkedIn
         </a>
       </footer>
-    </div>
-
-    <div class="theme-switch" role="group" aria-label="Alternar tema claro ou escuro">
-      <span class="theme-switch__label" id="themeLabel">Tema escuro</span>
-      <button type="button" class="theme-switch__toggle" id="themeToggle" role="switch" aria-checked="false" aria-labelledby="themeLabel">
-        <span class="theme-switch__thumb" aria-hidden="true"></span>
-      </button>
     </div>
 
     <script src="js/app.js" type="module"></script>

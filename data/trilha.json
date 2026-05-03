@@ -7,16 +7,84 @@
       "titulo": "Javascript",
       "contexto": "Lógica de programação",
       "teoria": {
-        "titulo": "JavaScript: variáveis, tipos, condicionais e repetições",
-        "paragrafos": [
-          "Variáveis são nomes aos quais você associa valores na memória. Em automação de testes, você usa variáveis para guardar dados de entrada, URLs, texto esperado ou o resultado de um passo intermediário.",
-          "Use `let` quando o valor pode mudar (contadores, flags). Use `const` quando não quer reatribuir o nome — muito comum para `cy` configs, URLs base e objetos de configuração. Evite `var` em código novo porque o escopo é menos previsível.",
-          "Tipos comuns são número, string, boolean, objeto, array, `null` e `undefined`. Em testes você combina texto (assertions), coleções de elementos ou dados vindos da API/UI.",
-          "Array é uma lista ordenada de valores indexada a partir do 0 — ideal para guardar conjuntos de cenários, dados de tabela ou IDs. Com `const lista = [ ... ]` você fixa a referência (não pode trocar por outro array), mas ainda pode mudar o conteúdo do array com métodos como `push`, `pop`, `shift`, `unshift` e `splice`.",
-          "Condicionais (`if`, `else if`, `else`) decidem qual bloco rodar conforme uma expressão verdadeira ou falsa. Você combina comparações (`===`, `!==`, `<`, `>`) e operadores lógicos (`&&`, `||`, `!`). Sem `else`, quando a condição do `if` falha o fluxo simplesmente pula o bloco.",
-          "Loops (`for`, `while`, `forEach` e outros em arrays) repetem código enquanto faz sentido — em testes, às vezes você percorre listas de dados ou cenários; em ferramentas como o Cypress, retentativas automáticas também lidam com espera no DOM."
+        "titulo": "JavaScript: variáveis, tipos, arrays, condicionais e laços",
+        "secoes": [
+          {
+            "titulo": "Variáveis",
+            "paragrafos": [
+              "Variável é um nome que guarda um valor na memória. Em testes você usa para URLs, textos esperados, contadores e flags.",
+              "Use `let` quando o valor pode mudar depois. Use `const` quando você não vai apontar a variável para outra referência (por exemplo URL base ou um objeto de configuração). O que está **dentro** de um objeto ou array ainda pode mudar.",
+              "Em código novo, prefira `let` ou `const` e evite `var`, que tem regras de escopo mais antigas e confusas."
+            ],
+            "codigo": "// Valor que muda (ex.: contador)\nlet tentativas = 0;\ntentativas = tentativas + 1;\n\n// Mesma referência; conteúdo do objeto/array pode mudar\nconst baseUrl = 'https://api.exemplo.com';"
+          },
+          {
+            "titulo": "Número (number)",
+            "paragrafos": [
+              "JavaScript trata números como `number` (inteiros e decimais no mesmo tipo). Você usa em contagens, timeouts, preços e resultados de cálculos."
+            ],
+            "codigo": "const quantidade = 3;\nconst preco = 19.99;\nconst soma = quantidade * preco;\nconsole.log(soma);"
+          },
+          {
+            "titulo": "Texto (string)",
+            "paragrafos": [
+              "String é cadeia de caracteres. Aspas simples ou duplas delimitam o texto; entre crases (template literal) você pode embutir variáveis com ${...}."
+            ],
+            "codigo": "const usuario = 'qa@site.com';\nconst linha = 'Login: ' + usuario;\nconst outra = `Usuário atual: ${usuario}`;"
+          },
+          {
+            "titulo": "Boolean (verdadeiro / falso)",
+            "paragrafos": [
+              "Valores `true` e `false` aparecem em condições, flags de “passou/falhou” e combinações com `&&`, `||` e `!`."
+            ],
+            "codigo": "const testePassou = true;\nconst bloqueado = false;\nif (testePassou && !bloqueado) {\n  console.log('liberado');\n}"
+          },
+          {
+            "titulo": "Objeto (object)",
+            "paragrafos": [
+              "Objeto agrupa várias propriedades nomeadas (`chave: valor`). Útil para configurações, dados de usuário ou respostas de API."
+            ],
+            "codigo": "const config = {\n  baseUrl: 'https://api.exemplo.com',\n  timeout: 5000\n};\nconsole.log(config.baseUrl);\nconfig.timeout = 3000;"
+          },
+          {
+            "titulo": "null e undefined",
+            "paragrafos": [
+              "`undefined` costuma significar “ainda não tem valor” (variável declarada sem atribuir, ou propriedade inexistente).",
+              "`null` é um valor explício de “vazio intencional” ou “sem objeto”, usado quando você quer deixar claro que foi proposital."
+            ],
+            "codigo": "let a;\nconsole.log(a); // undefined\n\nconst b = null;\nconsole.log(b); // null — ausência escolhida no código"
+          },
+          {
+            "titulo": "Array (lista)",
+            "paragrafos": [
+              "Array é uma lista ordenada; o primeiro item está no índice `0`. Com `const lista = [ ... ]` você não substitui a variável por outra lista, mas pode usar métodos como `push`, `pop`, `shift` e `unshift` para mudar os itens."
+            ],
+            "codigo": "const tags = ['smoke', 'regressao'];\ntags.push('e2e');         // entra no final\ntags.unshift('critico');  // entra no início\nconst ultima = tags.pop();     // remove do final\nconst primeira = tags.shift(); // remove do início"
+          },
+          {
+            "titulo": "Condicionais (if / else)",
+            "paragrafos": [
+              "`if` decide qual bloco rodar quando a condição é verdadeira. Use `else if` para outras condições e `else` para o caso restante.",
+              "Combine comparações (`===`, `!==`, `<`, `>`) e operadores lógicos (`&&`, `||`, `!`)."
+            ],
+            "codigo": "const nota = 7;\nif (nota >= 6) {\n  console.log('aprovado');\n} else {\n  console.log('reprovado');\n}"
+          },
+          {
+            "titulo": "Laço for",
+            "paragrafos": [
+              "O `for` repete um bloco várias vezes. Entre parênteses há três partes: início (ex.: `let i = 0`), condição de continuar (`i < n`) e passo ao fim de cada volta (`i++` aumenta o contador em 1)."
+            ],
+            "codigo": "// Três voltas: imprime 0, depois 1, depois 2\nfor (let i = 0; i < 3; i++) {\n  console.log(i);\n}"
+          },
+          {
+            "titulo": "Laço forEach em arrays",
+            "paragrafos": [
+              "`forEach` é um método de lista: percorre cada item **na ordem** e chama a função que você passa (por exemplo `(item) => { ... }`).",
+              "Você não precisa gerenciar o índice manualmente — o método faz isso internamente. É útil quando você quer fazer a mesma ação para cada elemento."
+            ],
+            "codigo": "const nomes = ['Ana', 'Bruno'];\nnomes.forEach((nome) => {\n  console.log('Olá, ' + nome);\n});"
+          }
         ],
-        "codigo": "// Variáveis simples\nlet tentativas = 0;\nconst baseUrl = 'https://api.exemplo.com';\n\n// Array: declaração e mutação do conteúdo\nconst tags = ['smoke', 'regressao'];\ntags.push('e2e');        // insere no final\ntags.unshift('critico'); // insere no início\nconst ultima = tags.pop(); // remove do final\nconst primeira = tags.shift(); // remove do início\n\n// Condicional if / else\nconst nota = 7;\nif (nota >= 6) {\n  console.log('aprovado');\n} else {\n  console.log('reprovado');\n}",
         "links": [
           { "titulo": "MDN — Guia de JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide" },
           { "titulo": "MDN — if...else", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/if...else" },
@@ -30,79 +98,92 @@
         {
           "id": "js-var-1",
           "tipo": "multipla_escolha",
-          "descricao": "O valor vai mudar depois (ex.: contador). Qual palavra você usa?",
+          "descricao": "Você precisa de um contador que aumenta a cada tentativa. Qual palavra costuma acompanhar esse valor em JavaScript?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "var" },
-            { "id": "B", "texto": "let" },
-            { "id": "C", "texto": "const" },
-            { "id": "D", "texto": "def" }
+            { "id": "A", "texto": "`var`" },
+            { "id": "B", "texto": "`let`" },
+            { "id": "C", "texto": "`const`" },
+            { "id": "D", "texto": "`def`" }
           ],
           "corretas": ["B"],
-          "explicacao": "`let` serve quando você precisa mudar o valor depois. Com `const`, você não pode atribuir de novo ao mesmo nome. `var` é jeito antigo; em código novo prefira `let` ou `const`.",
+          "explicacao": "`let` permite atribuir de novo o mesmo nome a um novo valor. `const` não serve para um contador que muda a cada passo.",
           "codigoExplicacao": "let contador = 0;\ncontador = contador + 1;"
         },
         {
           "id": "js-const-1",
-          "tipo": "multipla_correta",
-          "descricao": "Veja o código. Sobre `const`, o que é verdade? (pode marcar mais de uma)",
+          "tipo": "multipla_escolha",
+          "descricao": "Depois que o código abaixo roda por completo, qual é o valor de `usuario.nome`?",
           "codigo": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno';",
           "opcoes": [
-            { "id": "A", "texto": "Não pode trocar o objeto inteiro depois (ex.: `usuario = outroObjeto`)." },
-            { "id": "B", "texto": "Pode mudar o valor que está dentro do objeto (ex.: o nome)." },
-            { "id": "C", "texto": "Nenhuma chave do objeto pode mudar." },
-            { "id": "D", "texto": "O código é válido e o nome fica 'Bruno'." }
+            { "id": "A", "texto": "`'Ana'`" },
+            { "id": "B", "texto": "`'Bruno'`" },
+            { "id": "C", "texto": "`undefined`" },
+            { "id": "D", "texto": "O programa encerra com erro antes de terminar" }
           ],
-          "corretas": ["A", "B", "D"],
-          "explicacao": "`const` trava o nome da variável: você não aponta ela para outro objeto. Mas o conteúdo do objeto ainda pode ser alterado.",
-          "codigoExplicacao": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno'; // OK\n// usuario = {}; // TypeError"
+          "corretas": ["B"],
+          "explicacao": "`const` impede você de fazer `usuario = outroObjeto`, mas **não** impede mudar propriedades como `usuario.nome`.",
+          "codigoExplicacao": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno'; // nome vira Bruno"
         },
         {
           "id": "js-array-1",
-          "tipo": "multipla_correta",
-          "descricao": "Lista (array) em JavaScript: marque o que for verdade.",
-          "codigo": "const fila = ['a', 'b'];\nfila.push('c');\nconst x = fila.pop();\nconst y = fila.shift();\nfila.unshift('z');",
+          "tipo": "multipla_escolha",
+          "descricao": "No exemplo abaixo, o que a linha `fila.push('c')` faz?",
+          "codigo": "const fila = ['a', 'b'];\nfila.push('c');",
           "opcoes": [
-            { "id": "A", "texto": "Com `const lista = []`, você não troca a lista por outra, mas pode mudar os itens dentro." },
-            { "id": "B", "texto": "`push` adiciona no final." },
-            { "id": "C", "texto": "`pop` remove o último." },
-            { "id": "D", "texto": "`shift` remove o primeiro." },
-            { "id": "E", "texto": "`unshift` coloca no início." },
-            { "id": "F", "texto": "O método padrão para colocar no final é `append`." }
+            { "id": "A", "texto": "Coloca `'c'` no início da lista." },
+            { "id": "B", "texto": "Coloca `'c'` no final da lista." },
+            { "id": "C", "texto": "Remove o último item da lista." },
+            { "id": "D", "texto": "Remove o primeiro item da lista." }
           ],
-          "corretas": ["A", "B", "C", "D", "E"],
-          "explicacao": "No JavaScript, listas usam `push`/`pop` no fim e `unshift`/`shift` no começo. Não existe `append` em arrays nativos.",
-          "codigoExplicacao": "const n = [];\nn.push(1);\nn.unshift(0); // [0, 1]\nn.pop();       // remove 1\nn.shift();     // remove 0"
+          "corretas": ["B"],
+          "explicacao": "`push` adiciona um elemento ao **final** do array. Para o início, usa-se `unshift`.",
+          "codigoExplicacao": "const n = [1, 2];\nn.push(3); // [1, 2, 3]"
         },
         {
           "id": "js-if-1",
           "tipo": "multipla_escolha",
-          "descricao": "5 é maior que 10? O que o console mostra?",
+          "descricao": "Com o `if` e o `else` abaixo, qual mensagem aparece no console?",
           "codigo": "const limite = 10;\nconst valor = 5;\nif (valor > limite) {\n  console.log('maior');\n} else {\n  console.log('menor ou igual');\n}",
           "opcoes": [
-            { "id": "A", "texto": "maior" },
-            { "id": "B", "texto": "menor ou igual" },
-            { "id": "C", "texto": "nada" },
-            { "id": "D", "texto": "erro de sintaxe" }
+            { "id": "A", "texto": "`maior`" },
+            { "id": "B", "texto": "`menor ou igual`" },
+            { "id": "C", "texto": "Nenhuma — o `if` não imprime nada." },
+            { "id": "D", "texto": "Erro de sintaxe no console." }
           ],
           "corretas": ["B"],
-          "explicacao": "`if` só roda o primeiro bloco quando a condição é verdadeira. Aqui `5 > 10` é falso, então cai no `else`.",
-          "codigoExplicacao": "if (condicao) { /* se verdadeiro */ } else { /* se falso */ }"
+          "explicacao": "A condição é `5 > 10`, que é falsa. Só o bloco do `else` roda, imprimindo `menor ou igual`.",
+          "codigoExplicacao": "if (valor > limite) { /* verdadeiro */ } else { /* falso */ }"
         },
         {
-          "id": "loop-1",
-          "tipo": "multipla_correta",
-          "descricao": "Quais opções são jeitos reais de repetir código em JavaScript?",
-          "codigo": null,
+          "id": "loop-for-1",
+          "tipo": "multipla_escolha",
+          "descricao": "O que este `for` faz no console?",
+          "codigo": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}",
           "opcoes": [
-            { "id": "A", "texto": "Loop() — função pronta da linguagem" },
-            { "id": "B", "texto": "repete() — função pronta da linguagem" },
-            { "id": "C", "texto": "`for`" },
-            { "id": "D", "texto": "`forEach` em uma lista" }
+            { "id": "A", "texto": "Imprime os números 0, 1 e 2 (uma linha por número)." },
+            { "id": "B", "texto": "Imprime os números 1, 2 e 3." },
+            { "id": "C", "texto": "Imprime só o número 3." },
+            { "id": "D", "texto": "Não imprime nada." }
           ],
-          "corretas": ["C", "D"],
-          "explicacao": "Quem repete de verdade são estruturas como `for` e `while`, ou métodos de lista como `forEach`. `Loop()` e `repete()` não existem assim por padrão.",
-          "codigoExplicacao": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}\n\n['a','b'].forEach(letra => console.log(letra));"
+          "corretas": ["A"],
+          "explicacao": "O `i` começa em 0. Enquanto `i < 3`, o bloco roda e depois `i++` soma 1. São três execuções com `i` igual a 0, 1 e 2.",
+          "codigoExplicacao": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}"
+        },
+        {
+          "id": "loop-foreach-1",
+          "tipo": "multipla_escolha",
+          "descricao": "O que o `forEach` faz neste exemplo?",
+          "codigo": "['olá', 'mundo'].forEach((palavra) => {\n  console.log(palavra);\n});",
+          "opcoes": [
+            { "id": "A", "texto": "Chama `console.log` uma vez para cada item da lista, na ordem." },
+            { "id": "B", "texto": "Junta tudo em uma única string e imprime uma vez." },
+            { "id": "C", "texto": "Apaga os itens do array após imprimir." },
+            { "id": "D", "texto": "Só imprime o último item." }
+          ],
+          "corretas": ["A"],
+          "explicacao": "`forEach` percorre o array do primeiro ao último item e executa a função passada para cada elemento — a duas palavras geram duas linhas no console.",
+          "codigoExplicacao": "['a', 'b'].forEach((x) => console.log(x));"
         }
       ]
     },
@@ -113,12 +194,24 @@
       "contexto": "Lógica de programação",
       "teoria": {
         "titulo": "Armazenamento no navegador",
-        "paragrafos": [
-          "`localStorage` grava pares chave/valor como texto na origem até o usuário limpar dados do site ou o código apagar; `sessionStorage` é parecido, mas vale só enquanto a aba está aberta.",
-          "`JSON.stringify` e `JSON.parse` costumam aparecer quando você guarda objeto como string ou lê de storage/API.",
-          "Em testes automatizados, evite depender só de dados deixados manualmente no storage entre execuções: prefira dados controlados ou mocks quando possível."
+        "secoes": [
+          {
+            "titulo": "localStorage e sessionStorage",
+            "paragrafos": [
+              "`localStorage` grava pares chave/valor como texto na origem do site até o usuário limpar dados do site ou o código apagar. Volta na próxima visita à mesma origem.",
+              "`sessionStorage` funciona de forma parecida, mas os dados existem só enquanto a aba está aberta."
+            ],
+            "codigo": "localStorage.setItem('preferencia', 'escuro');\nconst tema = localStorage.getItem('preferencia');"
+          },
+          {
+            "titulo": "Objetos e JSON",
+            "paragrafos": [
+              "O storage guarda string. Para persistir objeto JavaScript, converta com `JSON.stringify` ao salvar e `JSON.parse` ao ler.",
+              "Em testes automatizados, evite depender só de dados deixados manualmente no storage entre execuções: prefira dados controlados ou mocks quando possível."
+            ],
+            "codigo": "const prefs = { tema: 'escuro' };\nlocalStorage.setItem('prefs', JSON.stringify(prefs));\nconst carregado = JSON.parse(localStorage.getItem('prefs') || '{}');"
+          }
         ],
-        "codigo": "localStorage.setItem('preferencia', 'escuro');\nconst tema = localStorage.getItem('preferencia');",
         "links": [
           { "titulo": "MDN — localStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage" },
           { "titulo": "MDN — sessionStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage" },
@@ -223,13 +316,29 @@
       "contexto": "Cypress / Automação de teste",
       "teoria": {
         "titulo": "O que é o Cypress",
-        "paragrafos": [
-          "Cypress automatiza navegadores para testes end-to-end: abre página, acha elementos, interage como um usuário e verifica comportamento. Ao contrário de um script Puppeteer solto que você mesmo orquestra, Cypress traz comandos já pensados para teste (`visit`, `get`, `click`, etc.) com fila inteligente e novas tentativas (retry).",
-          "Ao rodar `npx cypress open`, você pode escolher E2E ou Component Testing — nesta trilha priorizamos E2E. O runner lista arquivos `*.cy.js`/`*.cy.ts` em `cypress/e2e` (nome padrão v10+). Timeouts configuráveis evitam testes flaky sem motivo quando o DOM demora aparecer.",
-          "Seletores: IDs e classes são frágeis; atributos `data-cy` ou `data-testid` desacoplam o teste das mudanças visuais inocentes.",
-          "Use a documentação oficial (links abaixo) para aprofundar após este resumo."
+        "secoes": [
+          {
+            "titulo": "Papel do Cypress",
+            "paragrafos": [
+              "Cypress automatiza o navegador para testes end-to-end: abre a página, encontra elementos, interage como um usuário e verifica resultados.",
+              "A ferramenta oferece comandos pensados para teste (`visit`, `get`, `click`, etc.), com fila de execução e novas tentativas até o elemento ou a condição aparecer."
+            ]
+          },
+          {
+            "titulo": "Fluxo típico no código",
+            "paragrafos": [
+              "Você encadeia comandos para navegar, localizar por seletor e interagir. Ao rodar `npx cypress open`, o assistente permite escolher E2E e listar specs em `cypress/e2e` (padrão nas versões recentes)."
+            ],
+            "codigo": "// exemplo da API fluenta\ncy.visit('/login')\ncy.get('[data-cy=usuario]').type('qa@site.com')\ncy.get('[data-cy=entrar]').click()"
+          },
+          {
+            "titulo": "Seletores e próximos passos",
+            "paragrafos": [
+              "IDs e classes mudam com o layout. Atributos como `data-cy` ou `data-testid` costumam deixar o teste mais estável.",
+              "Use a documentação oficial nos links abaixo para aprofundar depois deste resumo."
+            ]
+          }
         ],
-        "codigo": "// exemplo da API fluenta\ncy.visit('/login')\ncy.get('[data-cy=usuario]').type('qa@site.com')\ncy.get('[data-cy=entrar]').click()",
         "links": [
           { "titulo": "Cypress — documentação oficial", "url": "https://docs.cypress.io/" },
           { "titulo": "Cypress — guia ”Why Cypress”", "url": "https://docs.cypress.io/guides/overview/why-cypress" },
@@ -269,17 +378,17 @@
         },
         {
           "id": "cy-3",
-          "tipo": "multipla_correta",
-          "descricao": "Sobre o jeito que o Cypress trabalha, quais frases fazem sentido? (Pode marcar mais de uma.)",
+          "tipo": "multipla_escolha",
+          "descricao": "Qual afirmação descreve melhor como o Cypress trata comandos como `cy.get` em relação ao carregamento da página?",
           "codigo": "cy.get('#login').click();\ncy.get('[data-cy=email]').type('a@b.com');",
           "opcoes": [
-            { "id": "A", "texto": "`cy.get` serve para achar um elemento na página (botão, campo, etc.)" },
-            { "id": "B", "texto": "Depois do `cy.get`, comumente usamos `.click()` para clicar e `.type()` para digitar texto" },
-            { "id": "C", "texto": "Tudo acontece no mesmo instante na linha do código, sem o Cypress esperar a página carregar ou o elemento existir" },
-            { "id": "D", "texto": "O Cypress coloca os comandos em fila e costuma esperar o elemento aparecer antes de seguir (com novas tentativas)" }
+            { "id": "A", "texto": "Cada linha roda no instante exato; não há nova tentativa se o elemento ainda não existir." },
+            { "id": "B", "texto": "`cy.get` não pode ser usado antes de `click` ou `type` no mesmo elemento." },
+            { "id": "C", "texto": "O teste só passa se todos os elementos já estiverem no HTML antes do arquivo de teste começar." },
+            { "id": "D", "texto": "Os comandos costumam ir para uma fila: o Cypress espera e tenta de novo até o elemento ou a condição ficar pronta (dentro do timeout)." }
           ],
-          "corretas": ["A", "B", "D"],
-          "explicacao": "No Cypress os passos costumam ir para uma fila: o programa pode tentar de novo até o elemento aparecer. Não funciona igual a um comando JavaScript comum linha a linha na hora exata.",
+          "corretas": ["D"],
+          "explicacao": "A API enfileira ações e faz *retry* integrado ao comando, diferente de um script que dispara um clique uma única vez.",
           "codigoExplicacao": "cy.get('button').should('be.visible').click();"
         }
       ]
@@ -291,12 +400,30 @@
       "contexto": "Cypress / Automação de teste",
       "teoria": {
         "titulo": "Comandos básicos do dia a dia",
-        "paragrafos": [
-          "`cy.visit(url)` navega até a página. `cy.get(seletor)` localiza elementos; associe sempre com assertions (`should`) para transformar comando em garantia automatizada.",
-          "Interações: `click()`, `dblclick()`, `type()`, `clear()`, `check()`, `select()`. Assertions comuns incluem texto (`contain`), visibilidade (`be.visible`), existência (`exist`) ou valor (`have.value`).",
-          "Evite `cy.wait(5000)` fixo; prefira `should` até alcançar o estado esperado. Para espera dinâmica com rede combine `cy.intercept` com `.as('alias')` e `cy.wait('@alias')` só quando trabalhar fluxos AJAX/fetch bem definidos."
+        "secoes": [
+          {
+            "titulo": "Navegar e localizar",
+            "paragrafos": [
+              "`cy.visit(url)` carrega a página. `cy.get(seletor)` busca elementos. Encadeie com `.should(...)` para afirmar o que deve ser verdade no teste."
+            ],
+            "codigo": "cy.visit('/produtos')\ncy.get('[data-cy=lista]').should('be.visible')"
+          },
+          {
+            "titulo": "Interações e asserções",
+            "paragrafos": [
+              "Interações comuns: `click`, `type`, `clear`, `check`, `select`.",
+              "Asserções frequentes: texto (`contain`), visível (`be.visible`), existe (`exist`), valor de input (`have.value`).",
+              "Evite `cy.wait(milissegundos)` longo e fixo; prefira esperar o estado da tela com `should`. Para rede, use `intercept` e `wait` com alias quando o fluxo depender da resposta da API."
+            ]
+          },
+          {
+            "titulo": "Rede: intercept e wait",
+            "paragrafos": [
+              "`cy.intercept` observa ou substitui respostas. `.as('nome')` define um apelido; `cy.wait('@nome')` espera aquela requisição antes de continuar."
+            ],
+            "codigo": "cy.intercept('GET', '/api/items', { fixture: 'items.json' }).as('listItems')\ncy.visit('/produtos')\ncy.wait('@listItems')\ncy.get('[data-cy=item]').first().should('contain', 'Notebook')"
+          }
         ],
-        "codigo": "cy.visit('/produtos')\ncy.get('[data-cy=lista]').should('be.visible')\ncy.intercept('GET', '/api/items', { fixture: 'items.json' }).as('listItems')\ncy.wait('@listItems')\ncy.get('[data-cy=item]').first().should('contain', 'Notebook')",
         "links": [
           { "titulo": "Cypress — API (índice de comandos)", "url": "https://docs.cypress.io/api/table-of-contents" },
           { "titulo": "cy.visit", "url": "https://docs.cypress.io/api/commands/visit" },
@@ -382,17 +509,17 @@
         },
         {
           "id": "cy-p6",
-          "tipo": "multipla_correta",
-          "descricao": "Sobre `cy.intercept`, nome (`alias`) e `cy.wait('@nome')`: quais frases estão certas? (Mais de uma.)",
+          "tipo": "multipla_escolha",
+          "descricao": "No trecho abaixo, depois do `intercept` com `.as('getUser')`, o que o `cy.wait('@getUser')` faz?",
           "codigo": "cy.intercept('GET', '/api/user', { fixture: 'user.json' }).as('getUser');\ncy.visit('/perfil');\ncy.wait('@getUser');\ncy.get('[data-cy=nome]').should('be.visible');",
           "opcoes": [
-            { "id": "A", "texto": "`cy.intercept` pode observar ou simular respostas da rede" },
-            { "id": "B", "texto": "`.as('getUser')` cria um apelido que usamos com `@` no `cy.wait`" },
-            { "id": "C", "texto": "`cy.wait('@getUser')` espera aquela requisição da rede terminar" },
-            { "id": "D", "texto": "`cy.get('@getUser')` serve para achar um elemento na página com esse nome" }
+            { "id": "A", "texto": "Procura na página um elemento com `id` igual a `getUser`." },
+            { "id": "B", "texto": "Aguarda a requisição de rede associada ao apelido `getUser` completar (ou atingir timeout)." },
+            { "id": "C", "texto": "Substitui qualquer `cy.get` seguinte por uma chamada à API." },
+            { "id": "D", "texto": "Só funciona com `cy.pause`; não tem relação com rede." }
           ],
-          "corretas": ["A", "B", "C"],
-          "explicacao": "O `@` no `cy.wait` é só para rede. Para achar coisa na página continua sendo `cy.get` com seletor normal.",
+          "corretas": ["B"],
+          "explicacao": "O `@` no `cy.wait` aponta para o alias definido com `.as()` no `intercept`. Não é seletor CSS nem id de elemento.",
           "codigoExplicacao": "cy.intercept('POST', '/login').as('login');\ncy.get('form').submit();\ncy.wait('@login');"
         }
       ]

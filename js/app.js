@@ -1,4 +1,7 @@
 const STORAGE_KEY = "trilha_estudo_automacao_v1";
+/** Dica de atalho: Anterior / Próxima também respondem às setas do teclado. */
+const ACTIVITY_KBD_NAV_HINT_HTML =
+  '<p class="activity-actions__hint" role="note">Use ← → para navegar.</p>';
 const THEME_KEY = "trilha_theme_pref";
 const CONTEXT_KEY = "trilha_contexto_pref";
 /** Em atividades com `codigo`, a pergunta mostra `.code-block`; no feedback, quando houver `codigoExplicacao`. Na teoria, quando houver `teoria.codigo`. */
@@ -6,7 +9,8 @@ const CONTEXT_KEY = "trilha_contexto_pref";
 /** @typedef {{ id: string; texto: string; detalhes?: string | string[]; codigoExemplo?: string }} ChecklistPasso */
 /** @typedef {{ id: string; tipo: string; descricao: string; codigo?: string | null; passos?: ChecklistPasso[]; opcoes?: { id: string; texto: string }[]; corretas?: string[]; explicacao?: string; codigoExplicacao?: string }} Atividade */
 /** @typedef {{ titulo: string; url: string }} TeoriaLink */
-/** @typedef {{ titulo: string; paragrafos: string[]; codigo?: string | null; links?: TeoriaLink[] }} Teoria */
+/** @typedef {{ titulo?: string; paragrafos?: string[]; codigo?: string | null }} TeoriaSecao */
+/** @typedef {{ titulo: string; paragrafos?: string[]; codigo?: string | null; links?: TeoriaLink[]; secoes?: TeoriaSecao[] }} Teoria */
 /** @typedef {{ titulo: string; passos: string[]; codigoFinal: string }} DesafioBloco */
 /** @typedef {{ titulo?: string; introducao?: string[]; siteUrl?: string; credenciais?: { usuario: string; senha: string }; blocos: DesafioBloco[] }} Desafios */
 /** @typedef {{ id: string; ordem: number; titulo: string; contexto: string; teoria?: Teoria; desafios?: Desafios; atividades: Atividade[] }} Topico */
@@ -71,6 +75,44 @@ function setsEqual(a, b) {
   return true;
 }
 
+/** Normaliza id de alternativa para comparar com `corretas` e com valores de input. */
+function normalizeQuizOptionId(/** @type {unknown} */ id) {
+  return String(id ?? "")
+    .trim()
+    .toLowerCase();
+}
+
+/** Destaca alternativas corretas (verde) e incorretas marcadas (vermelho) após verificação. */
+function clearQuizOptionHighlights(/** @type {HTMLElement | null} */ root) {
+  if (!root) return;
+  root.querySelectorAll("label.option").forEach((label) => {
+    label.classList.remove("option--correct", "option--wrong");
+  });
+}
+
+/**
+ * @param {boolean} showCorrectHighlight Se true (resposta certa), aplica verde nas alternativas corretas.
+ *   Se false (resposta errada), só aplica vermelho no que foi marcado errado — não revela o gabarito no card.
+ */
+function paintQuizOptionHighlights(
+  /** @type {HTMLElement | null} */ root,
+  /** @type {{ corretas?: string[] }} */ atividade,
+  /** @type {boolean} */ showCorrectHighlight
+) {
+  if (!root) return;
+  const correct = new Set((atividade.corretas || []).map((id) => normalizeQuizOptionId(id)));
+  root.querySelectorAll("label.option").forEach((label) => {
+    const input = label.querySelector("input");
+    if (!input) return;
+    const id = normalizeQuizOptionId(input.value);
+    label.classList.remove("option--correct", "option--wrong");
+    const isCorrect = correct.has(id);
+    const isSelected = input.checked;
+    if (showCorrectHighlight && isCorrect) label.classList.add("option--correct");
+    if (isSelected && !isCorrect) label.classList.add("option--wrong");
+  });
+}
+
 function flattenIndices(topicos) {
   /** @type {{ topico: Topico; atividade: Atividade; globalIndex: number }[]} */
   const list = [];
@@ -86,8 +128,12 @@ function flattenIndices(topicos) {
 function topicHasTheory(topico) {
   const t = topico.teoria;
   if (!t) return false;
+  if (filterTheorySecoes(t).length > 0) return true;
   const paragraphs = Array.isArray(t.paragrafos) ? t.paragrafos.filter(Boolean) : [];
-  return paragraphs.length > 0 || Boolean(t.codigo);
+  if (paragraphs.length > 0) return true;
+  if (t.codigo != null && String(t.codigo).trim() !== "") return true;
+  const links = t.links;
+  return Array.isArray(links) && links.length > 0;
 }
 
 function topicHasDesafios(topico) {
@@ -293,6 +339,41 @@ function syncTopbarOffset() {
   document.documentElement.style.setProperty("--topbar-offset", `${Math.ceil(bar.getBoundingClientRect().height)}px`);
 }
 
+/** Sidebar fixa no CSS (layout em coluna única ≤1024px); reserva altura no `.layout` para o conteúdo não ficar por baixo. */
+const MOBILE_SIDEBAR_FIXED_MQ = "(max-width: 1024px)";
+
+function syncSidebarFixedOffset() {
+  const mq = window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ);
+  if (!mq.matches) {
+    document.documentElement.style.removeProperty("--sidebar-fixed-offset");
+    return;
+  }
+  const sidebar = document.querySelector(".sidebar");
+  if (!sidebar) return;
+  document.documentElement.style.setProperty(
+    "--sidebar-fixed-offset",
+    `${Math.ceil(sidebar.getBoundingClientRect().height)}px`
+  );
+}
+
+function syncLayoutChrome() {
+  syncTopbarOffset();
+  requestAnimationFrame(() => {
+    syncSidebarFixedOffset();
+    if (typeof window !== "undefined" && !window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ).matches) {
+      const sidebar = document.querySelector(".sidebar");
+      if (sidebar?.classList.contains("sidebar--mobile-topic-active")) {
+        sidebar.classList.remove("sidebar--mobile-topic-active");
+        const headTitle = document.querySelector(".sidebar__head h2");
+        if (headTitle) headTitle.textContent = "Tópicos";
+        const tgl = document.getElementById("sidebarToggle");
+        tgl?.setAttribute("aria-expanded", "true");
+        document.getElementById("topicList")?.classList.remove("collapsed");
+      }
+    }
+  });
+}
+
 /** Mesmo breakpoint da grade em coluna única (sidebar + conteúdo empilhados). */
 const MOBILE_STUDY_SCROLL_MQ = "(max-width: 1024px)";
 
@@ -463,7 +544,50 @@ function setFeedbackTheoryHint(/** @type {boolean} */ onlyChecklistFollows) {
 function clearFeedbackHint() {
   const panel = document.getElementById("feedbackPanel");
   if (!panel) return;
-  panel.innerHTML = `<p class="feedback__hint">Responda à atividade e clique em <strong>Verificar resposta</strong> para ver se acertou, com código e explicação.</p>`;
+  panel.innerHTML = `<p class="feedback__hint">Responda à atividade: ao marcar uma alternativa, o quadro de resposta atualiza automaticamente.</p>`;
+}
+
+function theoryCodeBlockHtml(/** @type {string | null | undefined} */ codigo) {
+  const c = codigo == null ? "" : String(codigo).trim();
+  if (!c) return "";
+  return `<div class="code-block"><pre>${escapeHtml(c)}</pre></div>`;
+}
+
+/** @param {Teoria} teoria */
+function filterTheorySecoes(teoria) {
+  const secoes = teoria.secoes;
+  if (!Array.isArray(secoes) || secoes.length === 0) return [];
+  return secoes.filter((s) => {
+    if (!s || typeof s !== "object") return false;
+    const hasTitle = Boolean(s.titulo && String(s.titulo).trim());
+    const hasParas = Array.isArray(s.paragrafos) && s.paragrafos.some(Boolean);
+    const hasCode = s.codigo != null && String(s.codigo).trim() !== "";
+    return hasTitle || hasParas || hasCode;
+  });
+}
+
+/** @param {NonNullable<Teoria["secoes"]>[number]} sec */
+function buildSingleTheorySectionHtml(sec) {
+  const titulo =
+    sec.titulo && String(sec.titulo).trim()
+      ? `<h3 class="theory-section__title">${escapeHtml(String(sec.titulo).trim())}</h3>`
+      : "";
+  const paras = (sec.paragrafos || [])
+    .filter(Boolean)
+    .map((p) => `<p>${escapeHtml(p)}</p>`)
+    .join("");
+  const body = paras ? `<div class="theory-body">${paras}</div>` : "";
+  return `<section class="theory-section">${titulo}${body}${theoryCodeBlockHtml(sec.codigo)}</section>`;
+}
+
+/** @param {Teoria} teoria */
+function renderTheoryBodyLegacy(teoria) {
+  const paragraphs = (teoria.paragrafos || [])
+    .filter(Boolean)
+    .map((p) => `<p>${escapeHtml(p)}</p>`)
+    .join("");
+  const body = paragraphs ? `<div class="theory-body">${paragraphs}</div>` : "";
+  return `${body}${theoryCodeBlockHtml(teoria.codigo)}`;
 }
 
 function renderTheory(topico, ctx) {
@@ -471,13 +595,34 @@ function renderTheory(topico, ctx) {
   const teoria = topico.teoria;
   if (!view || !teoria) return;
 
-  const paragraphs = (teoria.paragrafos || [])
-    .filter(Boolean)
-    .map((p) => `<p>${escapeHtml(p)}</p>`)
-    .join("");
-  const codeHtml = teoria.codigo
-    ? `<div class="code-block"><pre>${escapeHtml(teoria.codigo)}</pre></div>`
-    : "";
+  const secoesFiltered = filterTheorySecoes(teoria);
+  let theoryMainHtml = "";
+
+  if (secoesFiltered.length > 1) {
+    const navButtons = secoesFiltered
+      .map((sec, i) => {
+        const label =
+          sec.titulo && String(sec.titulo).trim() ? String(sec.titulo).trim() : `Parte ${i + 1}`;
+        const selected = i === 0;
+        return `<button type="button" class="theory-subnav__btn${selected ? " theory-subnav__btn--active" : ""}" role="tab" aria-selected="${selected}" aria-controls="theorySubpanel" id="theoryTab${i}" data-theory-idx="${i}">${escapeHtml(
+          label
+        )}</button>`;
+      })
+      .join("");
+    const firstPane = buildSingleTheorySectionHtml(secoesFiltered[0]);
+    theoryMainHtml = `
+    <nav class="theory-subnav" aria-label="Partes do conteúdo">
+      <div class="theory-subnav__inner" role="tablist">${navButtons}</div>
+    </nav>
+    <div class="theory-subpanel" id="theorySubpanel" role="tabpanel" tabindex="0" aria-labelledby="theoryTab0">
+      ${firstPane}
+    </div>`;
+  } else if (secoesFiltered.length === 1) {
+    theoryMainHtml = buildSingleTheorySectionHtml(secoesFiltered[0]);
+  } else {
+    theoryMainHtml = renderTheoryBodyLegacy(teoria);
+  }
+
   const linksItems = (teoria.links || [])
     .map(
       (l) =>
@@ -508,8 +653,7 @@ function renderTheory(topico, ctx) {
         <div class="theory-panel__inner">
           <span class="theory-badge" aria-hidden="true">● Teoria</span>
           <h2 class="theory-heading" id="theoryHeading">${escapeHtml(teoria.titulo || "Teoria")}</h2>
-          <div class="theory-body">${paragraphs}</div>
-          ${codeHtml}
+          ${theoryMainHtml}
           ${linksBlock}
           <div class="theory-actions">
             <button type="button" class="btn btn--primary" id="btnTheoryContinue">${btnTheoryLabel}</button>
@@ -520,6 +664,26 @@ function renderTheory(topico, ctx) {
     </div>`;
 
   setFeedbackTheoryHint(onlyChecklistFollows);
+
+  if (secoesFiltered.length > 1) {
+    const panel = document.getElementById("theorySubpanel");
+    view.querySelectorAll(".theory-subnav__btn[data-theory-idx]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const raw = /** @type {HTMLElement} */ (btn).dataset.theoryIdx;
+        const idx = raw != null ? parseInt(raw, 10) : 0;
+        if (!Number.isFinite(idx) || idx < 0 || idx >= secoesFiltered.length) return;
+        view.querySelectorAll(".theory-subnav__btn").forEach((b, j) => {
+          const on = j === idx;
+          b.classList.toggle("theory-subnav__btn--active", on);
+          b.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        if (panel) {
+          panel.innerHTML = buildSingleTheorySectionHtml(secoesFiltered[idx]);
+          panel.setAttribute("aria-labelledby", `theoryTab${idx}`);
+        }
+      });
+    });
+  }
 
   document.getElementById("btnTheoryContinue")?.addEventListener("click", () => {
     ctx.theoryVisitedSet.add(topico.id);
@@ -709,9 +873,12 @@ function renderChecklistActivity(ctx, topico, atividade) {
       ${formatActivityDescricaoHtml(atividade.descricao)}
       ${codeHtml}
       <div class="checklist-root" role="group" aria-label="Passos do projeto">${passosHtml}</div>
-      <div class="actions">
-        <button type="button" class="btn btn--ghost" id="btnPrev">Anterior</button>
-        <button type="button" class="btn btn--ghost" id="btnNext">Próxima</button>
+      <div class="activity-actions-wrap">
+        <div class="actions">
+          <button type="button" class="btn btn--ghost" id="btnPrev">Anterior</button>
+          <button type="button" class="btn btn--ghost" id="btnNext">Próxima</button>
+        </div>
+        ${ACTIVITY_KBD_NAV_HINT_HTML}
       </div>
     </article>`;
 
@@ -790,6 +957,11 @@ function renderActivity(ctx) {
 
   const codeHtml = activityCodeBlockHtml(atividade.codigo);
 
+  const hasSplitQuestionLayout =
+    !isDesafioCodigo &&
+    atividade.codigo != null &&
+    String(atividade.codigo).trim() !== "";
+
   const inputType = multi ? "checkbox" : "radio";
   const inputName = multi ? `opt-${atividade.id}` : `opt-${atividade.id}`;
 
@@ -807,82 +979,49 @@ function renderActivity(ctx) {
     })
     .join("");
 
+  const descAndStem = `${formatActivityDescricaoHtml(atividade.descricao)}${
+    hasSplitQuestionLayout
+      ? `<div class="activity-split">
+        <div class="activity-split__code">${codeHtml}</div>
+        <div class="activity-split__options"><div class="options" id="optionsRoot">${optionsHtml}</div></div>
+      </div>`
+      : `${codeHtml}<div class="options" id="optionsRoot">${optionsHtml}</div>`
+  }`;
+
   view.innerHTML = `
     <article class="activity-card">
       <div class="activity-card__head">
         ${kindBadge}
         ${progressPill}
       </div>
-      ${formatActivityDescricaoHtml(atividade.descricao)}
-      ${codeHtml}
-      <div class="options" id="optionsRoot">${optionsHtml}</div>
-      <div class="actions">
-        <button type="button" class="btn btn--ghost" id="btnPrev">Anterior</button>
-        <button type="button" class="btn btn--ghost" id="btnNext">Próxima</button>
-        <button type="button" class="btn btn--primary" id="btnVerify">Verificar resposta</button>
+      ${descAndStem}
+      <div class="activity-actions-wrap">
+        <div class="actions">
+          <button type="button" class="btn btn--ghost" id="btnPrev">Anterior</button>
+          <button type="button" class="btn btn--ghost" id="btnNext">Próxima</button>
+        </div>
+        ${ACTIVITY_KBD_NAV_HINT_HTML}
       </div>
     </article>`;
 
   const optionsRoot = document.getElementById("optionsRoot");
   optionsRoot?.addEventListener("change", () => {
-    saveQuizSelectionsForActivity(atividade.id, optionsRoot, selectionsDict, completedSet, theoryVisitedSet, checklistDict);
-  });
-
-  document.getElementById("btnVerify")?.addEventListener("click", () => {
-    const root = document.getElementById("optionsRoot");
-    saveQuizSelectionsForActivity(atividade.id, root, selectionsDict, completedSet, theoryVisitedSet, checklistDict);
-    const selected = new Set(
-      root ? Array.from(root.querySelectorAll("input:checked")).map((/** @type {HTMLInputElement} */ i) => i.value) : []
-    );
-    if (selected.size === 0) {
-      const panel = document.getElementById("feedbackPanel");
-      if (panel) {
-        panel.innerHTML = `<p class="feedback__hint">Selecione pelo menos uma alternativa antes de <strong>Verificar resposta</strong>.</p>`;
-      }
-      scrollAnchorFeedbackPanel();
-      return;
-    }
-    const correct = new Set(atividade.corretas);
-    const ok = setsEqual(selected, correct);
-    renderFeedback(ok, atividade, selected, topico);
-    if (ok) {
-      completedSet.add(atividade.id);
-      persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
-      if (allDone(ctx.topicos, completedSet)) {
-        paint();
-        scrollAnchorMainInner();
-      } else {
-        scrollAnchorFeedbackPanel();
-        renderTopicList(
-          ctx.topicos,
-          completedSet,
-          topico.id,
-          ctx.selectedContexto,
-          ctx.onSelectTopic,
-          ctx.onOpenTopicTheory,
-          ctx.onOpenTopicActivities,
-          ctx.onOpenTopicDesafios
-        );
-        renderContextNav(
-          ctx.contextos,
-          ctx.selectedContexto,
-          ctx.topicos,
-          completedSet,
-          ctx.onSelectContexto
-        );
-        updateProgress(ctx.topicos, completedSet);
-      }
-    } else {
-      scrollAnchorFeedbackPanel();
-    }
+    applyQuestionFeedbackFromDom(ctx, topico, atividade);
   });
 
   document.getElementById("btnPrev")?.addEventListener("click", onPrev);
   document.getElementById("btnNext")?.addEventListener("click", onNext);
 
-  if (already) {
+  if (!already && optionsRoot?.querySelector("input:checked")) {
+    applyQuestionFeedbackFromDom(ctx, topico, atividade);
+  } else if (already) {
     renderCompletedQuestionPanel(atividade, selectionsDict, topico);
+    const savedNorm = new Set((selectionsDict[atividade.id] || []).map((id) => normalizeQuizOptionId(id)));
+    const correctNorm = new Set((atividade.corretas || []).map((id) => normalizeQuizOptionId(id)));
+    const matches = setsEqual(savedNorm, correctNorm);
+    paintQuizOptionHighlights(optionsRoot, atividade, matches);
   } else {
+    clearQuizOptionHighlights(optionsRoot);
     clearFeedbackHint();
   }
 }
@@ -919,7 +1058,7 @@ function renderCompletedQuestionPanel(atividade, selectionsDict, topico) {
   } else if (!wrongAttempt) {
     resultCls = "feedback-result";
     title = "Questão já respondida";
-    detailLine = `<p>Nenhuma alternativa salva neste dispositivo. Gabarito: <strong>${escapeHtml(corrArrSaved)}</strong>. Marque e use <strong>Verificar resposta</strong> para conferir.</p>`;
+    detailLine = `<p>Nenhuma alternativa salva neste dispositivo. Gabarito: <strong>${escapeHtml(corrArrSaved)}</strong>. Marque uma alternativa para conferir no quadro abaixo.</p>`;
   } else {
     resultCls = "feedback-result--bad";
     title = "Resposta incorreta";
@@ -950,11 +1089,6 @@ function renderFeedback(ok, atividade, selected, topico) {
   const panel = document.getElementById("feedbackPanel");
   if (!panel) return;
 
-  if (!ok && selected.size === 0) {
-    panel.innerHTML = `<p class="feedback__hint">Selecione pelo menos uma alternativa antes de <strong>Verificar resposta</strong>.</p>`;
-    return;
-  }
-
   const selArr = [...selected].sort().join(", ") || "(nenhuma)";
   const corrArr = [...atividade.corretas].sort().join(", ");
 
@@ -979,6 +1113,65 @@ function renderFeedback(ok, atividade, selected, topico) {
       <p style="margin:0;color:var(--muted)">${escapeHtml(atividade.explicacao || "")}</p>
     </div>
     ${codeSection}`;
+}
+
+/** Salva marcações, atualiza o quadro de resposta ao marcar alternativa e ancora no feedback. */
+function applyQuestionFeedbackFromDom(ctx, topico, atividade) {
+  const root = document.getElementById("optionsRoot");
+  saveQuizSelectionsForActivity(
+    atividade.id,
+    root,
+    ctx.selectionsDict,
+    ctx.completedSet,
+    ctx.theoryVisitedSet,
+    ctx.checklistDict
+  );
+  const selected = new Set(
+    root
+      ? Array.from(root.querySelectorAll("input:checked")).map((/** @type {HTMLInputElement} */ i) => i.value)
+      : []
+  );
+  if (selected.size === 0) {
+    clearQuizOptionHighlights(root);
+    clearFeedbackHint();
+    scrollAnchorFeedbackPanel();
+    return;
+  }
+  const selectedNorm = new Set([...selected].map((id) => normalizeQuizOptionId(id)));
+  const correctNorm = new Set((atividade.corretas || []).map((id) => normalizeQuizOptionId(id)));
+  const ok = setsEqual(selectedNorm, correctNorm);
+  paintQuizOptionHighlights(root, atividade, ok);
+  renderFeedback(ok, atividade, selected, topico);
+  if (ok) {
+    ctx.completedSet.add(atividade.id);
+    persist(ctx.completedSet, ctx.theoryVisitedSet, ctx.checklistDict, ctx.selectionsDict);
+    if (allDone(ctx.topicos, ctx.completedSet)) {
+      ctx.paint();
+      scrollAnchorMainInner();
+    } else {
+      scrollAnchorFeedbackPanel();
+      renderTopicList(
+        ctx.topicos,
+        ctx.completedSet,
+        topico.id,
+        ctx.selectedContexto,
+        ctx.onSelectTopic,
+        ctx.onOpenTopicTheory,
+        ctx.onOpenTopicActivities,
+        ctx.onOpenTopicDesafios
+      );
+      renderContextNav(
+        ctx.contextos,
+        ctx.selectedContexto,
+        ctx.topicos,
+        ctx.completedSet,
+        ctx.onSelectContexto
+      );
+      updateProgress(ctx.topicos, ctx.completedSet);
+    }
+  } else {
+    scrollAnchorFeedbackPanel();
+  }
 }
 
 function updateProgress(topicos, completedSet) {
@@ -1023,18 +1216,68 @@ function initTheme() {
   });
 }
 
+function initAppReset() {
+  document.getElementById("appResetBtn")?.addEventListener("click", () => {
+    const ok = window.confirm(
+      "Apagar progresso da trilha, marcações e preferências salvas neste site? A página será recarregada."
+    );
+    if (!ok) return;
+    try {
+      localStorage.clear();
+    } catch {
+      /* ignore */
+    }
+    location.reload();
+  });
+}
+
+/** Não capturar setas em campos de texto (ex.: futuros inputs). */
+function shouldIgnoreActivityArrowNav(/** @type {EventTarget | null} */ target) {
+  const el = target instanceof Element ? target : null;
+  if (!el) return false;
+  const tag = el.tagName;
+  if (tag === "TEXTAREA" || tag === "SELECT") return true;
+  if (tag === "INPUT") {
+    const inp = /** @type {HTMLInputElement} */ (el);
+    const type = (inp.type || "").toLowerCase();
+    if (
+      ["text", "email", "password", "search", "url", "tel", "number", "date", "time", "datetime-local"].includes(type)
+    )
+      return true;
+  }
+  if (el.isContentEditable) return true;
+  return false;
+}
+
+/** ← / → entre Anterior e Próxima nas telas de atividade (perguntas ou checklist). */
+function attachActivityArrowKeyNav() {
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    if (shouldIgnoreActivityArrowNav(e.target)) return;
+    const prev = document.getElementById("btnPrev");
+    const next = document.getElementById("btnNext");
+    if (!prev || !next) return;
+    const card = document.querySelector("#main__inner .activity-card");
+    if (!card || !card.contains(prev) || !card.contains(next)) return;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      prev.click();
+    } else {
+      e.preventDefault();
+      next.click();
+    }
+  });
+}
+
 async function main() {
   initTheme();
+  initAppReset();
+  attachActivityArrowKeyNav();
   wireContextNavMobileToggle();
 
   const topicListEl = document.getElementById("topicList");
   const sidebarToggle = document.getElementById("sidebarToggle");
-
-  sidebarToggle?.addEventListener("click", () => {
-    const expanded = sidebarToggle.getAttribute("aria-expanded") === "true";
-    sidebarToggle.setAttribute("aria-expanded", String(!expanded));
-    topicListEl?.classList.toggle("collapsed", expanded);
-  });
 
   let data;
   try {
@@ -1087,6 +1330,51 @@ async function main() {
     return flat[currentIndex].topico;
   }
 
+  function resetMobileSidebarTopicActiveMode() {
+    document.querySelector(".sidebar")?.classList.remove("sidebar--mobile-topic-active");
+    const headTitle = document.querySelector(".sidebar__head h2");
+    if (headTitle) headTitle.textContent = "Tópicos";
+    sidebarToggle?.setAttribute("aria-expanded", "true");
+    topicListEl?.classList.remove("collapsed");
+  }
+
+  function refreshMobileSidebarHeadTitle() {
+    if (typeof window === "undefined" || !window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ).matches) return;
+    const sidebar = document.querySelector(".sidebar");
+    if (!sidebar?.classList.contains("sidebar--mobile-topic-active")) return;
+    const top = currentTopicoFromIndex();
+    const headTitle = document.querySelector(".sidebar__head h2");
+    if (headTitle && top) headTitle.textContent = top.titulo;
+  }
+
+  function enterMobileSidebarTopicActiveMode() {
+    if (typeof window === "undefined" || !window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ).matches) return;
+    document.querySelector(".sidebar")?.classList.add("sidebar--mobile-topic-active");
+    sidebarToggle?.setAttribute("aria-expanded", "false");
+    topicListEl?.classList.add("collapsed");
+    refreshMobileSidebarHeadTitle();
+  }
+
+  sidebarToggle?.addEventListener("click", () => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ).matches &&
+      document.querySelector(".sidebar")?.classList.contains("sidebar--mobile-topic-active")
+    ) {
+      resetMobileSidebarTopicActiveMode();
+      requestAnimationFrame(() => {
+        syncLayoutChrome();
+      });
+      return;
+    }
+    const expanded = sidebarToggle.getAttribute("aria-expanded") === "true";
+    sidebarToggle.setAttribute("aria-expanded", String(!expanded));
+    topicListEl?.classList.toggle("collapsed", expanded);
+    requestAnimationFrame(() => {
+      syncLayoutChrome();
+    });
+  });
+
   function shouldShowTheory() {
     const t = currentTopicoFromIndex();
     if (!t) return false;
@@ -1107,6 +1395,10 @@ async function main() {
       }
       clearFeedbackHint();
       paint();
+      enterMobileSidebarTopicActiveMode();
+      requestAnimationFrame(() => {
+        syncLayoutChrome();
+      });
       if (isMobileStudyLayout()) scrollAnchorMainInner();
     }
   }
@@ -1125,6 +1417,10 @@ async function main() {
       persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
       clearFeedbackHint();
       paint();
+      enterMobileSidebarTopicActiveMode();
+      requestAnimationFrame(() => {
+        syncLayoutChrome();
+      });
       if (isMobileStudyLayout()) scrollAnchorMainInner();
     }
   }
@@ -1146,6 +1442,10 @@ async function main() {
     persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
     clearFeedbackHint();
     paint();
+    enterMobileSidebarTopicActiveMode();
+    requestAnimationFrame(() => {
+      syncLayoutChrome();
+    });
     if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
@@ -1163,6 +1463,10 @@ async function main() {
     }
     clearFeedbackHint();
     paint();
+    enterMobileSidebarTopicActiveMode();
+    requestAnimationFrame(() => {
+      syncLayoutChrome();
+    });
     if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
@@ -1178,7 +1482,14 @@ async function main() {
       allDone(topicos, completedSet)
     );
     clearFeedbackHint();
+    resetMobileSidebarTopicActiveMode();
     paint();
+    requestAnimationFrame(() => {
+      syncLayoutChrome();
+      requestAnimationFrame(() => {
+        syncLayoutChrome();
+      });
+    });
     if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
@@ -1197,7 +1508,8 @@ async function main() {
         onOpenTopicDesafios
       );
       showCongratulations();
-      syncTopbarOffset();
+      resetMobileSidebarTopicActiveMode();
+      syncLayoutChrome();
       return;
     }
 
@@ -1268,19 +1580,22 @@ async function main() {
       topicHasDesafios(curTop)
     ) {
       renderDesafios(curTop);
-      syncTopbarOffset();
+      refreshMobileSidebarHeadTitle();
+      syncLayoutChrome();
       return;
     }
 
     if (shouldShowTheory()) {
       const t = currentTopicoFromIndex();
       if (t) renderTheory(t, ctx);
-      syncTopbarOffset();
+      refreshMobileSidebarHeadTitle();
+      syncLayoutChrome();
       return;
     }
 
     renderActivity(ctx);
-    syncTopbarOffset();
+    refreshMobileSidebarHeadTitle();
+    syncLayoutChrome();
   }
 
   if (allDone(topicos, completedSet)) {
@@ -1296,13 +1611,14 @@ async function main() {
       onOpenTopicActivities,
       onOpenTopicDesafios
     );
-    syncTopbarOffset();
+    resetMobileSidebarTopicActiveMode();
+    syncLayoutChrome();
   } else {
     paint();
   }
 
   window.addEventListener("resize", () => {
-    syncTopbarOffset();
+    syncLayoutChrome();
     resetContextNavMobileForViewport();
   });
 }

@@ -252,12 +252,28 @@ function syncTopbarOffset() {
   document.documentElement.style.setProperty("--topbar-offset", `${Math.ceil(bar.getBoundingClientRect().height)}px`);
 }
 
-/** Após Anterior/Próxima: rola o painel principal até o topo, com transição suave. */
-function scrollMainPanelToTopFromActions() {
+/** Mesmo breakpoint da grade em coluna única (sidebar + conteúdo empilhados). */
+const MOBILE_STUDY_SCROLL_MQ = "(max-width: 1024px)";
+
+function isMobileStudyLayout() {
+  return typeof window !== "undefined" && window.matchMedia(MOBILE_STUDY_SCROLL_MQ).matches;
+}
+
+/** Ancora em #main__inner (conteúdo da trilha), respeitando a barra fixa via scroll-margin. */
+function scrollAnchorMainInner() {
   requestAnimationFrame(() => {
-    const main = document.getElementById("mainPanel");
-    if (!main) return;
-    main.scrollTo({ top: 0, behavior: "smooth" });
+    const el = document.getElementById("main__inner");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+/** Ancora no quadro de resposta após verificar (ou aviso de validação). */
+function scrollAnchorFeedbackPanel() {
+  requestAnimationFrame(() => {
+    const el = document.getElementById("feedbackPanel");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 }
 
@@ -416,7 +432,7 @@ function clearFeedbackHint() {
 }
 
 function renderTheory(topico, ctx) {
-  const view = document.getElementById("activityView");
+  const view = document.getElementById("main__inner");
   const teoria = topico.teoria;
   if (!view || !teoria) return;
 
@@ -475,6 +491,7 @@ function renderTheory(topico, ctx) {
     persist(ctx.completedSet, ctx.theoryVisitedSet, ctx.checklistDict, ctx.selectionsDict);
     clearFeedbackHint();
     ctx.paint();
+    if (isMobileStudyLayout()) scrollAnchorMainInner();
   });
 }
 
@@ -487,7 +504,7 @@ function setFeedbackDesafiosHint(/** @type {boolean} */ onlyChecklistFollows) {
 }
 
 function renderDesafios(topico) {
-  const view = document.getElementById("activityView");
+  const view = document.getElementById("main__inner");
   const d = topico.desafios;
   if (!view || !d || !Array.isArray(d.blocos)) return;
 
@@ -610,7 +627,7 @@ function renderChecklistActivity(ctx, topico, atividade) {
     contextos,
     onSelectContexto,
   } = ctx;
-  const view = document.getElementById("activityView");
+  const view = document.getElementById("main__inner");
   if (!view) return;
 
   const passos = atividade.passos || [];
@@ -709,7 +726,7 @@ function renderChecklistActivity(ctx, topico, atividade) {
 
 function renderActivity(ctx) {
   const { flat, index, completedSet, theoryVisitedSet, checklistDict, selectionsDict, onPrev, onNext, paint } = ctx;
-  const view = document.getElementById("activityView");
+  const view = document.getElementById("main__inner");
   if (!view) return;
 
   if (index < 0 || index >= flat.length) {
@@ -787,6 +804,7 @@ function renderActivity(ctx) {
       if (panel) {
         panel.innerHTML = `<p class="feedback__hint">Selecione pelo menos uma alternativa antes de <strong>Verificar resposta</strong>.</p>`;
       }
+      scrollAnchorFeedbackPanel();
       return;
     }
     const correct = new Set(atividade.corretas);
@@ -797,7 +815,9 @@ function renderActivity(ctx) {
       persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
       if (allDone(ctx.topicos, completedSet)) {
         paint();
+        scrollAnchorMainInner();
       } else {
+        scrollAnchorFeedbackPanel();
         renderTopicList(
           ctx.topicos,
           completedSet,
@@ -817,6 +837,8 @@ function renderActivity(ctx) {
         );
         updateProgress(ctx.topicos, completedSet);
       }
+    } else {
+      scrollAnchorFeedbackPanel();
     }
   });
 
@@ -939,7 +961,7 @@ function updateProgress(topicos, completedSet) {
 }
 
 function showCongratulations() {
-  const view = document.getElementById("activityView");
+  const view = document.getElementById("main__inner");
   if (!view) return;
   view.innerHTML = `
     <div class="congrats">
@@ -984,7 +1006,7 @@ async function main() {
   try {
     data = await loadTrilha();
   } catch (e) {
-    const view = document.getElementById("activityView");
+    const view = document.getElementById("main__inner");
     if (view) {
       view.innerHTML = `
         <div class="activity-card">
@@ -1051,6 +1073,7 @@ async function main() {
       }
       clearFeedbackHint();
       paint();
+      if (isMobileStudyLayout()) scrollAnchorMainInner();
     }
   }
 
@@ -1068,6 +1091,7 @@ async function main() {
       persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
       clearFeedbackHint();
       paint();
+      if (isMobileStudyLayout()) scrollAnchorMainInner();
     }
   }
 
@@ -1088,6 +1112,7 @@ async function main() {
     persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
     clearFeedbackHint();
     paint();
+    if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
   function onOpenTopicDesafios(topicId) {
@@ -1104,6 +1129,7 @@ async function main() {
     }
     clearFeedbackHint();
     paint();
+    if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
   function onSelectContexto(contexto) {
@@ -1119,6 +1145,7 @@ async function main() {
     );
     clearFeedbackHint();
     paint();
+    if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
   function paint() {
@@ -1167,7 +1194,7 @@ async function main() {
           }
           clearFeedbackHint();
           paint();
-          scrollMainPanelToTopFromActions();
+          scrollAnchorMainInner();
         }
       },
       onNext: () => {
@@ -1181,7 +1208,7 @@ async function main() {
           }
           clearFeedbackHint();
           paint();
-          scrollMainPanelToTopFromActions();
+          scrollAnchorMainInner();
         }
       },
     };

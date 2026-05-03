@@ -31,7 +31,23 @@
             <p class="progress-wrap__storage-hint">dados salvos no navegador, não limpe o cache</p>
           </div>
         </div>
-        <nav class="context-nav" id="contextNav" aria-label="Áreas da trilha"></nav>
+        <div class="context-nav-wrap" id="contextNavWrap">
+          <button
+            type="button"
+            class="context-nav__toggle"
+            id="contextNavToggle"
+            aria-expanded="false"
+            aria-controls="contextNav"
+            aria-label="Abrir ou fechar menu de áreas da trilha"
+          >
+            <span class="context-nav__burger" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="context-nav__toggle-label">Menu</span>
+          </button>
+          <p class="context-nav__active-only" id="contextNavActiveOnly" aria-live="polite"></p>
+          <nav class="context-nav" id="contextNav" aria-label="Áreas da trilha"></nav>
+        </div>
         <p class="context-nav__intro">
           O que você quer estudar hoje <span class="context-nav__intro-hint">(selecione a opção no menu acima)</span>
         </p>

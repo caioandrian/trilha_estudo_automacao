@@ -169,8 +169,50 @@ function renderContextNav(contextos, selectedContexto, topicos, completedSet, on
   nav.querySelectorAll(".context-nav__btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const label = /** @type {HTMLElement} */ (btn).dataset.contexto;
-      if (label) onSelectContexto(label);
+      if (label) {
+        onSelectContexto(label);
+        closeContextNavMobilePanel();
+      }
     });
+  });
+  syncContextNavMobileLabel(selectedContexto);
+}
+
+function syncContextNavMobileLabel(/** @type {string} */ selectedContexto) {
+  const el = document.getElementById("contextNavActiveOnly");
+  if (!el) return;
+  el.textContent = selectedContexto;
+  const btnVariant = contextNavVariantClass(selectedContexto);
+  const activeOnlyVariant = btnVariant.replace("context-nav__btn--", "context-nav__active-only--");
+  el.className = `context-nav__active-only ${activeOnlyVariant}`;
+}
+
+function closeContextNavMobilePanel() {
+  if (!window.matchMedia(MOBILE_STUDY_SCROLL_MQ).matches) return;
+  const wrap = document.getElementById("contextNavWrap");
+  const toggle = document.getElementById("contextNavToggle");
+  wrap?.classList.remove("context-nav-wrap--open");
+  if (toggle) toggle.setAttribute("aria-expanded", "false");
+}
+
+/** Ao voltar para desktop, remove o estado expandido do menu de contexto. */
+function resetContextNavMobileForViewport() {
+  if (window.matchMedia(MOBILE_STUDY_SCROLL_MQ).matches) return;
+  const wrap = document.getElementById("contextNavWrap");
+  const toggle = document.getElementById("contextNavToggle");
+  wrap?.classList.remove("context-nav-wrap--open");
+  if (toggle) toggle.setAttribute("aria-expanded", "false");
+}
+
+function wireContextNavMobileToggle() {
+  const wrap = document.getElementById("contextNavWrap");
+  const toggle = document.getElementById("contextNavToggle");
+  if (!wrap || !toggle) return;
+  toggle.addEventListener("click", () => {
+    if (!window.matchMedia(MOBILE_STUDY_SCROLL_MQ).matches) return;
+    const open = !wrap.classList.contains("context-nav-wrap--open");
+    wrap.classList.toggle("context-nav-wrap--open", open);
+    toggle.setAttribute("aria-expanded", String(open));
   });
 }
 
@@ -992,6 +1034,7 @@ function initTheme() {
 
 async function main() {
   initTheme();
+  wireContextNavMobileToggle();
 
   const topicListEl = document.getElementById("topicList");
   const sidebarToggle = document.getElementById("sidebarToggle");
@@ -1267,7 +1310,10 @@ async function main() {
     paint();
   }
 
-  window.addEventListener("resize", syncTopbarOffset);
+  window.addEventListener("resize", () => {
+    syncTopbarOffset();
+    resetContextNavMobileForViewport();
+  });
 }
 
 main();

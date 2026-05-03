@@ -4,20 +4,22 @@
     {
       "id": "fundamentos-js",
       "ordem": 1,
-      "titulo": "JavaScript: variáveis e tipos",
+      "titulo": "Javascript",
       "contexto": "Lógica de programação",
       "teoria": {
-        "titulo": "Teoria: variáveis e tipos em JavaScript",
+        "titulo": "Teoria: variáveis, tipos e repetições em JavaScript",
         "paragrafos": [
           "Variáveis são nomes aos quais você associa valores na memória. Em automação de testes, você usa variáveis para guardar dados de entrada, URLs, texto esperado ou o resultado de um passo intermediário.",
           "Use `let` quando o valor pode mudar (contadores, flags). Use `const` quando não quer reatribuir o nome — muito comum para `cy` configs, URLs base e objetos de configuração. Evite `var` em código novo porque o escopo é menos previsível.",
           "Tipos comuns são número, string, boolean, objeto, array, `null` e `undefined`. Em testes você combina texto (assertions), coleções de elementos ou dados vindos da API/UI.",
-          "Array é uma lista ordenada de valores indexada a partir do 0 — ideal para guardar conjuntos de cenários, dados de tabela ou IDs. Com `const lista = [ ... ]` você fixa a referência (não pode trocar por outro array), mas ainda pode mudar o conteúdo do array com métodos como `push`, `pop`, `shift`, `unshift` e `splice`."
+          "Array é uma lista ordenada de valores indexada a partir do 0 — ideal para guardar conjuntos de cenários, dados de tabela ou IDs. Com `const lista = [ ... ]` você fixa a referência (não pode trocar por outro array), mas ainda pode mudar o conteúdo do array com métodos como `push`, `pop`, `shift`, `unshift` e `splice`.",
+          "Loops (`for`, `while`, `forEach` e outros em arrays) repetem código enquanto faz sentido — em testes, às vezes você percorre listas de dados ou cenários; em ferramentas como o Cypress, retentativas automáticas também lidam com espera no DOM."
         ],
         "codigo": "// Variáveis simples\nlet tentativas = 0;\nconst baseUrl = 'https://api.exemplo.com';\n\n// Array: declaração e mutação do conteúdo\nconst tags = ['smoke', 'regressao'];\ntags.push('e2e');        // insere no final\ntags.unshift('critico'); // insere no início\nconst ultima = tags.pop(); // remove do final\nconst primeira = tags.shift(); // remove do início",
         "links": [
           { "titulo": "MDN — Guia de JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide" },
           { "titulo": "MDN — Array", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array" },
+          { "titulo": "MDN — Loops e iteração", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Loops_and_iteration" },
           { "titulo": "MDN — Aprender JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript" },
           { "titulo": "javascript.info (inglês, muito didático)", "url": "https://javascript.info/" }
         ]
@@ -69,29 +71,7 @@
           "corretas": ["A", "B", "C", "D", "E"],
           "explicacao": "Arrays em JS usam `push`/`pop` nas pontas direita e esquerda; `unshift`/`shift` fazem o mesmo nas extremidades opostas. Não existe `append` como método nativo de Array.",
           "codigoExplicacao": "const n = [];\nn.push(1);\nn.unshift(0); // [0, 1]\nn.pop();       // remove 1\nn.shift();     // remove 0"
-        }
-      ]
-    },
-    {
-      "id": "loops-storage",
-      "ordem": 2,
-      "titulo": "Loops e localStorage",
-      "contexto": "Lógica de programação",
-      "teoria": {
-        "titulo": "Teoria: repetições e dados no navegador",
-        "paragrafos": [
-          "Loops (`for`, `while`, métodos em arrays como `forEach`) repetem código enquanto uma condição faz sentido. Em testes automatizados, repetições podem estar escondidas no framework — por exemplo Cypress re-tenta comandos até timeout — mas você ainda deve entender quando um laço resolveria problema de dados (lista de cenários ou de linhas na tabela).",
-          "`localStorage` mantém texto associado a chaves até o usuário limpar dados do site ou o código remover; `sessionStorage` é parecido, mas perdura só na sessão da aba. Em testes não dependa só de dados persistidos manualmente entre execuções: prefira mocks ou dados controlados quando possível.",
-          "`JSON.stringify` e `JSON.parse` aparecem muito quando se grava objeto como string ou se lê de storage/API."
-        ],
-        "codigo": "for (let i = 0; i < 3; i++) {\n  console.log('passo', i);\n}\n\nlocalStorage.setItem('preferencia', 'escuro');\nconst tema = localStorage.getItem('preferencia');",
-        "links": [
-          { "titulo": "MDN — loops e repetições", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Loops_and_iteration" },
-          { "titulo": "MDN — localStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage" },
-          { "titulo": "MDN — JSON.parse / JSON.stringify", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/JSON" }
-        ]
-      },
-      "atividades": [
+        },
         {
           "id": "loop-1",
           "tipo": "multipla_correta",
@@ -106,7 +86,29 @@
           "corretas": ["C", "D"],
           "explicacao": "JavaScript oferece `for`, `while`, `do...while`, e métodos de array como `forEach`, `map`, etc. Não existem funções globais `Loop()` ou `repete()` padrão.",
           "codigoExplicacao": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}\n\n['a','b'].forEach(letra => console.log(letra));"
-        },
+        }
+      ]
+    },
+    {
+      "id": "navegador",
+      "ordem": 2,
+      "titulo": "Navegador",
+      "contexto": "Lógica de programação",
+      "teoria": {
+        "titulo": "Teoria: armazenamento no navegador",
+        "paragrafos": [
+          "`localStorage` grava pares chave/valor como texto na origem até o usuário limpar dados do site ou o código apagar; `sessionStorage` é parecido, mas vale só enquanto a aba está aberta.",
+          "`JSON.stringify` e `JSON.parse` costumam aparecer quando você guarda objeto como string ou lê de storage/API.",
+          "Em testes automatizados, evite depender só de dados deixados manualmente no storage entre execuções: prefira dados controlados ou mocks quando possível."
+        ],
+        "codigo": "localStorage.setItem('preferencia', 'escuro');\nconst tema = localStorage.getItem('preferencia');",
+        "links": [
+          { "titulo": "MDN — localStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage" },
+          { "titulo": "MDN — sessionStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage" },
+          { "titulo": "MDN — JSON.parse / JSON.stringify", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/JSON" }
+        ]
+      },
+      "atividades": [
         {
           "id": "storage-1",
           "tipo": "multipla_escolha",

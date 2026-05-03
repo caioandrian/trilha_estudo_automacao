@@ -7,17 +7,19 @@
       "titulo": "Javascript",
       "contexto": "Lógica de programação",
       "teoria": {
-        "titulo": "Teoria: variáveis, tipos e repetições em JavaScript",
+        "titulo": "JavaScript: variáveis, tipos, condicionais e repetições",
         "paragrafos": [
           "Variáveis são nomes aos quais você associa valores na memória. Em automação de testes, você usa variáveis para guardar dados de entrada, URLs, texto esperado ou o resultado de um passo intermediário.",
           "Use `let` quando o valor pode mudar (contadores, flags). Use `const` quando não quer reatribuir o nome — muito comum para `cy` configs, URLs base e objetos de configuração. Evite `var` em código novo porque o escopo é menos previsível.",
           "Tipos comuns são número, string, boolean, objeto, array, `null` e `undefined`. Em testes você combina texto (assertions), coleções de elementos ou dados vindos da API/UI.",
           "Array é uma lista ordenada de valores indexada a partir do 0 — ideal para guardar conjuntos de cenários, dados de tabela ou IDs. Com `const lista = [ ... ]` você fixa a referência (não pode trocar por outro array), mas ainda pode mudar o conteúdo do array com métodos como `push`, `pop`, `shift`, `unshift` e `splice`.",
+          "Condicionais (`if`, `else if`, `else`) decidem qual bloco rodar conforme uma expressão verdadeira ou falsa. Você combina comparações (`===`, `!==`, `<`, `>`) e operadores lógicos (`&&`, `||`, `!`). Sem `else`, quando a condição do `if` falha o fluxo simplesmente pula o bloco.",
           "Loops (`for`, `while`, `forEach` e outros em arrays) repetem código enquanto faz sentido — em testes, às vezes você percorre listas de dados ou cenários; em ferramentas como o Cypress, retentativas automáticas também lidam com espera no DOM."
         ],
-        "codigo": "// Variáveis simples\nlet tentativas = 0;\nconst baseUrl = 'https://api.exemplo.com';\n\n// Array: declaração e mutação do conteúdo\nconst tags = ['smoke', 'regressao'];\ntags.push('e2e');        // insere no final\ntags.unshift('critico'); // insere no início\nconst ultima = tags.pop(); // remove do final\nconst primeira = tags.shift(); // remove do início",
+        "codigo": "// Variáveis simples\nlet tentativas = 0;\nconst baseUrl = 'https://api.exemplo.com';\n\n// Array: declaração e mutação do conteúdo\nconst tags = ['smoke', 'regressao'];\ntags.push('e2e');        // insere no final\ntags.unshift('critico'); // insere no início\nconst ultima = tags.pop(); // remove do final\nconst primeira = tags.shift(); // remove do início\n\n// Condicional if / else\nconst nota = 7;\nif (nota >= 6) {\n  console.log('aprovado');\n} else {\n  console.log('reprovado');\n}",
         "links": [
           { "titulo": "MDN — Guia de JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide" },
+          { "titulo": "MDN — if...else", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/if...else" },
           { "titulo": "MDN — Array", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array" },
           { "titulo": "MDN — Loops e iteração", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Loops_and_iteration" },
           { "titulo": "MDN — Aprender JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript" },
@@ -28,7 +30,7 @@
         {
           "id": "js-var-1",
           "tipo": "multipla_escolha",
-          "descricao": "Em JavaScript, qual palavra-chave é recomendada para declarar uma variável cujo valor pode mudar, com escopo de bloco (como dentro de um if ou for)?",
+          "descricao": "Em JavaScript, qual palavra você usa para criar uma variável cujo valor pode mudar depois (por exemplo um contador)?",
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "var" },
@@ -43,13 +45,13 @@
         {
           "id": "js-const-1",
           "tipo": "multipla_correta",
-          "descricao": "Sobre `const` em JavaScript, selecione uma ou mais afirmações corretas.",
+          "descricao": "Leia o código ao lado. Sobre `const`, marque as frases verdadeiras (pode marcar mais de uma).",
           "codigo": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno';",
           "opcoes": [
-            { "id": "A", "texto": "O objeto em si não pode ser substituído por outro objeto após a declaração." },
-            { "id": "B", "texto": "Propriedades internas do objeto podem ser alteradas." },
-            { "id": "C", "texto": "const impede qualquer modificação no valor referenciado." },
-            { "id": "D", "texto": "O trecho acima é válido e `usuario.nome` passa a ser 'Bruno'." }
+            { "id": "A", "texto": "Depois de criar `usuario`, não dá para trocar o objeto inteiro por outro (não pode fazer `usuario = outroObjeto`)." },
+            { "id": "B", "texto": "Ainda dá para mudar o que está dentro do objeto (por exemplo o nome)." },
+            { "id": "C", "texto": "Com const, nada dentro do objeto pode mudar nunca." },
+            { "id": "D", "texto": "O código acima é válido e o nome vira 'Bruno'." }
           ],
           "corretas": ["A", "B", "D"],
           "explicacao": "`const` congela a referência, não a mutabilidade profunda do objeto. Você não pode fazer `usuario = {}` de novo, mas pode alterar `usuario.nome`.",
@@ -58,30 +60,45 @@
         {
           "id": "js-array-1",
           "tipo": "multipla_correta",
-          "descricao": "Sobre arrays em JavaScript: como declarar e inserir/remover valores. Marque uma ou mais alternativas corretas.",
+          "descricao": "Sobre listas (arrays) em JavaScript: o que é verdade? Marque todas as corretas.",
           "codigo": "const fila = ['a', 'b'];\nfila.push('c');\nconst x = fila.pop();\nconst y = fila.shift();\nfila.unshift('z');",
           "opcoes": [
-            { "id": "A", "texto": "`const numeros = [];` declara um array vazio (o nome não pode ser reatribuído a outro array, mas o conteúdo pode mudar)." },
-            { "id": "B", "texto": "`push(item)` adiciona um elemento ao final do array." },
-            { "id": "C", "texto": "`pop()` remove o último elemento do array e o retorna." },
-            { "id": "D", "texto": "`shift()` remove o primeiro elemento do array e o retorna." },
-            { "id": "E", "texto": "`unshift(item)` insere um elemento no início do array." },
-            { "id": "F", "texto": "`array.append(x)` é o método padrão para inserir no final (como push)." }
+            { "id": "A", "texto": "`const lista = []` cria uma lista vazia; você não troca a lista por outra, mas pode ir mudando os itens dentro dela." },
+            { "id": "B", "texto": "`push` coloca um item no final da lista." },
+            { "id": "C", "texto": "`pop` tira o último item da lista." },
+            { "id": "D", "texto": "`shift` tira o primeiro item da lista." },
+            { "id": "E", "texto": "`unshift` coloca um item no começo da lista." },
+            { "id": "F", "texto": "Em JavaScript, o jeito comum de colocar no final é `append` (não `push`)." }
           ],
           "corretas": ["A", "B", "C", "D", "E"],
           "explicacao": "Arrays em JS usam `push`/`pop` nas pontas direita e esquerda; `unshift`/`shift` fazem o mesmo nas extremidades opostas. Não existe `append` como método nativo de Array.",
           "codigoExplicacao": "const n = [];\nn.push(1);\nn.unshift(0); // [0, 1]\nn.pop();       // remove 1\nn.shift();     // remove 0"
         },
         {
+          "id": "js-if-1",
+          "tipo": "multipla_escolha",
+          "descricao": "Observe o trecho. O que aparece no console após a execução?",
+          "codigo": "const limite = 10;\nconst valor = 5;\nif (valor > limite) {\n  console.log('maior');\n} else {\n  console.log('menor ou igual');\n}",
+          "opcoes": [
+            { "id": "A", "texto": "maior" },
+            { "id": "B", "texto": "menor ou igual" },
+            { "id": "C", "texto": "Nada é impresso" },
+            { "id": "D", "texto": "O código gera erro de sintaxe" }
+          ],
+          "corretas": ["B"],
+          "explicacao": "A condição `valor > limite` é `5 > 10`, ou seja, falsa. O bloco do `else` é executado, então imprime `menor ou igual`.",
+          "codigoExplicacao": "if (condicao) { /* se verdadeiro */ } else { /* se falso */ }"
+        },
+        {
           "id": "loop-1",
           "tipo": "multipla_correta",
-          "descricao": "Como podemos criar um laço de repetição em JavaScript? Selecione uma ou mais opções corretas.",
+          "descricao": "Em JavaScript, quais formas comuns existem para repetir um trecho de código? (Pode marcar mais de uma.)",
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "Loop()" },
             { "id": "B", "texto": "repete()" },
             { "id": "C", "texto": "for" },
-            { "id": "D", "texto": "forEach (em arrays)" }
+            { "id": "D", "texto": "forEach (para percorrer itens de uma lista)" }
           ],
           "corretas": ["C", "D"],
           "explicacao": "JavaScript oferece `for`, `while`, `do...while`, e métodos de array como `forEach`, `map`, etc. Não existem funções globais `Loop()` ou `repete()` padrão.",
@@ -95,7 +112,7 @@
       "titulo": "Navegador",
       "contexto": "Lógica de programação",
       "teoria": {
-        "titulo": "Teoria: armazenamento no navegador",
+        "titulo": "Armazenamento no navegador",
         "paragrafos": [
           "`localStorage` grava pares chave/valor como texto na origem até o usuário limpar dados do site ou o código apagar; `sessionStorage` é parecido, mas vale só enquanto a aba está aberta.",
           "`JSON.stringify` e `JSON.parse` costumam aparecer quando você guarda objeto como string ou lê de storage/API.",
@@ -117,8 +134,8 @@
           "opcoes": [
             { "id": "A", "texto": "sessionStorage (só enquanto a aba está aberta)" },
             { "id": "B", "texto": "localStorage" },
-            { "id": "C", "texto": "Só IndexedDB" },
-            { "id": "D", "texto": "Só cookies HTTP" }
+            { "id": "C", "texto": "Só o IndexedDB (outro recurso do navegador)" },
+            { "id": "D", "texto": "Só cookies (aqueles ligados a sites e servidor)" }
           ],
           "corretas": ["B"],
           "explicacao": "`localStorage` guarda chave/valor na origem até você ou o código apagar. `sessionStorage` some ao fechar a aba.",
@@ -135,11 +152,11 @@
         {
           "id": "des-1",
           "tipo": "desafio_codigo",
-          "descricao": "Analise o trecho. Ele executa sem lançar erro em um ambiente JavaScript moderno?",
+          "descricao": "Este código roda até o fim sem dar erro?",
           "codigo": "const x = 1;\nx = 2;\nconsole.log(x);",
           "opcoes": [
             { "id": "A", "texto": "Sim, imprime 2" },
-            { "id": "B", "texto": "Não, ocorre erro ao tentar reatribuir const" }
+            { "id": "B", "texto": "Não: deu problema porque `const` não pode receber outro valor depois" }
           ],
           "corretas": ["B"],
           "explicacao": "Variáveis declaradas com `const` não podem ser reatribuídas. Isso gera TypeError em modo estrito comum em engines atuais.",
@@ -151,8 +168,8 @@
           "descricao": "Este código acessa um índice fora do tamanho do array. O que acontece?",
           "codigo": "const nums = [10, 20];\nconsole.log(nums[5]);",
           "opcoes": [
-            { "id": "A", "texto": "Lança exceção e interrompe o script" },
-            { "id": "B", "texto": "Retorna undefined sem erro" }
+            { "id": "A", "texto": "O programa quebra com mensagem de erro" },
+            { "id": "B", "texto": "Não dá erro; só mostra um valor “vazio” (undefined)" }
           ],
           "corretas": ["B"],
           "explicacao": "Em JavaScript, ler `array[indiceInexistente]` retorna `undefined`; não é um erro por si só.",
@@ -161,11 +178,11 @@
         {
           "id": "des-3",
           "tipo": "desafio_codigo",
-          "descricao": "O uso de `await` neste arquivo (top-level) é válido em módulos ES no navegador?",
+          "descricao": "No navegador, este arquivo carrega como módulo (`type=\"module\"`). O `await` na primeira linha do arquivo é permitido?",
           "codigo": "// arquivo: medias.js (type=\"module\")\nconst dados = await fetch('/api');",
           "opcoes": [
-            { "id": "A", "texto": "Sim, em script type=module top-level await é suportado em navegadores modernos" },
-            { "id": "B", "texto": "Não, await só pode aparecer dentro de async function" }
+            { "id": "A", "texto": "Sim, navegadores atuais aceitam `await` assim quando o script é módulo" },
+            { "id": "B", "texto": "Não: `await` só pode ficar dentro de uma função marcada como `async`" }
           ],
           "corretas": ["A"],
           "explicacao": "Top-level `await` é permitido em módulos ES (`<script type=\"module\">`). Em scripts clássicos sem `async` wrapper, não.",
@@ -178,7 +195,7 @@
           "codigo": "JSON.parse('{ nome: \"teste\" }');",
           "opcoes": [
             { "id": "A", "texto": "Converte normalmente para objeto" },
-            { "id": "B", "texto": "Lança SyntaxError (JSON exige chaves em aspas duplas e formato estrito)" }
+            { "id": "B", "texto": "Dá erro: em JSON as chaves precisam estar entre aspas duplas, no formato certinho" }
           ],
           "corretas": ["B"],
           "explicacao": "JSON não aceita chaves sem aspas como em objetos JS literais. A string precisa ser por exemplo '{\"nome\":\"teste\"}'.",
@@ -190,8 +207,8 @@
           "descricao": "Chamar função antes da declaração function: funciona?",
           "codigo": "ola();\nfunction ola() { console.log('oi'); }",
           "opcoes": [
-            { "id": "A", "texto": "Sim, declarações function são içadas (hoisting)" },
-            { "id": "B", "texto": "Não, ReferenceError porque ainda não foi definida" }
+            { "id": "A", "texto": "Sim: com `function` assim, o JavaScript “enxerga” a função mesmo sendo chamada antes" },
+            { "id": "B", "texto": "Não: dá erro de “ainda não existe” porque foi chamada antes de existir" }
           ],
           "corretas": ["A"],
           "explicacao": "Function declarations são içadas integralmente. Com `const ola = () => {}` a ordem importaria.",
@@ -205,7 +222,7 @@
       "titulo": "Cypress: conceitos e interface",
       "contexto": "Cypress / Automação de teste",
       "teoria": {
-        "titulo": "Teoria: o que é o Cypress",
+        "titulo": "O que é o Cypress",
         "paragrafos": [
           "Cypress automatiza navegadores para testes end-to-end: abre página, acha elementos, interage como um usuário e verifica comportamento. Ao contrário de um script Puppeteer solto que você mesmo orquestra, Cypress traz comandos já pensados para teste (`visit`, `get`, `click`, etc.) com fila inteligente e novas tentativas (retry).",
           "Ao rodar `npx cypress open`, você pode escolher E2E ou Component Testing — nesta trilha priorizamos E2E. O runner lista arquivos `*.cy.js`/`*.cy.ts` em `cypress/e2e` (nome padrão v10+). Timeouts configuráveis evitam testes flaky sem motivo quando o DOM demora aparecer.",
@@ -227,7 +244,7 @@
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "Um servidor de banco de dados relacional" },
-            { "id": "B", "texto": "Framework de testes end-to-end que roda no navegador e controla a aplicação" },
+            { "id": "B", "texto": "Programa que testa o site pelo próprio navegador, como se fosse uma pessoa clicando" },
             { "id": "C", "texto": "Substituto do Git para versionamento" },
             { "id": "D", "texto": "Compilador de TypeScript para Java" }
           ],
@@ -238,13 +255,13 @@
         {
           "id": "cy-2",
           "tipo": "multipla_escolha",
-          "descricao": "Ao abrir o Cypress pela primeira vez com `npx cypress open`, qual interface costuma aparecer para escolher modo e specs?",
+          "descricao": "Na primeira vez que você roda `npx cypress open`, o que costuma aparecer na tela?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "Apenas terminal sem UI" },
-            { "id": "B", "texto": "Launchpad / Test Runner com escolha E2E ou Component Testing" },
-            { "id": "C", "texto": "Visual Studio Code embutido" },
-            { "id": "D", "texto": "Somente o Chrome DevTools" }
+            { "id": "A", "texto": "Só o terminal preto, sem janela gráfica" },
+            { "id": "B", "texto": "Uma tela que pergunta o tipo de teste (por exemplo E2E) e depois o painel dos testes" },
+            { "id": "C", "texto": "O editor Visual Studio Code já aberto dentro do programa" },
+            { "id": "D", "texto": "Somente as ferramentas de desenvolvedor do Chrome" }
           ],
           "corretas": ["B"],
           "explicacao": "O fluxo guiado permite configurar E2E ou component tests e depois abre o runner com lista de specs.",
@@ -253,16 +270,16 @@
         {
           "id": "cy-3",
           "tipo": "multipla_correta",
-          "descricao": "Quais afirmativas descrevem bem interações comuns na API do Cypress?",
+          "descricao": "Sobre o jeito que o Cypress trabalha, quais frases fazem sentido? (Pode marcar mais de uma.)",
           "codigo": "cy.get('#login').click();\ncy.get('[data-cy=email]').type('a@b.com');",
           "opcoes": [
-            { "id": "A", "texto": "`cy.get` localiza elementos no DOM" },
-            { "id": "B", "texto": "`.click()` e `.type()` encadeiam ações no elemento sujeito" },
-            { "id": "C", "texto": "`cy.get` sempre retorna síncrono na mesma linha sem fila de comandos" },
-            { "id": "D", "texto": "Comandos são enfileirados e o Cypress tenta aguardar o elemento existir (retry)" }
+            { "id": "A", "texto": "`cy.get` serve para achar um elemento na página (botão, campo, etc.)" },
+            { "id": "B", "texto": "Depois do `cy.get`, comumente usamos `.click()` para clicar e `.type()` para digitar texto" },
+            { "id": "C", "texto": "Tudo acontece no mesmo instante na linha do código, sem o Cypress esperar a página carregar ou o elemento existir" },
+            { "id": "D", "texto": "O Cypress coloca os comandos em fila e costuma esperar o elemento aparecer antes de seguir (com novas tentativas)" }
           ],
           "corretas": ["A", "B", "D"],
-          "explicacao": "Cypress usa fila de comandos e retry padrão em muitos casos; não é um encadeamento totalmente síncrono como DOM direto.",
+          "explicacao": "No Cypress os passos costumam ir para uma fila: o programa pode tentar de novo até o elemento aparecer. Não funciona igual a um comando JavaScript comum linha a linha na hora exata.",
           "codigoExplicacao": "cy.get('button').should('be.visible').click();"
         }
       ]
@@ -273,7 +290,7 @@
       "titulo": "Cypress: comandos práticos",
       "contexto": "Cypress / Automação de teste",
       "teoria": {
-        "titulo": "Teoria: comandos básicos do dia a dia",
+        "titulo": "Comandos básicos do dia a dia",
         "paragrafos": [
           "`cy.visit(url)` navega até a página. `cy.get(seletor)` localiza elementos; associe sempre com assertions (`should`) para transformar comando em garantia automatizada.",
           "Interações: `click()`, `dblclick()`, `type()`, `clear()`, `check()`, `select()`. Assertions comuns incluem texto (`contain`), visibilidade (`be.visible`), existência (`exist`) ou valor (`have.value`).",
@@ -291,13 +308,13 @@
         {
           "id": "cy-p1",
           "tipo": "multipla_escolha",
-          "descricao": "Como abrir uma página no teste Cypress?",
+          "descricao": "Qual comando abre uma página no Cypress?",
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "cy.open('https://...')" },
-            { "id": "B", "texto": "cy.visit('https://...') ou cy.visit('/rota')" },
-            { "id": "C", "texto": "window.location = url dentro de cy.exec apenas" },
-            { "id": "D", "texto": "browser.goto(url)" }
+            { "id": "B", "texto": "cy.visit(...) — com endereço completo ou caminho do site" },
+            { "id": "C", "texto": "Só dá usando um comando avançado `cy.exec` com `window.location`" },
+            { "id": "D", "texto": "browser.goto(...)" }
           ],
           "corretas": ["B"],
           "explicacao": "`cy.visit` carrega a URL (absoluta ou relativa ao `baseUrl` do cypress.config).",
@@ -306,7 +323,7 @@
         {
           "id": "cy-p2",
           "tipo": "multipla_escolha",
-          "descricao": "Qual comando captura um elemento pelo seletor CSS?",
+          "descricao": "Qual comando costuma ser usado para pegar um elemento na tela (por id, classe ou outro seletor)?",
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "cy.find('#id')" },
@@ -321,13 +338,13 @@
         {
           "id": "cy-p3",
           "tipo": "multipla_escolha",
-          "descricao": "Como validar que um elemento contém determinado texto?",
+          "descricao": "Como conferir se um texto aparece dentro de um elemento (por exemplo a mensagem “Salvo”)?",
           "codigo": "cy.get('.msg');",
           "opcoes": [
             { "id": "A", "texto": "cy.get('.msg').should('contain', 'Salvo')" },
             { "id": "B", "texto": "cy.get('.msg').assertText('Salvo')" },
             { "id": "C", "texto": "cy.validate('.msg', 'Salvo')" },
-            { "id": "D", "texto": "cy.get('.msg').text() === 'Salvo' na mesma linha sem should" }
+            { "id": "D", "texto": "Comparar texto na mesma linha, sem `.should`, costuma ser o jeito certo no Cypress" }
           ],
           "corretas": ["A"],
           "explicacao": "Asserções idiomáticas usam `.should` com matchers do Chai jQuery ou encadeamentos como `contain`.",
@@ -336,7 +353,7 @@
         {
           "id": "cy-p4",
           "tipo": "multipla_escolha",
-          "descricao": "Como validar que um campo de input tem o valor esperado?",
+          "descricao": "Como checar se um campo de e-mail está com o texto certo digitado?",
           "codigo": "cy.get('#email');",
           "opcoes": [
             { "id": "A", "texto": "cy.get('#email').should('have.value', 'a@b.com')" },
@@ -351,11 +368,11 @@
         {
           "id": "cy-p5",
           "tipo": "multipla_escolha",
-          "descricao": "Espera forçada (não recomendada como primeira opção): qual comando fixa milissegundos?",
+          "descricao": "Qual comando faz o teste **parar e esperar** um tempo fixo em milissegundos? (Uso com moderação — o ideal é esperar a tela mudar.)",
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "cy.pause(2000)" },
-            { "id": "B", "texto": "cy.wait(2000) com número fixo" },
+            { "id": "B", "texto": "cy.wait(2000)" },
             { "id": "C", "texto": "cy.sleep(2000)" },
             { "id": "D", "texto": "cy.delay(2000)" }
           ],
@@ -366,16 +383,16 @@
         {
           "id": "cy-p6",
           "tipo": "multipla_correta",
-          "descricao": "Espera dinâmica com rede: marque as opções que combinam com intercept + alias.",
+          "descricao": "Sobre `cy.intercept`, nome (`alias`) e `cy.wait('@nome')`: quais frases estão certas? (Mais de uma.)",
           "codigo": "cy.intercept('GET', '/api/user', { fixture: 'user.json' }).as('getUser');\ncy.visit('/perfil');\ncy.wait('@getUser');\ncy.get('[data-cy=nome]').should('be.visible');",
           "opcoes": [
-            { "id": "A", "texto": "`cy.intercept` pode stubar ou observar requisições" },
-            { "id": "B", "texto": "`.as('getUser')` define um alias referenciado com `@` em cy.wait" },
-            { "id": "C", "texto": "`cy.wait('@getUser')` espera a requisição associada ao alias completar" },
-            { "id": "D", "texto": "`cy.get('@getUser')` busca elemento no DOM com id getUser" }
+            { "id": "A", "texto": "`cy.intercept` pode observar ou simular respostas da rede" },
+            { "id": "B", "texto": "`.as('getUser')` cria um apelido que usamos com `@` no `cy.wait`" },
+            { "id": "C", "texto": "`cy.wait('@getUser')` espera aquela requisição da rede terminar" },
+            { "id": "D", "texto": "`cy.get('@getUser')` serve para achar um elemento na página com esse nome" }
           ],
           "corretas": ["A", "B", "C"],
-          "explicacao": "Aliases de rede usam `@` em `cy.wait`, não em `cy.get`. `cy.get` continua sendo para seletores DOM.",
+          "explicacao": "O `@` no `cy.wait` é só para rede. Para achar coisa na página continua sendo `cy.get` com seletor normal.",
           "codigoExplicacao": "cy.intercept('POST', '/login').as('login');\ncy.get('form').submit();\ncy.wait('@login');"
         }
       ]
@@ -386,7 +403,7 @@
       "titulo": "Cypress: novo projeto do zero",
       "contexto": "Cypress / Automação de teste",
       "desafios": {
-        "titulo": "Desafios — Sauce Demo (Swag Labs)",
+        "titulo": "Sauce Demo (Swag Labs)",
         "introducao": [
           "Este bloco é prático: você vai acessar o site de demonstração Swag Labs e escrever testes Cypress que navegam e verificam elementos como um usuário real.",
           "Use o projeto que você criou na checklist deste tópico. Cada seção traz o passo a passo e, no final, um painel recolhível com o código de referência completo.",
@@ -513,12 +530,12 @@
         {
           "id": "gh-checklist",
           "tipo": "checklist_trilha",
-          "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push. Marque só após cada ação estar feita no seu ambiente; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
+          "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\nMarque só após cada ação estar feita no seu ambiente; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
           "codigo": ":: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\ngit add .\ngit commit -m \"chore: primeiro commit\"\ngit branch -M main\n\n:: Depois que o repositório existir no GitHub\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit push -u origin main",
           "passos": [
             {
               "id": "gh-cfg",
-              "texto": "Configurar identidade global do Git (`git config --global user.name \"...\"` e `git config --global user.email \"...\"`) no CMD ou PowerShell.",
+              "texto": "Configurar identidade global do Git no CMD ou PowerShell.",
               "detalhes": [
                 "Essas configurações definem autor e e-mail que aparecerão nos commits.",
                 "Exemplo: git config --global user.name \"Maria Silva\" e git config --global user.email maria@exemplo.com (use suas informações).",
@@ -551,7 +568,8 @@
                 "Crie um arquivo chamado `.gitignore` na raiz do repo e adicione linhas como node_modules/, .env, dist/, coberturas de build e arquivos sensíveis.",
                 "Arquivos ignorados não entram no `git add` por padrão e evitam subir dependências enormes ou segredos.",
                 "Modelos comuns: https://github.com/github/gitignore — adapte ao seu stack (Node, Cypress, etc.)."
-              ]
+              ],
+              "codigoExemplo": "# Dependências e artefatos Node / Cypress\nnode_modules/\ncypress/videos/\ncypress/screenshots/\n\n# Variáveis de ambiente (não versionar segredos)\n.env\n.env.*\n!.env.example\n\n# Pastas de build / SO (opcional)\ndist/\n.DS_Store"
             },
             {
               "id": "gh-commit",

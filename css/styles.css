@@ -653,9 +653,14 @@ html[data-theme="light"] .topic-btn--current.topic-btn--ctx-github .topic-btn__t
   padding: 0.3rem 0.55rem;
   border-radius: 999px;
   margin-bottom: 0.85rem;
-  border: 1px solid var(--border);
-  color: var(--muted);
+  border: 1px solid rgba(61, 156, 240, 0.38);
+  color: var(--accent);
   background: var(--surface-2);
+}
+
+html[data-theme="light"] .theory-badge {
+  border-color: rgba(11, 118, 217, 0.35);
+  color: var(--accent);
 }
 
 .theory-panel h2.theory-heading {
@@ -725,16 +730,6 @@ html[data-theme="light"] .topic-btn--current.topic-btn--ctx-github .topic-btn__t
   flex-wrap: wrap;
   gap: 0.6rem;
   align-items: center;
-}
-
-.desafios-badge {
-  border-color: rgba(16, 185, 129, 0.35);
-  color: #5eead4;
-}
-
-html[data-theme="light"] .desafios-badge {
-  color: #047857;
-  border-color: rgba(4, 120, 87, 0.35);
 }
 
 .desafios-intro {
@@ -875,9 +870,20 @@ html[data-theme="light"] .desafios-code-collapse__summary:hover {
 
 .desafios-code-collapse__body {
   margin: 0;
+  padding: 1rem 1.1rem;
+  background: var(--code-bg);
   border-radius: 0;
   border: none;
   border-top: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.desafios-code-collapse__body pre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--code-fg);
 }
 
 /* —— Toggle tema (canto inferior direito) —— */
@@ -987,13 +993,21 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   box-shadow: none;
 }
 
-.activity-meta {
+.activity-card__head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.activity-card__head .theory-badge {
+  margin-bottom: 0;
+}
+
+.activity-card__progress {
+  margin-left: auto;
 }
 
 .pill {
@@ -1124,6 +1138,30 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
 
 .checklist__details-body p:last-child {
   margin-bottom: 0;
+}
+
+.checklist__code-intro {
+  margin: 0.35rem 0 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.checklist__code {
+  margin: 0 0 0.25rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.checklist__code pre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.52;
+  color: var(--code-fg);
 }
 
 .checklist__item {

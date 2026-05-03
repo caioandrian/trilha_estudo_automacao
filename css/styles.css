@@ -1182,6 +1182,10 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   overflow-x: auto;
+  max-width: 100%;
+  width: 100%;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .code-block pre {
@@ -1190,6 +1194,11 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   font-size: 0.8rem;
   line-height: 1.55;
   color: var(--code-fg);
+  white-space: pre;
+  overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .checklist-root {
@@ -1439,6 +1448,7 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
 }
 
 .feedback__head {
@@ -1457,7 +1467,9 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
 .feedback__body {
   padding: 1rem;
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
+  min-width: 0;
   font-size: 0.9rem;
   line-height: 1.55;
 }
@@ -1505,6 +1517,8 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
 
 .feedback-section {
   margin-top: 1rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .feedback-section h3 {
@@ -1541,9 +1555,11 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   }
 
   .context-nav-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 0.65rem;
     width: 100%;
     border-top: 1px solid var(--border);
     padding-top: 0.65rem;
@@ -1551,13 +1567,27 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
 
   .context-nav__toggle {
     display: inline-flex;
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    justify-self: start;
   }
 
   .context-nav__active-only {
     display: block;
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    width: fit-content;
+    max-width: 100%;
+    justify-self: end;
+    text-align: center;
+    min-width: 0;
   }
 
   .context-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
     display: none;
     flex-direction: column;
     align-items: stretch;
@@ -1595,5 +1625,13 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   .topbar__progress {
     width: 100%;
     max-width: none;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+
+  .actions #btnVerify {
+    margin-left: 0;
   }
 }

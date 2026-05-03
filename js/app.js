@@ -785,8 +785,8 @@ function renderActivity(ctx) {
     ? `<span class="theory-badge activity-badge--desafios" aria-hidden="true">◆ Desafios</span>`
     : `<span class="theory-badge activity-badge--perguntas" aria-hidden="true">● Perguntas</span>`;
   const progressPill = isDesafioCodigo
-    ? `<span class="pill activity-card__progress">Desafio ${idxInTopic} / ${totalInTopic} neste tópico</span>`
-    : `<span class="pill activity-card__progress">Questão ${idxInTopic} / ${totalInTopic} neste tópico</span>`;
+    ? `<span class="pill activity-card__progress">Desafio ${idxInTopic} / ${totalInTopic} </span>`
+    : `<span class="pill activity-card__progress">Questão ${idxInTopic} / ${totalInTopic} </span>`;
 
   const codeHtml = activityCodeBlockHtml(atividade.codigo);
 

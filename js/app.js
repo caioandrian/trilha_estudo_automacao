@@ -1,8 +1,7 @@
 const STORAGE_KEY = "trilha_estudo_automacao_v1";
 const THEME_KEY = "trilha_theme_pref";
 const CONTEXT_KEY = "trilha_contexto_pref";
-/** Só neste tópico as atividades e o feedback usam `.code-block`. Na teoria, o bloco de código aparece em qualquer tópico que defina `teoria.codigo`. */
-const TOPICO_CODE_BLOCKS_ID = "desafios-codigo";
+/** Em atividades com `codigo`, a pergunta mostra `.code-block`; no feedback, quando houver `codigoExplicacao`. Na teoria, quando houver `teoria.codigo`. */
 
 /** @typedef {{ id: string; texto: string; detalhes?: string | string[]; codigoExemplo?: string }} ChecklistPasso */
 /** @typedef {{ id: string; tipo: string; descricao: string; codigo?: string | null; passos?: ChecklistPasso[]; opcoes?: { id: string; texto: string }[]; corretas?: string[]; explicacao?: string; codigoExplicacao?: string }} Atividade */
@@ -393,13 +392,7 @@ function renderTopicList(
   });
 }
 
-function topicShowsCodeBlocks(/** @type {{ id: string }} */ topico) {
-  return topico.id === TOPICO_CODE_BLOCKS_ID;
-}
-
-/** @param {Topico} topico */
-function activityCodeBlockHtml(/** @type {string | null | undefined} */ code, topico) {
-  if (!topicShowsCodeBlocks(topico)) return "";
+function activityCodeBlockHtml(/** @type {string | null | undefined} */ code) {
   if (code == null || String(code).trim() === "") return "";
   return `<div class="code-block"><pre>${escapeHtml(String(code))}</pre></div>`;
 }
@@ -676,7 +669,7 @@ function renderChecklistActivity(ctx, topico, atividade) {
   const totalPassos = passos.length;
   const markedPassos = checklistMarkedCount(atividade, checklistDict);
 
-  const codeHtml = activityCodeBlockHtml(atividade.codigo, topico);
+  const codeHtml = activityCodeBlockHtml(atividade.codigo);
 
   const passosHtml = passos
     .map((p, i) => {
@@ -795,7 +788,7 @@ function renderActivity(ctx) {
     ? `<span class="pill activity-card__progress">Desafio ${idxInTopic} / ${totalInTopic} neste tópico</span>`
     : `<span class="pill activity-card__progress">Questão ${idxInTopic} / ${totalInTopic} neste tópico</span>`;
 
-  const codeHtml = activityCodeBlockHtml(atividade.codigo, topico);
+  const codeHtml = activityCodeBlockHtml(atividade.codigo);
 
   const inputType = multi ? "checkbox" : "radio";
   const inputName = multi ? `opt-${atividade.id}` : `opt-${atividade.id}`;
@@ -935,13 +928,12 @@ function renderCompletedQuestionPanel(atividade, selectionsDict, topico) {
 
   const expl = atividade.explicacao || "";
   const code = (atividade.codigoExplicacao || "").trim();
-  const codeBlock =
-    topicShowsCodeBlocks(topico) && code
-      ? `<div class="feedback-section">
+  const codeBlock = code
+    ? `<div class="feedback-section">
       <h3>Código / referência</h3>
       <div class="code-block"><pre>${escapeHtml(code)}</pre></div>
     </div>`
-      : "";
+    : "";
   panel.innerHTML = `
     <div class="feedback-result ${resultCls}">
       <p class="feedback-result__title">${escapeHtml(title)}</p>
@@ -970,13 +962,12 @@ function renderFeedback(ok, atividade, selected, topico) {
   const cls = ok ? "feedback-result--ok" : "feedback-result--bad";
 
   const codeRef = (atividade.codigoExplicacao || "").trim();
-  const codeSection =
-    topicShowsCodeBlocks(topico) && codeRef
-      ? `<div class="feedback-section">
+  const codeSection = codeRef
+    ? `<div class="feedback-section">
       <h3>Código / referência</h3>
       <div class="code-block"><pre>${escapeHtml(atividade.codigoExplicacao || "")}</pre></div>
     </div>`
-      : "";
+    : "";
 
   panel.innerHTML = `
     <div class="feedback-result ${cls}">

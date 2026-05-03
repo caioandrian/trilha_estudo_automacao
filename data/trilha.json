@@ -30,7 +30,7 @@
         {
           "id": "js-var-1",
           "tipo": "multipla_escolha",
-          "descricao": "Em JavaScript, qual palavra você usa para criar uma variável cujo valor pode mudar depois (por exemplo um contador)?",
+          "descricao": "O valor vai mudar depois (ex.: contador). Qual palavra você usa?",
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "var" },
@@ -39,69 +39,69 @@
             { "id": "D", "texto": "def" }
           ],
           "corretas": ["B"],
-          "explicacao": "`let` cria variáveis mutáveis respeitando escopo de bloco. `const` também tem escopo de bloco, mas o vínculo não pode ser reatribuído. `var` tem escopo de função e comportamentos legados menos previsíveis.",
+          "explicacao": "`let` serve quando você precisa mudar o valor depois. Com `const`, você não pode atribuir de novo ao mesmo nome. `var` é jeito antigo; em código novo prefira `let` ou `const`.",
           "codigoExplicacao": "let contador = 0;\ncontador = contador + 1;"
         },
         {
           "id": "js-const-1",
           "tipo": "multipla_correta",
-          "descricao": "Leia o código ao lado. Sobre `const`, marque as frases verdadeiras (pode marcar mais de uma).",
+          "descricao": "Veja o código. Sobre `const`, o que é verdade? (pode marcar mais de uma)",
           "codigo": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno';",
           "opcoes": [
-            { "id": "A", "texto": "Depois de criar `usuario`, não dá para trocar o objeto inteiro por outro (não pode fazer `usuario = outroObjeto`)." },
-            { "id": "B", "texto": "Ainda dá para mudar o que está dentro do objeto (por exemplo o nome)." },
-            { "id": "C", "texto": "Com const, nada dentro do objeto pode mudar nunca." },
-            { "id": "D", "texto": "O código acima é válido e o nome vira 'Bruno'." }
+            { "id": "A", "texto": "Não pode trocar o objeto inteiro depois (ex.: `usuario = outroObjeto`)." },
+            { "id": "B", "texto": "Pode mudar o valor que está dentro do objeto (ex.: o nome)." },
+            { "id": "C", "texto": "Nenhuma chave do objeto pode mudar." },
+            { "id": "D", "texto": "O código é válido e o nome fica 'Bruno'." }
           ],
           "corretas": ["A", "B", "D"],
-          "explicacao": "`const` congela a referência, não a mutabilidade profunda do objeto. Você não pode fazer `usuario = {}` de novo, mas pode alterar `usuario.nome`.",
+          "explicacao": "`const` trava o nome da variável: você não aponta ela para outro objeto. Mas o conteúdo do objeto ainda pode ser alterado.",
           "codigoExplicacao": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno'; // OK\n// usuario = {}; // TypeError"
         },
         {
           "id": "js-array-1",
           "tipo": "multipla_correta",
-          "descricao": "Sobre listas (arrays) em JavaScript: o que é verdade? Marque todas as corretas.",
+          "descricao": "Lista (array) em JavaScript: marque o que for verdade.",
           "codigo": "const fila = ['a', 'b'];\nfila.push('c');\nconst x = fila.pop();\nconst y = fila.shift();\nfila.unshift('z');",
           "opcoes": [
-            { "id": "A", "texto": "`const lista = []` cria uma lista vazia; você não troca a lista por outra, mas pode ir mudando os itens dentro dela." },
-            { "id": "B", "texto": "`push` coloca um item no final da lista." },
-            { "id": "C", "texto": "`pop` tira o último item da lista." },
-            { "id": "D", "texto": "`shift` tira o primeiro item da lista." },
-            { "id": "E", "texto": "`unshift` coloca um item no começo da lista." },
-            { "id": "F", "texto": "Em JavaScript, o jeito comum de colocar no final é `append` (não `push`)." }
+            { "id": "A", "texto": "Com `const lista = []`, você não troca a lista por outra, mas pode mudar os itens dentro." },
+            { "id": "B", "texto": "`push` adiciona no final." },
+            { "id": "C", "texto": "`pop` remove o último." },
+            { "id": "D", "texto": "`shift` remove o primeiro." },
+            { "id": "E", "texto": "`unshift` coloca no início." },
+            { "id": "F", "texto": "O método padrão para colocar no final é `append`." }
           ],
           "corretas": ["A", "B", "C", "D", "E"],
-          "explicacao": "Arrays em JS usam `push`/`pop` nas pontas direita e esquerda; `unshift`/`shift` fazem o mesmo nas extremidades opostas. Não existe `append` como método nativo de Array.",
+          "explicacao": "No JavaScript, listas usam `push`/`pop` no fim e `unshift`/`shift` no começo. Não existe `append` em arrays nativos.",
           "codigoExplicacao": "const n = [];\nn.push(1);\nn.unshift(0); // [0, 1]\nn.pop();       // remove 1\nn.shift();     // remove 0"
         },
         {
           "id": "js-if-1",
           "tipo": "multipla_escolha",
-          "descricao": "Observe o trecho. O que aparece no console após a execução?",
+          "descricao": "5 é maior que 10? O que o console mostra?",
           "codigo": "const limite = 10;\nconst valor = 5;\nif (valor > limite) {\n  console.log('maior');\n} else {\n  console.log('menor ou igual');\n}",
           "opcoes": [
             { "id": "A", "texto": "maior" },
             { "id": "B", "texto": "menor ou igual" },
-            { "id": "C", "texto": "Nada é impresso" },
-            { "id": "D", "texto": "O código gera erro de sintaxe" }
+            { "id": "C", "texto": "nada" },
+            { "id": "D", "texto": "erro de sintaxe" }
           ],
           "corretas": ["B"],
-          "explicacao": "A condição `valor > limite` é `5 > 10`, ou seja, falsa. O bloco do `else` é executado, então imprime `menor ou igual`.",
+          "explicacao": "`if` só roda o primeiro bloco quando a condição é verdadeira. Aqui `5 > 10` é falso, então cai no `else`.",
           "codigoExplicacao": "if (condicao) { /* se verdadeiro */ } else { /* se falso */ }"
         },
         {
           "id": "loop-1",
           "tipo": "multipla_correta",
-          "descricao": "Em JavaScript, quais formas comuns existem para repetir um trecho de código? (Pode marcar mais de uma.)",
+          "descricao": "Quais opções são jeitos reais de repetir código em JavaScript?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "Loop()" },
-            { "id": "B", "texto": "repete()" },
-            { "id": "C", "texto": "for" },
-            { "id": "D", "texto": "forEach (para percorrer itens de uma lista)" }
+            { "id": "A", "texto": "Loop() — função pronta da linguagem" },
+            { "id": "B", "texto": "repete() — função pronta da linguagem" },
+            { "id": "C", "texto": "`for`" },
+            { "id": "D", "texto": "`forEach` em uma lista" }
           ],
           "corretas": ["C", "D"],
-          "explicacao": "JavaScript oferece `for`, `while`, `do...while`, e métodos de array como `forEach`, `map`, etc. Não existem funções globais `Loop()` ou `repete()` padrão.",
+          "explicacao": "Quem repete de verdade são estruturas como `for` e `while`, ou métodos de lista como `forEach`. `Loop()` e `repete()` não existem assim por padrão.",
           "codigoExplicacao": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}\n\n['a','b'].forEach(letra => console.log(letra));"
         }
       ]
@@ -129,16 +129,16 @@
         {
           "id": "storage-1",
           "tipo": "multipla_escolha",
-          "descricao": "O que usamos para guardar texto no navegador entre visitas (até limpar dados do site)?",
+          "descricao": "Guardar algo no navegador e achar de novo depois de fechar o site. O que usar?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "sessionStorage (só enquanto a aba está aberta)" },
+            { "id": "A", "texto": "sessionStorage (some ao fechar a aba)" },
             { "id": "B", "texto": "localStorage" },
-            { "id": "C", "texto": "Só o IndexedDB (outro recurso do navegador)" },
-            { "id": "D", "texto": "Só cookies (aqueles ligados a sites e servidor)" }
+            { "id": "C", "texto": "só IndexedDB" },
+            { "id": "D", "texto": "só cookies HTTP" }
           ],
           "corretas": ["B"],
-          "explicacao": "`localStorage` guarda chave/valor na origem até você ou o código apagar. `sessionStorage` some ao fechar a aba.",
+          "explicacao": "`localStorage` fica naquele site até você limpar os dados ou o código apagar. `sessionStorage` some quando a aba fecha.",
           "codigoExplicacao": "localStorage.setItem('token', 'abc123');\nconst t = localStorage.getItem('token');"
         }
       ]
@@ -152,66 +152,66 @@
         {
           "id": "des-1",
           "tipo": "desafio_codigo",
-          "descricao": "Este código roda até o fim sem dar erro?",
+          "descricao": "Roda até o fim sem erro?",
           "codigo": "const x = 1;\nx = 2;\nconsole.log(x);",
           "opcoes": [
-            { "id": "A", "texto": "Sim, imprime 2" },
-            { "id": "B", "texto": "Não: deu problema porque `const` não pode receber outro valor depois" }
+            { "id": "A", "texto": "Sim — imprime 2" },
+            { "id": "B", "texto": "Não — `const` não pode mudar de valor assim" }
           ],
           "corretas": ["B"],
-          "explicacao": "Variáveis declaradas com `const` não podem ser reatribuídas. Isso gera TypeError em modo estrito comum em engines atuais.",
+          "explicacao": "Com `const`, você não pode atribuir de novo à mesma variável. Para mudar o valor, use `let`.",
           "codigoExplicacao": "let x = 1;\nx = 2; // OK"
         },
         {
           "id": "des-2",
           "tipo": "desafio_codigo",
-          "descricao": "Este código acessa um índice fora do tamanho do array. O que acontece?",
+          "descricao": "Lista tem 2 itens. O que acontece ao ler `nums[5]`?",
           "codigo": "const nums = [10, 20];\nconsole.log(nums[5]);",
           "opcoes": [
-            { "id": "A", "texto": "O programa quebra com mensagem de erro" },
-            { "id": "B", "texto": "Não dá erro; só mostra um valor “vazio” (undefined)" }
+            { "id": "A", "texto": "Quebra com erro" },
+            { "id": "B", "texto": "Não quebra — devolve vazio (`undefined`)" }
           ],
           "corretas": ["B"],
-          "explicacao": "Em JavaScript, ler `array[indiceInexistente]` retorna `undefined`; não é um erro por si só.",
+          "explicacao": "Ler uma posição que não existe na lista não estoura erro; o JavaScript devolve `undefined`.",
           "codigoExplicacao": "const nums = [10, 20];\nconsole.log(nums[5]); // undefined"
         },
         {
           "id": "des-3",
           "tipo": "desafio_codigo",
-          "descricao": "No navegador, este arquivo carrega como módulo (`type=\"module\"`). O `await` na primeira linha do arquivo é permitido?",
+          "descricao": "Script carregado como módulo (`type=\"module\"`). `await` na primeira linha do arquivo pode?",
           "codigo": "// arquivo: medias.js (type=\"module\")\nconst dados = await fetch('/api');",
           "opcoes": [
-            { "id": "A", "texto": "Sim, navegadores atuais aceitam `await` assim quando o script é módulo" },
-            { "id": "B", "texto": "Não: `await` só pode ficar dentro de uma função marcada como `async`" }
+            { "id": "A", "texto": "Sim — em módulo isso é permitido" },
+            { "id": "B", "texto": "Não — `await` só dentro de função `async`" }
           ],
           "corretas": ["A"],
-          "explicacao": "Top-level `await` é permitido em módulos ES (`<script type=\"module\">`). Em scripts clássicos sem `async` wrapper, não.",
+          "explicacao": "Em arquivo módulo no navegador, `await` no topo do arquivo é válido. Em script antigo sem `type=\"module\"`, não.",
           "codigoExplicacao": "<script type=\"module\">\n  const r = await fetch('/data.json');\n</script>"
         },
         {
           "id": "des-4",
           "tipo": "desafio_codigo",
-          "descricao": "JSON.parse em string inválida: o que ocorre?",
+          "descricao": "`JSON.parse` nessa string. O que ocorre?",
           "codigo": "JSON.parse('{ nome: \"teste\" }');",
           "opcoes": [
-            { "id": "A", "texto": "Converte normalmente para objeto" },
-            { "id": "B", "texto": "Dá erro: em JSON as chaves precisam estar entre aspas duplas, no formato certinho" }
+            { "id": "A", "texto": "vira objeto normalmente" },
+            { "id": "B", "texto": "dá erro — JSON exige aspas nas chaves, formato certo" }
           ],
           "corretas": ["B"],
-          "explicacao": "JSON não aceita chaves sem aspas como em objetos JS literais. A string precisa ser por exemplo '{\"nome\":\"teste\"}'.",
+          "explicacao": "JSON é mais rígido que objeto JavaScript: chaves precisam de aspas duplas, por exemplo `{\"nome\":\"teste\"}`.",
           "codigoExplicacao": "JSON.parse('{\"nome\":\"teste\"}'); // OK"
         },
         {
           "id": "des-5",
           "tipo": "desafio_codigo",
-          "descricao": "Chamar função antes da declaração function: funciona?",
+          "descricao": "A chamada vem antes da `function`. Funciona?",
           "codigo": "ola();\nfunction ola() { console.log('oi'); }",
           "opcoes": [
-            { "id": "A", "texto": "Sim: com `function` assim, o JavaScript “enxerga” a função mesmo sendo chamada antes" },
-            { "id": "B", "texto": "Não: dá erro de “ainda não existe” porque foi chamada antes de existir" }
+            { "id": "A", "texto": "Sim — `function ola()` pode ser chamada antes" },
+            { "id": "B", "texto": "Não — erro de “ainda não definida”" }
           ],
           "corretas": ["A"],
-          "explicacao": "Function declarations são içadas integralmente. Com `const ola = () => {}` a ordem importaria.",
+          "explicacao": "Declaração com `function` sobe no arquivo (hoisting). Com `const ola = () => {}` a ordem importa.",
           "codigoExplicacao": "ola();\nfunction ola() { console.log('oi'); } // imprime oi"
         }
       ]

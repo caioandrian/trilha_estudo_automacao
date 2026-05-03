@@ -442,7 +442,7 @@
         {
           "id": "cy-proj-checklist",
           "tipo": "checklist_trilha",
-          "descricao": "Siga na ordem que preferir — marque ao concluir de fato cada etapa na sua máquina. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
+          "descricao": "Siga na ordem que preferir — {{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
           "codigo": "# Pasta do projeto\nmkdir meu-projeto-cypress\n\ncd meu-projeto-cypress\n\n# NPM\nnpm init -y\nnpm install cypress --save-dev\n\n# Primeira execução (GUI)\nnpx cypress open",
           "passos": [
             {
@@ -530,7 +530,7 @@
         {
           "id": "gh-checklist",
           "tipo": "checklist_trilha",
-          "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\nMarque só após cada ação estar feita no seu ambiente; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
+          "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\n{{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
           "codigo": ":: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\ngit add .\ngit commit -m \"chore: primeiro commit\"\ngit branch -M main\n\n:: Depois que o repositório existir no GitHub\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit push -u origin main",
           "passos": [
             {

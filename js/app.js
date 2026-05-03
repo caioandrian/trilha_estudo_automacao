@@ -354,6 +354,40 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+/** Trechos entre ** viram &lt;strong&gt; (escape). */
+function formatActivityDescBoldSegments(/** @type {string} */ plain) {
+  const bits = plain.split(/\*\*/);
+  return bits
+    .map((bit, i) => {
+      const esc = escapeHtml(bit);
+      return i % 2 === 1 ? `<strong>${esc}</strong>` : esc;
+    })
+    .join("");
+}
+
+/** {{iu:...}} = itálico e sublinhado; demais trechos seguem regra de **. */
+function formatActivityDescParagraph(/** @type {string} */ para) {
+  const re = /\{\{iu:([\s\S]*?)\}\}/g;
+  let out = "";
+  let last = 0;
+  let m;
+  while ((m = re.exec(para)) !== null) {
+    out += formatActivityDescBoldSegments(para.slice(last, m.index));
+    out += `<em class="activity-desc--iu">${escapeHtml(m[1])}</em>`;
+    last = m.index + m[0].length;
+  }
+  out += formatActivityDescBoldSegments(para.slice(last));
+  return out;
+}
+
+/** Parágrafos em \\n\\n; ** negrito; \\{\\{iu:...\\}\\} itálico e sublinhado (conteúdo escapado). */
+function formatActivityDescricaoHtml(/** @type {string | null | undefined} */ raw) {
+  const text = raw == null ? "" : String(raw);
+  const paras = text.split(/\n\n+/).filter((p) => p.trim().length > 0);
+  if (paras.length === 0) return `<p class="activity-desc"></p>`;
+  return paras.map((para) => `<p class="activity-desc">${formatActivityDescParagraph(para)}</p>`).join("");
+}
+
 /** @param {string | string[] | undefined} detalhes */
 function formatChecklistDetalhesHtml(detalhes) {
   if (detalhes == null || detalhes === "") return "";
@@ -579,12 +613,13 @@ function renderChecklistActivity(ctx, topico, atividade) {
   const view = document.getElementById("activityView");
   if (!view) return;
 
-  const idxInTopic = topico.atividades.findIndex((a) => a.id === atividade.id) + 1;
-  const totalInTopic = topico.atividades.length;
+  const passos = atividade.passos || [];
+  const totalPassos = passos.length;
+  const markedPassos = checklistMarkedCount(atividade, checklistDict);
 
   const codeHtml = activityCodeBlockHtml(atividade.codigo, topico);
 
-  const passosHtml = (atividade.passos || [])
+  const passosHtml = passos
     .map((p, i) => {
       const checked = (checklistDict[atividade.id] || []).includes(p.id);
       const detalhesBody = formatChecklistDetalhesHtml(p.detalhes);
@@ -617,9 +652,9 @@ function renderChecklistActivity(ctx, topico, atividade) {
     <article class="activity-card">
       <div class="activity-card__head">
         <span class="theory-badge activity-badge--perguntas" aria-hidden="true">● Passo a passo (checklist)</span>
-        <span class="pill activity-card__progress">${idxInTopic} / ${totalInTopic} neste tópico</span>
+        <span class="pill activity-card__progress" id="checklistStepProgress">${markedPassos}/${totalPassos} passos finalizados</span>
       </div>
-      <p class="activity-desc">${escapeHtml(atividade.descricao)}</p>
+      ${formatActivityDescricaoHtml(atividade.descricao)}
       ${codeHtml}
       <div class="checklist-root" role="group" aria-label="Passos do projeto">${passosHtml}</div>
       <div class="actions">
@@ -641,6 +676,12 @@ function renderChecklistActivity(ctx, topico, atividade) {
       checklistDict[atividade.id] = [...s];
       syncChecklistCompletion(topicos, completedSet, checklistDict);
       persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
+      const pill = document.getElementById("checklistStepProgress");
+      if (pill) {
+        const n = (atividade.passos || []).length;
+        const k = checklistMarkedCount(atividade, checklistDict);
+        pill.textContent = `${k}/${n} passos finalizados`;
+      }
       if (allDone(topicos, completedSet)) {
         paint();
       } else {
@@ -720,7 +761,7 @@ function renderActivity(ctx) {
         ${kindBadge}
         ${progressPill}
       </div>
-      <p class="activity-desc">${escapeHtml(atividade.descricao)}</p>
+      ${formatActivityDescricaoHtml(atividade.descricao)}
       ${codeHtml}
       <div class="options" id="optionsRoot">${optionsHtml}</div>
       <div class="actions">

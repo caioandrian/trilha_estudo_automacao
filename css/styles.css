@@ -1041,6 +1041,13 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   font-size: 0.95rem;
 }
 
+.activity-desc .activity-desc--iu {
+  font-style: italic;
+  font-weight: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
 .code-block {
   margin: 0 0 1.25rem;
   padding: 1rem 1.1rem;

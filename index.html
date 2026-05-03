@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="pt-BR" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,20 +15,20 @@
   <body>
     <div class="app">
       <header class="topbar">
-        <div class="brand">
-          <span class="brand__icon" aria-hidden="true">◆</span>
-          <div>
+        <div class="topbar__row">
+          <div class="brand">
+            <span class="brand__icon" aria-hidden="true">◆</span>
             <h1 class="brand__title">Trilha de estudos</h1>
-            <p class="brand__subtitle">Lógica de programação · Cypress · GitHub</p>
+          </div>
+          <div class="progress-wrap" aria-live="polite">
+            <span class="progress-wrap__label">Progresso</span>
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar__fill" id="progressFill"></div>
+            </div>
+            <span class="progress-wrap__pct" id="progressPct">0%</span>
           </div>
         </div>
-        <div class="progress-wrap" aria-live="polite">
-          <span class="progress-wrap__label">Progresso</span>
-          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar__fill" id="progressFill"></div>
-          </div>
-          <span class="progress-wrap__pct" id="progressPct">0%</span>
-        </div>
+        <nav class="context-nav" id="contextNav" aria-label="Áreas da trilha"></nav>
       </header>
 
       <div class="layout">
@@ -72,8 +72,8 @@
     </div>
 
     <div class="theme-switch" role="group" aria-label="Alternar tema claro ou escuro">
-      <span class="theme-switch__label" id="themeLabel">Tema claro</span>
-      <button type="button" class="theme-switch__toggle" id="themeToggle" role="switch" aria-checked="true" aria-labelledby="themeLabel">
+      <span class="theme-switch__label" id="themeLabel">Tema escuro</span>
+      <button type="button" class="theme-switch__toggle" id="themeToggle" role="switch" aria-checked="false" aria-labelledby="themeLabel">
         <span class="theme-switch__thumb" aria-hidden="true"></span>
       </button>
     </div>

@@ -1554,6 +1554,10 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
     max-height: 280px;
   }
 
+  .feedback__head {
+    text-align: center;
+  }
+
   .context-nav-wrap {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -1633,5 +1637,9 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
 
   .actions #btnVerify {
     margin-left: 0;
+  }
+
+  .theme-switch {
+    display: none;
   }
 }

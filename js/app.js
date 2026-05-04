@@ -1193,6 +1193,7 @@ function showCongratulations() {
     <div class="congrats">
       <h2>Parabéns!</h2>
       <p>Você concluiu a trilha de estudos básicos para iniciar automação de testes.</p>
+      <p>Se você gostou, compartilhe essa trilha de estudos no seu LinkedIn :)</p>
     </div>`;
 }
 

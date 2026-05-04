@@ -594,7 +594,8 @@
               "id": "chk-init",
               "texto": "Gerar package.json nesta pasta (`npm init -y`).",
               "detalhes": [
-                "`npm init -y` cria um `package.json` mínimo sem perguntas interativas (o -y aceita padrões).",
+                "Na raiz da pasta do projeto, digite exatamente o comando abaixo e pressione Enter: `npm init -y`",
+                "Este comando cria um `package.json` mínimo sem perguntas interativas (o -y aceita padrões).",
                 "Abra o arquivo no editor e confira nome e versão do projeto; altere depois se quiser.",
                 "Sem este arquivo, o `npm install` do próximo passo não teria onde registrar o Cypress."
               ]
@@ -603,8 +604,11 @@
               "id": "chk-install",
               "texto": "Instalar Cypress em devDependencies (`npm install cypress --save-dev`).",
               "detalhes": [
+                "No terminal, com o prompt já dentro da pasta do projeto (onde está o `package.json`), digite exatamente o comando abaixo e pressione Enter:",
+                "`npm install cypress --save-dev`",
+                "Aguarde o fim do download e da instalação. No `package.json`, em `devDependencies`, deve aparecer a entrada do `cypress` com a versão instalada.",
                 "O download pode demorar na primeira vez; o NPM baixa o binário adequado ao seu sistema.",
-                "`--save-dev` grava o Cypress em devDependencies: ideal para testes, não para produção.",
+                "`--save-dev` indica dependência só para desenvolvimento/testes, não para publicar em produção.",
                 "Se houver erro de rede ou proxy corporativo, consulte a documentação do Cypress e as opções de registry do NPM (https://docs.npmjs.com/cli/v11/using-npm/registry)."
               ]
             },
@@ -612,18 +616,23 @@
               "id": "chk-open",
               "texto": "Rodar pela primeira vez o assistente com `npx cypress open` e concluir a configuração E2E sugerida.",
               "detalhes": [
-                "`npx` executa o CLI do Cypress sem instalação global. Na primeira execução, o assistente pergunta o tipo de teste (escolha E2E para esta trilha).",
-                "Selecione o navegador suportado e deixe o wizard criar pastas e arquivos padrão.",
+                "No terminal, ainda na pasta raiz do projeto, digite exatamente o comando abaixo e pressione Enter:",
+                "`npx cypress open`",
+                "`npx` executa o binário do Cypress instalado em `node_modules`, sem precisar de instalação global do CLI.",
+                "Na primeira execução, o Cypress abre o assistente na interface: escolha **E2E Testing** e avance com **Continue** nos passos sugeridos até o assistente terminar a configuração inicial.",
+                "Em seguida escolha um navegador compatível para abrir o **Test Runner** (lista de testes e execução).",
                 "Se o firewall ou antivírus bloquear, autorize o Cypress ou consulte a seção de troubleshooting na documentação oficial."
               ]
             },
             {
               "id": "chk-estrutura",
-              "texto": "Confirmar na árvore de arquivos a pasta `cypress/` (`e2e`, `fixtures`, `support`) e o arquivo `cypress.config.js` ou `cypress.config.ts` na raiz.",
+              "texto": "Criar a estrutura padrão do projeto com Cypress.",
               "detalhes": [
-                "`cypress/e2e` guarda os arquivos de teste; `fixtures` serve para dados estáticos de teste; `support` costuma ter `e2e.js` ou `commands.js` para configuração global.",
+                "Depois que você conclui o fluxo na interface do Cypress (**E2E Testing** e **Continue** nos passos do assistente), o próprio Cypress cria automaticamente a estrutura padrão — não é obrigatório criar manualmente `cypress/` nem o arquivo de config na primeira vez.",
+                "O que costuma aparecer: pasta `cypress/` com `e2e`, `fixtures` e `support`, e na raiz do projeto `cypress.config.js` ou `cypress.config.ts` (conforme a opção escolhida no wizard).",
+                "`cypress/e2e` guarda os arquivos de teste (specs); `fixtures` serve para dados estáticos; `support` costuma incluir entrada global (por exemplo `e2e.js` / `e2e.ts`) e pode hospedar `commands.js` para comandos customizados.",
                 "O `cypress.config.*` na raiz define opções como `baseUrl`, timeouts e pastas customizadas.",
-                "Se alguma pasta não existir, rode de novo o assistente ou crie manualmente seguindo o guia Getting Started do Cypress."
+                "Se algo não existir, rode de novo `npx cypress open` e complete o assistente, ou siga o guia Getting Started em https://docs.cypress.io/"
               ]
             },
             {

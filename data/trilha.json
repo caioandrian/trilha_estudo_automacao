@@ -570,11 +570,11 @@
           "id": "cy-proj-checklist",
           "tipo": "checklist_trilha",
           "descricao": "Siga na ordem que preferir — {{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
-          "codigo": "# Pasta do projeto\nmkdir meu-projeto-cypress\n\ncd meu-projeto-cypress\n\n# NPM\nnpm init -y\nnpm install cypress --save-dev\n\n# Primeira execução (GUI)\nnpx cypress open",
+          "codigo": "# Pasta do projeto\nmkdir trilha-automacao\n\ncd trilha-automacao\n\n# NPM\nnpm init -y\nnpm install cypress --save-dev\n\n# Primeira execução (GUI)\nnpx cypress open",
           "passos": [
             {
               "id": "chk-nr",
-              "texto": "Verificar Node.js instalado no terminal (`node -v`) e NPM disponível (`npm -v`).",
+              "texto": "Verificar se o Node.js está instalado e se o NPM está disponível.",
               "detalhes": [
                 "Node.js inclui o NPM. Esses comandos precisam funcionar no CMD ou PowerShell; se aparecer comando não encontrado, instale Node.",
                 "No Windows, baixe o instalador LTS em https://nodejs.org/ (botão recomendado). Execute o .msi e conclua o assistente mantendo a opção de registrar no PATH quando oferecida.",
@@ -583,16 +583,16 @@
             },
             {
               "id": "chk-pasta",
-              "texto": "Criar uma pasta para os testes (ex.: meu-projeto-cypress) e entrar nela com `cd`.",
+              "texto": "Criar uma pasta para o seu projeto e entrar nela com `cd`.",
               "detalhes": [
-                "No CMD: `mkdir meu-projeto-cypress` depois `cd meu-projeto-cypress`. No PowerShell o mesmo vale; use caminhos com aspas se houver espaços no nome (`cd \"C:\\Meus Projetos\\qa\"`).",
+                "No CMD: `mkdir trilha-automacao` depois `cd trilha-automacao`. No PowerShell o mesmo vale; use caminhos com aspas se houver espaços no nome (`cd \"C:\\Meus Projetos\\trilha-automacao\"`).",
                 "Você pode criar a pasta pelo Explorador de Arquivos e depois abrir o terminal nela: no Explorador, barra de endereço, digite `cmd` e Enter.",
                 "O `package.json` e a pasta `cypress/` serão criados nos próximos passos dentro desta pasta."
               ]
             },
             {
               "id": "chk-init",
-              "texto": "Gerar package.json nesta pasta (`npm init -y`).",
+              "texto": "Gerar package.json no seu projeto.",
               "detalhes": [
                 "Na raiz da pasta do projeto, digite exatamente o comando abaixo e pressione Enter: `npm init -y`",
                 "Este comando cria um `package.json` mínimo sem perguntas interativas (o -y aceita padrões).",
@@ -602,7 +602,7 @@
             },
             {
               "id": "chk-install",
-              "texto": "Instalar Cypress em devDependencies (`npm install cypress --save-dev`).",
+              "texto": "Instalar Cypress no seu projeto.",
               "detalhes": [
                 "No terminal, com o prompt já dentro da pasta do projeto (onde está o `package.json`), digite exatamente o comando abaixo e pressione Enter:",
                 "`npm install cypress --save-dev`",
@@ -626,7 +626,7 @@
             },
             {
               "id": "chk-estrutura",
-              "texto": "Criar a estrutura padrão do projeto com Cypress.",
+              "texto": "Verificar a estrutura padrão do projeto com Cypress.",
               "detalhes": [
                 "Depois que você conclui o fluxo na interface do Cypress (**E2E Testing** e **Continue** nos passos do assistente), o próprio Cypress cria automaticamente a estrutura padrão — não é obrigatório criar manualmente `cypress/` nem o arquivo de config na primeira vez.",
                 "O que costuma aparecer: pasta `cypress/` com `e2e`, `fixtures` e `support`, e na raiz do projeto `cypress.config.js` ou `cypress.config.ts` (conforme a opção escolhida no wizard).",
@@ -671,86 +671,89 @@
           "passos": [
             {
               "id": "gh-cfg",
-              "texto": "Configurar identidade global do Git no CMD ou PowerShell.",
+              "texto": "Configurar identidade global do seu usuário Git (autor e e-mail).",
               "detalhes": [
-                "Essas configurações definem autor e e-mail que aparecerão nos commits.",
-                "Exemplo: git config --global user.name \"Maria Silva\" e git config --global user.email maria@exemplo.com (use suas informações).",
-                "Para conferir depois: `git config --global --list`. Instale o Git for Windows em https://git-scm.com/download/win caso o comando `git` não exista.",
-                "Documentação oficial: https://git-scm.com/docs/git-config"
+                "Pelo CMD ou PowerShell, execute os comandos abaixo para configurar o seu usuário Git. Essas configurações definem autor e e-mail que aparecerão nos commits.",
+                "Comandos (troque pelos seus dados):\n`git config --global user.name \"Seu Nome\"`\n`git config --global user.email voce@email.com`",
+                "Conferir o que ficou salvo: `git config --global --list` ou só nome/e-mail: `git config --global user.name` e `git config --global user.email`.",
+                "Se o comando `git` não existir, instale o Git for Windows: https://git-scm.com/download/win — documentação do comando: https://git-scm.com/docs/git-config"
               ]
             },
             {
               "id": "gh-cd",
-              "texto": "Abrir terminal na pasta raiz do projeto que você quer versionar (`cd caminho\\da\\pasta`).",
+              "texto": "Abrir terminal na pasta raiz do projeto que você quer versionar.",
               "detalhes": [
-                "No CMD e PowerShell você navega pastas com `cd`. Use `dir` ou `ls` para listar o conteúdo e confirmar que está na pasta certa antes de `git init`.",
-                "Caminhos com espaços exigem aspas: `cd \"C:\\Users\\Eu\\Desktop\\Meu projeto\"`.",
-                "No VS Code / Cursor você pode usar Terminal > New Terminal já abrindo na raiz da pasta do workspace."
+                "Navegue até a pasta do projeto com `cd`. Exemplos: `cd C:\\Users\\seuusuario\\Documentos\\github\\meu-projeto` ou `cd \"D:\\Meus Projetos\\trilha-automacao\"` (aspas quando houver espaços).",
+                "Conferir pasta atual: no PowerShell `Get-Location` ou `pwd`; listar arquivos: `dir` ou `Get-ChildItem` — confira antes de rodar `git init` na raiz certa.",
+                "No VS Code / Cursor: Terminal > New Terminal costuma abrir já na raiz do workspace; use `cd` se precisar mudar de pasta."
               ]
             },
             {
               "id": "gh-init",
-              "texto": "Inicializar repositório local com `git init` (somente na primeira vez, se ainda não existe `.git`).",
+              "texto": "Inicializar repositório local com `git init`. Apenas na primeira vez que você estiver iniciando o projeto.",
               "detalhes": [
-                "`git init` cria a pasta oculta `.git` onde o Git guarda o histórico local.",
-                "Não rode de novo dentro de um clone existente pensando que atualiza projeto remoto.",
-                "Se já existe `.git`, pule esta etapa e vá para add/commit conforme estado dos arquivos."
+                "Na raiz do projeto, execute uma vez: `git init` — o Git cria a pasta oculta `.git` com o histórico local.",
+                "Não rode de novo dentro de um clone ou repositório existente só para “ligar” ao GitHub; use `git remote` e `git push` nos passos seguintes.",
+                "Se já existe `.git` (por exemplo você clonou o repo ou já inicializou antes), pule esta etapa e siga para add/commit conforme o estado dos arquivos."
               ]
             },
             {
               "id": "gh-ignore",
-              "texto": "Criar ou revisar `.gitignore` incluindo ao menos `node_modules` e quaisquer arquivos de ambiente (.env).",
+              "texto": "Criar ou revisar `.gitignore`.",
               "detalhes": [
-                "Crie um arquivo chamado `.gitignore` na raiz do repo e adicione linhas como node_modules/, .env, dist/, coberturas de build e arquivos sensíveis.",
-                "Arquivos ignorados não entram no `git add` por padrão e evitam subir dependências enormes ou segredos.",
-                "Modelos comuns: https://github.com/github/gitignore — adapte ao seu stack (Node, Cypress, etc.)."
+                "Crie um arquivo `.gitignore` na raiz (pelo editor ou terminal). PowerShell na pasta do projeto: `New-Item -Path .gitignore -ItemType File` depois edite o arquivo; ou abra com `notepad .gitignore`.",
+                "Inclua linhas como `node_modules/`, `.env`, `dist/` e pastas de artefatos (ex.: `cypress/videos/`, `cypress/screenshots/`). Arquivos listados aqui deixam de ser oferecidos ao `git add` por padrão.",
+                "Após salvar, use `git status` para ver o que ainda será versionado; ignore não aparece como novo arquivo a menos que você force.",
+                "Modelos prontos: https://github.com/github/gitignore — adapte ao seu stack (Node, Cypress, etc.)."
               ],
               "codigoExemplo": "# Dependências e artefatos Node / Cypress\nnode_modules/\ncypress/videos/\ncypress/screenshots/\n\n# Variáveis de ambiente (não versionar segredos)\n.env\n.env.*\n!.env.example\n\n# Pastas de build / SO (opcional)\ndist/\n.DS_Store"
             },
             {
               "id": "gh-commit",
-              "texto": "Adicionar arquivos (`git add .` ou seletivamente) e criar primeiro commit (`git commit -m \"mensagem\"`).",
+              "texto": "Adicionar arquivos para envio ao repositório remoto e criar primeiro commit.",
               "detalhes": [
-                "`git add .` coloca na área de stage tudo que não está ignorado; use `git status` para revisar antes de commitar.",
-                "A mensagem do commit deve descrever a mudança; para o primeiro commit algo como \"chore: primeiro commit\" é aceitável.",
-                "Se o Git reclamar de identidade, volte ao passo de `git config --global`."
+                "Sequência típica no terminal (na pasta do repo):\n`git add .`\n`git status`\n`git commit -m \"chore: primeiro commit\"` — a mensagem deve descrever a mudança; o exemplo acima vale para o primeiro commit.",
+                "Adicionar só alguns arquivos: `git add caminho/arquivo.ext` ou `git add pasta/`. Ver diff antes de commitar: `git diff` (não staged) ou `git diff --staged` (já no stage).",
+                "Se o Git reclamar de identidade, volte ao passo de configuração com `git config --global user.name` e `user.email`.",
+                "**Observação:** Em vez do terminal, você pode preparar o stage, o commit e o push pela IDE (ex.: Visual Studio Code → **Source Control**, Ctrl+Shift+G: **Commit** e depois **Push** ou **Sync Changes** quando o remoto estiver configurado)."
               ]
             },
             {
               "id": "gh-repo",
               "texto": "No site do GitHub, criar um repositório vazio para este projeto e copiar a URL HTTPS (ou SSH).",
               "detalhes": [
-                "Entre em https://github.com/ com sua conta, New repository, defina nome e visibilidade (público/privado).",
-                "Para este fluxo, pode deixar sem README/licença se quiser evitar conflito no primeiro push (ou depois faça pull se criar com README).",
-                "Guia de criação: https://docs.github.com/pt/repositories/creating-and-managing-repositories/creating-a-new-repository — copie a URL HTTPS mostrada após criar."
+                "Pelo site: https://github.com/ → **New repository** → nome e visibilidade (público/privado). Para o fluxo desta trilha, pode deixar sem README/licença e evitar conflito no primeiro `git push` (se criar com README, será preciso `git pull` antes ou alinhar histórico).",
+                "Depois de criar, copie a URL que o GitHub mostra. Exemplos de formato: HTTPS `https://github.com/SEU_USUARIO/SEU_REPO.git` ou SSH `git@github.com:SEU_USUARIO/SEU_REPO.git` — você usará no próximo passo com `git remote add origin ...`.",
+                "Guia oficial: https://docs.github.com/pt/repositories/creating-and-managing-repositories/creating-a-new-repository",
+                "Opcional (GitHub CLI instalada e logada: `gh auth login`): criar e já apontar remoto na pasta atual, por exemplo `gh repo create nome-do-repo --private --source=. --remote=origin --push` — só use se souber o que o comando faz; o fluxo padrão aqui é criar pelo site e copiar a URL."
               ]
             },
             {
               "id": "gh-remote",
-              "texto": "Associar o remoto (`git remote add origin <URL_COPIADO>`).",
+              "texto": "Associar o remoto.",
               "detalhes": [
-                "Substitua <URL_COPIADO> pela URL que o GitHub exibiu (formato https://github.com/usuario/repositorio.git).",
-                "Se errar a URL, use `git remote remove origin` e adicione de novo.",
-                "`git remote -v` lista os remotos configurados."
+                "Comando completo (troque pela URL que você copiou do GitHub):\n`git remote add origin https://github.com/USUARIO/REPO.git`",
+                "Conferir: `git remote -v` (deve listar `origin` com fetch e push). Já existe `origin` errado? `git remote remove origin` e rode o `add` de novo.",
+                "Só um remoto por nome: não rode `git remote add origin` duas vezes; se precisar mudar a URL, use `git remote set-url origin https://github.com/USUARIO/REPO.git`."
               ]
             },
             {
               "id": "gh-branch",
-              "texto": "Garantir branch principal chamada main (`git branch -M main`), se sua versão do Git/GitHub esperar esse padrão.",
+              "texto": "Garantir branch principal chamada main.",
               "detalhes": [
-                "`git branch -M main` renomeia a branch atual para main (maiúsculas importam só no nome literal).",
-                "Se você já trabalha na main com esse nome, o comando apenas confirma o padrão.",
-                "Repositórios antigos podem usar master; adapte também o comando de push ao nome real (`git push -u origin master`)."
+                "Renomear a branch atual para `main`: `git branch -M main`",
+                "Ver em qual branch você está: `git branch` (a atual aparece com `*`) ou `git status` (primeira linha costuma mostrar o branch).",
+                "Repositórios antigos podem usar `master`: aí o push típico é `git push -u origin master`. Para padronizar o nome da branch local em `main`, use `git branch -M main` e em seguida `git push -u origin main`."
               ]
             },
             {
               "id": "gh-push",
-              "texto": "Enviar o histórico com `git push -u origin main` (ou `-u origin master` conforme nome da branch), autenticando se o GitHub pedir.",
+              "texto": "Enviar o alterações para o repositório remoto.",
               "detalhes": [
-                "Na primeira vez o GitHub pode pedir login por HTTPS usando token pessoal (PAT), não só senha da conta.",
-                "Como criar um token: https://docs.github.com/pt/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token",
-                "Alternativa SSH: configure chave SSH e use a URL git@github.com:usuario/repo.git no remote.",
-                "Após push bem-sucedido, atualize o repositório no navegador e confira seus arquivos."
+                "Primeiro envio da branch `main` e já deixar rastrear o remoto: `git push -u origin main` — nas próximas vezes bastará `git push` na mesma branch.",
+                "Se o GitHub recusar porque o remoto tem commits que você não tem (ex.: README criado no site), alinhe antes com `git pull origin main --rebase` (ou `merge`) e só então `git push -u origin main`.",
+                "HTTPS costuma pedir autenticação com token pessoal (PAT), não a senha da conta — guia: https://docs.github.com/pt/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token",
+                "**Observação:** Em vez do terminal, você pode fazer o envio para o GitHub pela própria IDE: preparar os arquivos (stage), criar o commit e dar push no painel integrado de controle de versão. No Visual Studio Code, por exemplo, use **Source Control** (atalho Ctrl+Shift+G): marque as alterações, confirme com **Commit** e, quando o remoto já estiver configurado, use **Push** ou **Sync Changes** para publicar no repositório remoto."
               ]
             }
           ]

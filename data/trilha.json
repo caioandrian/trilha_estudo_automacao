@@ -271,15 +271,15 @@
         {
           "id": "des-3",
           "tipo": "desafio_codigo",
-          "descricao": "Script carregado como módulo (`type=\"module\"`). `await` na primeira linha do arquivo pode?",
-          "codigo": "// arquivo: medias.js (type=\"module\")\nconst dados = await fetch('/api');",
+          "descricao": "O que esse código mostra no `console`?",
+          "codigo": "console.log('10' + 5);",
           "opcoes": [
-            { "id": "A", "texto": "Sim — em módulo isso é permitido" },
-            { "id": "B", "texto": "Não — `await` só dentro de função `async`" }
+            { "id": "A", "texto": "15 — pois soma 10 com 5" },
+            { "id": "B", "texto": "105 — o `+` junta texto com número, como colar strings" }
           ],
-          "corretas": ["A"],
-          "explicacao": "Em arquivo módulo no navegador, `await` no topo do arquivo é válido. Em script antigo sem `type=\"module\"`, não.",
-          "codigoExplicacao": "<script type=\"module\">\n  const r = await fetch('/data.json');\n</script>"
+          "corretas": ["B"],
+          "explicacao": "Quando um dos lados do `+` é string, o JavaScript converte o outro valor para texto e concatena. `'10' + 5` vira `'10' + '5'`, resultado `'105'`, não a soma 15.",
+          "codigoExplicacao": "console.log('10' + 5);   // 105\nconsole.log(10 + 5);   // 15 (dois números, aí sim soma)"
         },
         {
           "id": "des-4",
@@ -287,8 +287,8 @@
           "descricao": "`JSON.parse` nessa string. O que ocorre?",
           "codigo": "JSON.parse('{ nome: \"teste\" }');",
           "opcoes": [
-            { "id": "A", "texto": "vira objeto normalmente" },
-            { "id": "B", "texto": "dá erro — JSON exige aspas nas chaves, formato certo" }
+            { "id": "A", "texto": "vira objeto JavaScript normalmente" },
+            { "id": "B", "texto": "dá erro — JSON exige aspas nas chaves" }
           ],
           "corretas": ["B"],
           "explicacao": "JSON é mais rígido que objeto JavaScript: chaves precisam de aspas duplas, por exemplo `{\"nome\":\"teste\"}`.",
@@ -353,7 +353,7 @@
           "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "Um servidor de banco de dados relacional" },
-            { "id": "B", "texto": "Programa que testa o site pelo próprio navegador, como se fosse uma pessoa clicando" },
+            { "id": "B", "texto": "Framework que testa o site pelo próprio navegador, como se fosse uma pessoa clicando" },
             { "id": "C", "texto": "Substituto do Git para versionamento" },
             { "id": "D", "texto": "Compilador de TypeScript para Java" }
           ],
@@ -380,7 +380,7 @@
           "id": "cy-3",
           "tipo": "multipla_escolha",
           "descricao": "Qual afirmação descreve melhor como o Cypress trata comandos como `cy.get` em relação ao carregamento da página?",
-          "codigo": "cy.get('#login').click();\ncy.get('[data-cy=email]').type('a@b.com');",
+          "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "Cada linha roda no instante exato; não há nova tentativa se o elemento ainda não existir." },
             { "id": "B", "texto": "`cy.get` não pode ser usado antes de `click` ou `type` no mesmo elemento." },
@@ -466,7 +466,7 @@
           "id": "cy-p3",
           "tipo": "multipla_escolha",
           "descricao": "Como conferir se um texto aparece dentro de um elemento (por exemplo a mensagem “Salvo”)?",
-          "codigo": "cy.get('.msg');",
+          "codigo": null,
           "opcoes": [
             { "id": "A", "texto": "cy.get('.msg').should('contain', 'Salvo')" },
             { "id": "B", "texto": "cy.get('.msg').assertText('Salvo')" },
@@ -481,12 +481,12 @@
           "id": "cy-p4",
           "tipo": "multipla_escolha",
           "descricao": "Como checar se um campo de e-mail está com o texto certo digitado?",
-          "codigo": "cy.get('#email');",
+          "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "cy.get('#email').should('have.value', 'a@b.com')" },
-            { "id": "B", "texto": "cy.get('#email').should('contain', 'a@b.com')" },
-            { "id": "C", "texto": "cy.get('#email').value('a@b.com')" },
-            { "id": "D", "texto": "cy.get('#email').text('a@b.com')" }
+            { "id": "A", "texto": "cy.get('#email').should('have.value', '@example.com')" },
+            { "id": "B", "texto": "cy.get('#email').should('contain', '@example.com')" },
+            { "id": "C", "texto": "cy.get('#email').value('@example.com')" },
+            { "id": "D", "texto": "cy.get('#email').text('@example.com')" }
           ],
           "corretas": ["A"],
           "explicacao": "Inputs usam a propriedade `value`; `have.value` é o matcher adequado.",

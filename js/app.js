@@ -958,9 +958,9 @@ function renderActivity(ctx) {
   const codeHtml = activityCodeBlockHtml(atividade.codigo);
 
   const hasSplitQuestionLayout =
-    !isDesafioCodigo &&
     atividade.codigo != null &&
-    String(atividade.codigo).trim() !== "";
+    String(atividade.codigo).trim() !== "" &&
+    (!isDesafioCodigo || topico.contexto === "Lógica de programação");
 
   const inputType = multi ? "checkbox" : "radio";
   const inputName = multi ? `opt-${atividade.id}` : `opt-${atividade.id}`;

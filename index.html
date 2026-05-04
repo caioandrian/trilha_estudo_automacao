@@ -96,17 +96,45 @@
       </div>
 
       <footer class="site-footer">
-        <p class="site-footer__credit">Desenvolvido por Caio Andrian · QA Engineer</p>
-        <a
-          class="site-footer__linkedin"
-          href="https://www.linkedin.com/in/caioandrian/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          LinkedIn
-        </a>
+        <div class="site-footer__intro">
+          <p class="site-footer__credit">
+            Desenvolvido por Caio Andrian · QA Engineer
+            <a
+              class="site-footer__linkedin"
+              href="https://www.linkedin.com/in/caioandrian/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
+          </p>
+          <button type="button" class="btn btn--ghost site-footer__recommend" data-linkedin-modal="sugestao">
+            Recomendar para amigos
+          </button>
+        </div>
       </footer>
     </div>
+
+    <dialog class="share-dialog" id="linkedinShareModal" aria-labelledby="linkedinShareTitle">
+      <div class="share-dialog__panel">
+        <h2 class="share-dialog__title" id="linkedinShareTitle">Texto para o LinkedIn</h2>
+        <p class="share-dialog__hint">
+          Copie o texto abaixo e cole em uma nova publicação no LinkedIn.
+        </p>
+        <label class="share-dialog__label" for="linkedinShareText">Texto da postagem</label>
+        <textarea
+          id="linkedinShareText"
+          class="share-dialog__textarea"
+          readonly
+          rows="14"
+          spellcheck="false"
+        ></textarea>
+        <div class="share-dialog__actions">
+          <button type="button" class="btn btn--primary" id="linkedinShareCopy">Copiar texto</button>
+          <button type="button" class="btn btn--ghost" id="linkedinShareClose">Fechar</button>
+        </div>
+      </div>
+    </dialog>
 
     <script src="js/app.js" type="module"></script>
   </body>

@@ -70,7 +70,7 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem 1rem;
+  gap: 0.65rem 1.25rem;
   margin-top: auto;
   padding: 0.95rem 1.25rem 1.25rem;
   padding-right: max(1.25rem, 11rem);
@@ -80,9 +80,32 @@ body {
   color: var(--muted);
 }
 
+.site-footer__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  text-align: center;
+}
+
 .site-footer__credit {
   margin: 0;
   text-align: center;
+  line-height: 1.6;
+}
+
+.site-footer__credit .site-footer__linkedin {
+  display: inline-block;
+  margin-inline-start: 0.5rem;
+  vertical-align: middle;
+}
+
+.site-footer__recommend {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.85rem;
+  text-align: center;
+  line-height: 1.25;
+  max-width: 100%;
 }
 
 .site-footer__linkedin {
@@ -1233,6 +1256,107 @@ html[data-theme="light"] .theme-switch__toggle[aria-checked="true"] {
   line-height: 1.6;
   max-width: 36ch;
   margin-inline: auto;
+}
+
+.congrats p + p {
+  margin-top: 0.75rem;
+}
+
+.congrats__share {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 28rem;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.congrats__share .btn {
+  flex: 1 1 calc(50% - 0.35rem);
+  min-width: 7.5rem;
+  max-width: 100%;
+}
+
+@media (max-width: 320px) {
+  .congrats__share .btn {
+    flex: 1 1 100%;
+  }
+}
+
+.share-dialog {
+  padding: 0;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  max-width: calc(100vw - 2rem);
+  width: min(34rem, 100%);
+  box-sizing: border-box;
+}
+
+.share-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+html[data-theme="light"] .share-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.share-dialog__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.35rem;
+  box-shadow: var(--shadow);
+}
+
+.share-dialog__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.12rem;
+  color: var(--text);
+}
+
+.share-dialog__hint {
+  margin: 0 0 0.65rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.share-dialog__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.share-dialog__textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 9.5rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.share-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .activity-card {

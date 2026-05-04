@@ -4,6 +4,32 @@ const ACTIVITY_KBD_NAV_HINT_HTML =
   '<p class="activity-actions__hint" role="note">Use ← → para navegar.</p>';
 const THEME_KEY = "trilha_theme_pref";
 const CONTEXT_KEY = "trilha_contexto_pref";
+
+const TRILHA_PUBLIC_URL = "https://caioandrian.github.io/trilha_estudo_automacao/";
+
+/**
+ * Modelos de post para o LinkedIn: tom mais informal, parágrafos curtos, hashtags relevantes.
+ * Incluem o que a trilha cobre: lógica básica, Cypress, projeto do zero e GitHub passo a passo.
+ */
+const LINKEDIN_POST_CONQUISTA = `Fechando mais um ciclo de estudo com um sorriso no rosto 🙂
+
+Acabei de concluir uma trilha gratuita que mistura teoria com prática: revisei lógica de programação no básico, mergulhei nos conceitos e nos comandos iniciais do Cypress (visit, get, should — aquele kit do dia a dia), montei um projeto Cypress do zero seguindo o passo a passo e subi tudo pro GitHub também com checklist bem guiada, sem pegadinha.
+
+Dá uma olhada se fizer sentido pra você: ${TRILHA_PUBLIC_URL}
+
+Valeu demais, @caioandrian, por ter criado essa trilha 100% grátis e acessível.
+
+#QA #QualidadeDeSoftware #TestesAutomatizados #AutomaçãoDeTestes #Cypress #GitHub #CarreiraEmTI #TechBrasil`;
+
+const LINKEDIN_POST_SUGESTAO = `Passando aqui pra recomendar uma trilha que achei super didática — e de graça 👇
+
+Ela cobre lógica de programação no essencial, conceitos e comandos básicos do Cypress, como criar um projeto com Cypress do zero (bem passo a passo) e ainda como enviar seu projeto pro GitHub com o fluxo explicado direitinho. Boa pra quem tá começando em automação ou quer organizar o básico sem se perder.
+
+Link: ${TRILHA_PUBLIC_URL}
+
+Créditos ao @caioandrian por ter montado essa trilha de estudos gratuita pra comunidade.
+
+#QA #Cypress #GitHub #TestesAutomatizados #AutomaçãoDeTestes #Estudos #QualidadeDeSoftware #EngenhariaDeSoftware`;
 /** Em atividades com `codigo`, a pergunta mostra `.code-block`; no feedback, quando houver `codigoExplicacao`. Na teoria, quando houver `teoria.codigo`. */
 
 /** @typedef {{ id: string; texto: string; detalhes?: string | string[]; codigoExemplo?: string }} ChecklistPasso */
@@ -1194,7 +1220,83 @@ function showCongratulations() {
       <h2>Parabéns!</h2>
       <p>Você concluiu a trilha de estudos básicos para iniciar automação de testes.</p>
       <p>Se você gostou, compartilhe essa trilha de estudos no seu LinkedIn :)</p>
+      <div class="congrats__share">
+        <button type="button" class="btn btn--primary" data-linkedin-modal="conquista">
+          Compartilhar
+        </button>
+        <button type="button" class="btn btn--ghost" data-linkedin-modal="sugestao">
+          Recomendar
+        </button>
+      </div>
     </div>`;
+}
+
+function initLinkedinShareModal() {
+  const dialog = document.getElementById("linkedinShareModal");
+  const textarea = document.getElementById("linkedinShareText");
+  const titleEl = document.getElementById("linkedinShareTitle");
+  const copyBtn = document.getElementById("linkedinShareCopy");
+  const closeBtn = document.getElementById("linkedinShareClose");
+  if (!dialog || !textarea || !titleEl || !copyBtn || !closeBtn) return;
+
+  let copyResetTimer = /** @type {ReturnType<typeof setTimeout> | null} */ (null);
+
+  function setCopyButtonLabel(label) {
+    if (copyResetTimer) {
+      clearTimeout(copyResetTimer);
+      copyResetTimer = null;
+    }
+    copyBtn.textContent = label;
+    if (label === "Copiado!") {
+      copyResetTimer = setTimeout(() => {
+        copyBtn.textContent = "Copiar texto";
+        copyResetTimer = null;
+      }, 2200);
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    if (!(t instanceof Element)) return;
+    const btn = t.closest("[data-linkedin-modal]");
+    if (!btn) return;
+    const kind = btn.getAttribute("data-linkedin-modal");
+    if (kind !== "conquista" && kind !== "sugestao") return;
+    textarea.value = kind === "conquista" ? LINKEDIN_POST_CONQUISTA : LINKEDIN_POST_SUGESTAO;
+    titleEl.textContent =
+      kind === "conquista"
+        ? "Compartilhar conquista — texto para colar no LinkedIn"
+        : "Sugerir a trilha — texto para colar no LinkedIn";
+    setCopyButtonLabel("Copiar texto");
+    dialog.showModal();
+    textarea.focus();
+    textarea.select();
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    const text = textarea.value;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyButtonLabel("Copiado!");
+    } catch {
+      textarea.focus();
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        setCopyButtonLabel("Copiado!");
+      } catch {
+        setCopyButtonLabel("Copiar texto");
+      }
+    }
+  });
+
+  closeBtn.addEventListener("click", () => {
+    dialog.close();
+  });
+
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
 }
 
 function initTheme() {
@@ -1274,6 +1376,7 @@ function attachActivityArrowKeyNav() {
 async function main() {
   initTheme();
   initAppReset();
+  initLinkedinShareModal();
   attachActivityArrowKeyNav();
   wireContextNavMobileToggle();
 

@@ -985,7 +985,7 @@
           "id": "gh-checklist",
           "tipo": "checklist_trilha",
           "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\n{{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
-          "codigo": "# Guia rápido\n\n:: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\n\n# ***Importante*** — Criar o .gitignore ANTES de git add .\nNew-Item -ItemType File -Force -Path .gitignore -Value \"node_modules/`n.env\"\n\n#No Linux: printf 'node_modules/\\n.env\\n' > .gitignore\n\ngit add .\ngit commit -m \"chore: primeiro commit\"\ngit branch -M main\n\n:: Depois que o repositório existir no GitHub\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit push -u origin main",
+          "codigo": "# Guia rápido\n\n:: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\n\n# ***Importante*** — Criar o .gitignore ANTES de git add .\nNew-Item -ItemType File -Force -Path .gitignore -Value \"node_modules/`n.env\"\n\n#No Linux: printf 'node_modules/\\n.env\\n' > .gitignore\n\ngit add .\ngit commit -m \"chore: primeiro commit\"\ngit branch -M main\n\n:: Depois que o repositório existir no GitHub (** Passo 6 **)\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit push -u origin main",
           "passos": [
             {
               "id": "gh-cfg",

@@ -882,7 +882,7 @@
           "id": "cy-proj-checklist",
           "tipo": "checklist_trilha",
           "descricao": "Siga na ordem que preferir — {{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
-          "codigo": "# Pasta do projeto\nmkdir trilha-automacao\n\ncd trilha-automacao\n\n# NPM\nnpm init -y\nnpm install cypress --save-dev\n\n# Primeira execução (GUI)\nnpx cypress open",
+          "codigo": "# Guia rápido\n\n# Pasta do projeto\nmkdir trilha-automacao\n\ncd trilha-automacao\n\n# Iniciar projeto e instalar Cypress\nnpm init -y\nnpm install cypress --save-dev\n\n# Criar a pasta e2e + trilha.cy.js (será usado no passo 8)\nNew-Item -ItemType Directory -Force -Path cypress/e2e\nNew-Item -ItemType File -Force -Path cypress/e2e/trilha.cy.js\nNo linux: mkdir -p cypress/e2e && touch cypress/e2e/trilha.cy.js\n\n# Abrir a interface do Cypress\nnpx cypress open",
           "passos": [
             {
               "id": "chk-nr",
@@ -931,8 +931,10 @@
                 "No terminal, ainda na pasta raiz do projeto, digite exatamente o comando abaixo e pressione Enter:",
                 "`npx cypress open`",
                 "`npx` executa o binário do Cypress instalado em `node_modules`, sem precisar de instalação global do CLI.",
-                "Na primeira execução, o Cypress abre o assistente na interface: escolha **E2E Testing** e avance com **Continue** nos passos sugeridos até o assistente terminar a configuração inicial.",
-                "Em seguida escolha um navegador compatível para abrir o **Test Runner** (lista de testes e execução).",
+                "Na primeira execução, o Cypress abre o assistente na interface: escolha **E2E Testing** e avance com **Continue** em cada etapa até **finalizar** a configuração inicial (pastas, arquivos de suporte e spec padrão, conforme o assistente mostrar).",
+                "Quando o fluxo oferecer **Create New Spec** (ou equivalente para criar uma spec padrão), **aceite e conclua** a criação desse arquivo de teste — isso costuma gerar o primeiro `.cy.js`/`.cy.ts` em `cypress/e2e`.",
+                "No **Test Runner**, **execute o primeiro teste** (clique no spec recém-criado) para confirmar que o ambiente está ok e o navegador roda o Cypress.",
+                "Em seguida você pode continuar usando o Test Runner normalmente (lista de specs, escolha do navegador).",
                 "Se o firewall ou antivírus bloquear, autorize o Cypress ou consulte a seção de troubleshooting na documentação oficial."
               ]
             },
@@ -983,7 +985,7 @@
           "id": "gh-checklist",
           "tipo": "checklist_trilha",
           "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\n{{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
-          "codigo": ":: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\ngit add .\ngit commit -m \"chore: primeiro commit\"\ngit branch -M main\n\n:: Depois que o repositório existir no GitHub\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit push -u origin main",
+          "codigo": "# Guia rápido\n\n:: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\n\n# ***Importante*** — Criar o .gitignore ANTES de git add .\nNew-Item -ItemType File -Force -Path .gitignore -Value \"node_modules/`n.env\"\n\n#No Linux: printf 'node_modules/\\n.env\\n' > .gitignore\n\ngit add .\ngit commit -m \"chore: primeiro commit\"\ngit branch -M main\n\n:: Depois que o repositório existir no GitHub\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit push -u origin main",
           "passos": [
             {
               "id": "gh-cfg",

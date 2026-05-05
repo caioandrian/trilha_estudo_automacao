@@ -32,7 +32,7 @@ Créditos ao @caioandrian por ter montado essa trilha de estudos gratuita pra co
 #QA #Cypress #GitHub #TestesAutomatizados #AutomaçãoDeTestes #Estudos #QualidadeDeSoftware #EngenhariaDeSoftware`;
 /** Em atividades com `codigo`, a pergunta mostra `.code-block`; no feedback, quando houver `codigoExplicacao`. Na teoria, quando houver `teoria.codigo`. */
 
-/** @typedef {{ id: string; texto: string; detalhes?: string | string[]; codigoExemplo?: string }} ChecklistPasso */
+/** @typedef {{ id: string; texto: string; detalhes?: string | string[]; codigoExemplo?: string; codigoExemploIntro?: string }} ChecklistPasso */
 /** @typedef {{ id: string; tipo: string; descricao: string; codigo?: string | null; passos?: ChecklistPasso[]; opcoes?: { id: string; texto: string }[]; corretas?: string[]; explicacao?: string; codigoExplicacao?: string }} Atividade */
 /** @typedef {{ titulo: string; url: string }} TeoriaLink */
 /** @typedef {{ titulo?: string; paragrafos?: string[]; codigo?: string | null }} TeoriaSecao */
@@ -834,6 +834,43 @@ function wireChecklistDetailsAccordion(/** @type {Element | null | undefined} */
   });
 }
 
+function wireChecklistCodeCopy(/** @type {ParentNode | null} */ root) {
+  if (!root) return;
+  root.querySelectorAll(".checklist__copy-btn").forEach((btn) => {
+    if (!(btn instanceof HTMLButtonElement)) return;
+    btn.addEventListener("click", async () => {
+      const block /** @type {HTMLElement | null} */ = btn.closest(".checklist__code-block");
+      const pre = block?.querySelector("pre");
+      const text = pre?.textContent ?? "";
+      const label = "Copiar código";
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = "Copiado!";
+        window.setTimeout(() => {
+          btn.textContent = label;
+        }, 2000);
+      } catch {
+        if (pre) {
+          const range = document.createRange();
+          range.selectNodeContents(pre);
+          const sel = window.getSelection();
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+        }
+        try {
+          document.execCommand("copy");
+          btn.textContent = "Copiado!";
+          window.setTimeout(() => {
+            btn.textContent = label;
+          }, 2000);
+        } catch {
+          btn.textContent = label;
+        }
+      }
+    });
+  });
+}
+
 function renderChecklistActivity(ctx, topico, atividade) {
   const {
     completedSet,
@@ -866,9 +903,15 @@ function renderChecklistActivity(ctx, topico, atividade) {
       const checked = (checklistDict[atividade.id] || []).includes(p.id);
       const detalhesBody = formatChecklistDetalhesHtml(p.detalhes);
       const exemploRaw = p.codigoExemplo != null ? String(p.codigoExemplo).trim() : "";
+      const exemploIntroRaw =
+        p.codigoExemploIntro != null && String(p.codigoExemploIntro).trim() !== ""
+          ? String(p.codigoExemploIntro).trim()
+          : "";
+      const exemploIntroPara =
+        exemploIntroRaw.length > 0 ? exemploIntroRaw : "Exemplo para copiar e adaptar:";
       const exemploHtml =
         exemploRaw.length > 0
-          ? `<p class="checklist__code-intro">Exemplo para copiar e adaptar:</p><div class="checklist__code"><pre>${escapeHtml(exemploRaw)}</pre></div>`
+          ? `<p class="checklist__code-intro">${escapeHtml(exemploIntroPara)}</p><div class="checklist__code-block"><button type="button" class="btn btn--ghost checklist__copy-btn" aria-label="Copiar código do exemplo">Copiar código</button><div class="checklist__code"><pre>${escapeHtml(exemploRaw)}</pre></div></div>`
           : "";
       const detailsInner = `${detalhesBody}${exemploHtml}`;
       const detailsBlock =
@@ -908,7 +951,9 @@ function renderChecklistActivity(ctx, topico, atividade) {
       </div>
     </article>`;
 
-  wireChecklistDetailsAccordion(view.querySelector(".checklist-root"));
+  const checklistRootEl = view.querySelector(".checklist-root");
+  wireChecklistDetailsAccordion(checklistRootEl);
+  wireChecklistCodeCopy(checklistRootEl);
 
   view.querySelectorAll(".checklist__check").forEach((inp) => {
     inp.addEventListener("change", () => {

@@ -86,12 +86,30 @@
           }
         ],
         "links": [
-          { "titulo": "MDN — Guia de JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide" },
-          { "titulo": "MDN — if...else", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/if...else" },
-          { "titulo": "MDN — Array", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array" },
-          { "titulo": "MDN — Loops e iteração", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Loops_and_iteration" },
-          { "titulo": "MDN — Aprender JavaScript", "url": "https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript" },
-          { "titulo": "javascript.info (inglês, muito didático)", "url": "https://javascript.info/" }
+          {
+            "titulo": "MDN — Guia de JavaScript",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide"
+          },
+          {
+            "titulo": "MDN — if...else",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/if...else"
+          },
+          {
+            "titulo": "MDN — Array",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array"
+          },
+          {
+            "titulo": "MDN — Loops e iteração",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Loops_and_iteration"
+          },
+          {
+            "titulo": "MDN — Aprender JavaScript",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript"
+          },
+          {
+            "titulo": "javascript.info (inglês, muito didático)",
+            "url": "https://javascript.info/"
+          }
         ]
       },
       "atividades": [
@@ -101,12 +119,26 @@
           "descricao": "Você precisa de um contador que aumenta a cada tentativa. Qual palavra costuma acompanhar esse valor em JavaScript?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "`var`" },
-            { "id": "B", "texto": "`let`" },
-            { "id": "C", "texto": "`const`" },
-            { "id": "D", "texto": "`def`" }
+            {
+              "id": "A",
+              "texto": "`var`"
+            },
+            {
+              "id": "B",
+              "texto": "`let`"
+            },
+            {
+              "id": "C",
+              "texto": "`const`"
+            },
+            {
+              "id": "D",
+              "texto": "`def`"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "`let` permite atribuir de novo o mesmo nome a um novo valor. `const` não serve para um contador que muda a cada passo.",
           "codigoExplicacao": "let contador = 0;\ncontador = contador + 1;"
         },
@@ -116,12 +148,26 @@
           "descricao": "Depois que o código abaixo roda por completo, qual é o valor de `usuario.nome`?",
           "codigo": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno';",
           "opcoes": [
-            { "id": "A", "texto": "`'Ana'`" },
-            { "id": "B", "texto": "`'Bruno'`" },
-            { "id": "C", "texto": "`undefined`" },
-            { "id": "D", "texto": "O programa encerra com erro antes de terminar" }
+            {
+              "id": "A",
+              "texto": "`'Ana'`"
+            },
+            {
+              "id": "B",
+              "texto": "`'Bruno'`"
+            },
+            {
+              "id": "C",
+              "texto": "`undefined`"
+            },
+            {
+              "id": "D",
+              "texto": "O programa encerra com erro antes de terminar"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "`const` impede você de fazer `usuario = outroObjeto`, mas **não** impede mudar propriedades como `usuario.nome`.",
           "codigoExplicacao": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno'; // nome vira Bruno"
         },
@@ -131,12 +177,26 @@
           "descricao": "No exemplo abaixo, o que a linha `fila.push('c')` faz?",
           "codigo": "const fila = ['a', 'b'];\nfila.push('c');",
           "opcoes": [
-            { "id": "A", "texto": "Coloca `'c'` no início da lista." },
-            { "id": "B", "texto": "Coloca `'c'` no final da lista." },
-            { "id": "C", "texto": "Remove o último item da lista." },
-            { "id": "D", "texto": "Remove o primeiro item da lista." }
+            {
+              "id": "A",
+              "texto": "Coloca `'c'` no início da lista."
+            },
+            {
+              "id": "B",
+              "texto": "Coloca `'c'` no final da lista."
+            },
+            {
+              "id": "C",
+              "texto": "Remove o último item da lista."
+            },
+            {
+              "id": "D",
+              "texto": "Remove o primeiro item da lista."
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "`push` adiciona um elemento ao **final** do array. Para o início, usa-se `unshift`.",
           "codigoExplicacao": "const n = [1, 2];\nn.push(3); // [1, 2, 3]"
         },
@@ -146,12 +206,26 @@
           "descricao": "Com o `if` e o `else` abaixo, qual mensagem aparece no console?",
           "codigo": "const limite = 10;\nconst valor = 5;\nif (valor > limite) {\n  console.log('maior');\n} else {\n  console.log('menor ou igual');\n}",
           "opcoes": [
-            { "id": "A", "texto": "`maior`" },
-            { "id": "B", "texto": "`menor ou igual`" },
-            { "id": "C", "texto": "Nenhuma — o `if` não imprime nada." },
-            { "id": "D", "texto": "Erro de sintaxe no console." }
+            {
+              "id": "A",
+              "texto": "`maior`"
+            },
+            {
+              "id": "B",
+              "texto": "`menor ou igual`"
+            },
+            {
+              "id": "C",
+              "texto": "Nenhuma — o `if` não imprime nada."
+            },
+            {
+              "id": "D",
+              "texto": "Erro de sintaxe no console."
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "A condição é `5 > 10`, que é falsa. Só o bloco do `else` roda, imprimindo `menor ou igual`.",
           "codigoExplicacao": "if (valor > limite) { /* verdadeiro */ } else { /* falso */ }"
         },
@@ -161,12 +235,26 @@
           "descricao": "O que este `for` faz no console?",
           "codigo": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}",
           "opcoes": [
-            { "id": "A", "texto": "Imprime os números 0, 1 e 2 (uma linha por número)." },
-            { "id": "B", "texto": "Imprime os números 1, 2 e 3." },
-            { "id": "C", "texto": "Imprime só o número 3." },
-            { "id": "D", "texto": "Não imprime nada." }
+            {
+              "id": "A",
+              "texto": "Imprime os números 0, 1 e 2 (uma linha por número)."
+            },
+            {
+              "id": "B",
+              "texto": "Imprime os números 1, 2 e 3."
+            },
+            {
+              "id": "C",
+              "texto": "Imprime só o número 3."
+            },
+            {
+              "id": "D",
+              "texto": "Não imprime nada."
+            }
           ],
-          "corretas": ["A"],
+          "corretas": [
+            "A"
+          ],
           "explicacao": "O `i` começa em 0. Enquanto `i < 3`, o bloco roda e depois `i++` soma 1. São três execuções com `i` igual a 0, 1 e 2.",
           "codigoExplicacao": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}"
         },
@@ -176,12 +264,26 @@
           "descricao": "O que o `forEach` faz neste exemplo?",
           "codigo": "['olá', 'mundo'].forEach((palavra) => {\n  console.log(palavra);\n});",
           "opcoes": [
-            { "id": "A", "texto": "Chama `console.log` uma vez para cada item da lista, na ordem." },
-            { "id": "B", "texto": "Junta tudo em uma única string e imprime uma vez." },
-            { "id": "C", "texto": "Apaga os itens do array após imprimir." },
-            { "id": "D", "texto": "Só imprime o último item." }
+            {
+              "id": "A",
+              "texto": "Chama `console.log` uma vez para cada item da lista, na ordem."
+            },
+            {
+              "id": "B",
+              "texto": "Junta tudo em uma única string e imprime uma vez."
+            },
+            {
+              "id": "C",
+              "texto": "Apaga os itens do array após imprimir."
+            },
+            {
+              "id": "D",
+              "texto": "Só imprime o último item."
+            }
           ],
-          "corretas": ["A"],
+          "corretas": [
+            "A"
+          ],
           "explicacao": "`forEach` percorre o array do primeiro ao último item e executa a função passada para cada elemento — a duas palavras geram duas linhas no console.",
           "codigoExplicacao": "['a', 'b'].forEach((x) => console.log(x));"
         }
@@ -213,9 +315,18 @@
           }
         ],
         "links": [
-          { "titulo": "MDN — localStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage" },
-          { "titulo": "MDN — sessionStorage", "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage" },
-          { "titulo": "MDN — JSON.parse / JSON.stringify", "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/JSON" }
+          {
+            "titulo": "MDN — localStorage",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage"
+          },
+          {
+            "titulo": "MDN — sessionStorage",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage"
+          },
+          {
+            "titulo": "MDN — JSON.parse / JSON.stringify",
+            "url": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/JSON"
+          }
         ]
       },
       "atividades": [
@@ -225,12 +336,26 @@
           "descricao": "Guardar algo no navegador e achar de novo depois de fechar o site. O que usar?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "sessionStorage (some ao fechar a aba)" },
-            { "id": "B", "texto": "localStorage" },
-            { "id": "C", "texto": "só IndexedDB" },
-            { "id": "D", "texto": "só cookies HTTP" }
+            {
+              "id": "A",
+              "texto": "sessionStorage (some ao fechar a aba)"
+            },
+            {
+              "id": "B",
+              "texto": "localStorage"
+            },
+            {
+              "id": "C",
+              "texto": "só IndexedDB"
+            },
+            {
+              "id": "D",
+              "texto": "só cookies HTTP"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "`localStorage` fica naquele site até você limpar os dados ou o código apagar. `sessionStorage` some quando a aba fecha.",
           "codigoExplicacao": "localStorage.setItem('token', 'abc123');\nconst t = localStorage.getItem('token');"
         }
@@ -248,10 +373,18 @@
           "descricao": "Roda até o fim sem erro?",
           "codigo": "const x = 1;\nx = 2;\nconsole.log(x);",
           "opcoes": [
-            { "id": "A", "texto": "Sim — imprime 2" },
-            { "id": "B", "texto": "Não — `const` não pode mudar de valor assim" }
+            {
+              "id": "A",
+              "texto": "Sim — imprime 2"
+            },
+            {
+              "id": "B",
+              "texto": "Não — `const` não pode mudar de valor assim"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "Com `const`, você não pode atribuir de novo à mesma variável. Para mudar o valor, use `let`.",
           "codigoExplicacao": "let x = 1;\nx = 2; // OK"
         },
@@ -261,10 +394,18 @@
           "descricao": "Lista tem 2 itens. O que acontece ao ler `nums[5]`?",
           "codigo": "const nums = [10, 20];\nconsole.log(nums[5]);",
           "opcoes": [
-            { "id": "A", "texto": "Quebra com erro" },
-            { "id": "B", "texto": "Não quebra — devolve vazio (`undefined`)" }
+            {
+              "id": "A",
+              "texto": "Quebra com erro"
+            },
+            {
+              "id": "B",
+              "texto": "Não quebra — devolve vazio (`undefined`)"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "Ler uma posição que não existe na lista não estoura erro; o JavaScript devolve `undefined`.",
           "codigoExplicacao": "const nums = [10, 20];\nconsole.log(nums[5]); // undefined"
         },
@@ -274,10 +415,18 @@
           "descricao": "O que esse código mostra no `console`?",
           "codigo": "console.log('10' + 5);",
           "opcoes": [
-            { "id": "A", "texto": "15 — pois soma 10 com 5" },
-            { "id": "B", "texto": "105 — o `+` junta texto com número, como colar strings" }
+            {
+              "id": "A",
+              "texto": "15 — pois soma 10 com 5"
+            },
+            {
+              "id": "B",
+              "texto": "105 — o `+` junta texto com número, como colar strings"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "Quando um dos lados do `+` é string, o JavaScript converte o outro valor para texto e concatena. `'10' + 5` vira `'10' + '5'`, resultado `'105'`, não a soma 15.",
           "codigoExplicacao": "console.log('10' + 5);   // 105\nconsole.log(10 + 5);   // 15 (dois números, aí sim soma)"
         },
@@ -287,10 +436,18 @@
           "descricao": "`JSON.parse` nessa string. O que ocorre?",
           "codigo": "JSON.parse('{ nome: \"teste\" }');",
           "opcoes": [
-            { "id": "A", "texto": "vira objeto JavaScript normalmente" },
-            { "id": "B", "texto": "dá erro — JSON exige aspas nas chaves" }
+            {
+              "id": "A",
+              "texto": "vira objeto JavaScript normalmente"
+            },
+            {
+              "id": "B",
+              "texto": "dá erro — JSON exige aspas nas chaves"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "JSON é mais rígido que objeto JavaScript: chaves precisam de aspas duplas, por exemplo `{\"nome\":\"teste\"}`.",
           "codigoExplicacao": "JSON.parse('{\"nome\":\"teste\"}'); // OK"
         },
@@ -300,10 +457,18 @@
           "descricao": "A chamada vem antes da `function`. Funciona?",
           "codigo": "ola();\nfunction ola() { console.log('oi'); }",
           "opcoes": [
-            { "id": "A", "texto": "Sim — `function ola()` pode ser chamada antes" },
-            { "id": "B", "texto": "Não — erro de “ainda não definida”" }
+            {
+              "id": "A",
+              "texto": "Sim — `function ola()` pode ser chamada antes"
+            },
+            {
+              "id": "B",
+              "texto": "Não — erro de “ainda não definida”"
+            }
           ],
-          "corretas": ["A"],
+          "corretas": [
+            "A"
+          ],
           "explicacao": "Declaração com `function` sobe no arquivo (hoisting). Com `const ola = () => {}` a ordem importa.",
           "codigoExplicacao": "ola();\nfunction ola() { console.log('oi'); } // imprime oi"
         }
@@ -329,7 +494,7 @@
             "paragrafos": [
               "Você encadeia comandos para navegar, localizar por seletor e interagir. Ao rodar `npx cypress open`, o assistente permite escolher E2E e listar specs em `cypress/e2e` (padrão nas versões recentes)."
             ],
-            "codigo": "// exemplo da API fluenta\ncy.visit('/login')\ncy.get('[data-cy=usuario]').type('qa@site.com')\ncy.get('[data-cy=entrar]').click()"
+            "codigo": "// exemplo da API fluenta\ncy.visit('www.exemplo.com.br/login')\ncy.get('[data-cy=usuario]').type('qa@site.com')\ncy.get('[data-cy=entrar]').click()"
           },
           {
             "titulo": "Seletores e próximos passos",
@@ -340,9 +505,18 @@
           }
         ],
         "links": [
-          { "titulo": "Cypress — documentação oficial", "url": "https://docs.cypress.io/" },
-          { "titulo": "Cypress — guia ”Why Cypress”", "url": "https://docs.cypress.io/guides/overview/why-cypress" },
-          { "titulo": "Cypress Cloud (opcional)", "url": "https://www.cypress.io/cloud/" }
+          {
+            "titulo": "Cypress — documentação oficial",
+            "url": "https://docs.cypress.io/"
+          },
+          {
+            "titulo": "Cypress — guia ”Why Cypress”",
+            "url": "https://docs.cypress.io/guides/overview/why-cypress"
+          },
+          {
+            "titulo": "Cypress Cloud (opcional)",
+            "url": "https://www.cypress.io/cloud/"
+          }
         ]
       },
       "atividades": [
@@ -352,12 +526,26 @@
           "descricao": "O que é o Cypress na prática de automação de testes?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "Um servidor de banco de dados relacional" },
-            { "id": "B", "texto": "Framework que testa o site pelo próprio navegador, como se fosse uma pessoa clicando" },
-            { "id": "C", "texto": "Substituto do Git para versionamento" },
-            { "id": "D", "texto": "Compilador de TypeScript para Java" }
+            {
+              "id": "A",
+              "texto": "Um servidor de banco de dados relacional"
+            },
+            {
+              "id": "B",
+              "texto": "Framework que testa o site pelo próprio navegador, como se fosse uma pessoa clicando"
+            },
+            {
+              "id": "C",
+              "texto": "Substituto do Git para versionamento"
+            },
+            {
+              "id": "D",
+              "texto": "Compilador de TypeScript para Java"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "Cypress é focado em testes E2E (e outros fluxos) executando no contexto do browser, com API fluente (`cy.*`).",
           "codigoExplicacao": "// Exemplo mínimo\ncy.visit('https://exemplo.com');"
         },
@@ -367,12 +555,26 @@
           "descricao": "Na primeira vez que você roda `npx cypress open`, o que costuma aparecer na tela?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "Só o terminal preto, sem janela gráfica" },
-            { "id": "B", "texto": "Uma tela que pergunta o tipo de teste (por exemplo E2E) e depois o painel dos testes" },
-            { "id": "C", "texto": "O editor Visual Studio Code já aberto dentro do programa" },
-            { "id": "D", "texto": "Somente as ferramentas de desenvolvedor do Chrome" }
+            {
+              "id": "A",
+              "texto": "Só o terminal preto, sem janela gráfica"
+            },
+            {
+              "id": "B",
+              "texto": "Uma tela que pergunta o tipo de teste (por exemplo E2E) e depois o painel dos testes"
+            },
+            {
+              "id": "C",
+              "texto": "O editor Visual Studio Code já aberto dentro do programa"
+            },
+            {
+              "id": "D",
+              "texto": "Somente as ferramentas de desenvolvedor do Chrome"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "O fluxo guiado permite configurar E2E ou component tests e depois abre o runner com lista de specs.",
           "codigoExplicacao": "npx cypress open"
         },
@@ -382,12 +584,26 @@
           "descricao": "Qual afirmação descreve melhor como o Cypress trata comandos como `cy.get` em relação ao carregamento da página?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "Cada linha roda no instante exato; não há nova tentativa se o elemento ainda não existir." },
-            { "id": "B", "texto": "`cy.get` não pode ser usado antes de `click` ou `type` no mesmo elemento." },
-            { "id": "C", "texto": "O teste só passa se todos os elementos já estiverem no HTML antes do arquivo de teste começar." },
-            { "id": "D", "texto": "Os comandos costumam ir para uma fila: o Cypress espera e tenta de novo até o elemento ou a condição ficar pronta (dentro do timeout)." }
+            {
+              "id": "A",
+              "texto": "Cada linha roda no instante exato; não há nova tentativa se o elemento ainda não existir."
+            },
+            {
+              "id": "B",
+              "texto": "`cy.get` não pode ser usado antes de `click` ou `type` no mesmo elemento."
+            },
+            {
+              "id": "C",
+              "texto": "O teste só passa se todos os elementos já estiverem no HTML antes do arquivo de teste começar."
+            },
+            {
+              "id": "D",
+              "texto": "Os comandos costumam ir para uma fila: o Cypress espera e tenta de novo até o elemento ou a condição ficar pronta (dentro do timeout)."
+            }
           ],
-          "corretas": ["D"],
+          "corretas": [
+            "D"
+          ],
           "explicacao": "A API enfileira ações e faz *retry* integrado ao comando, diferente de um script que dispara um clique uma única vez.",
           "codigoExplicacao": "cy.get('button').should('be.visible').click();"
         }
@@ -406,7 +622,7 @@
             "paragrafos": [
               "`cy.visit(url)` carrega a página. `cy.get(seletor)` busca elementos. Encadeie com `.should(...)` para afirmar o que deve ser verdade no teste."
             ],
-            "codigo": "cy.visit('/produtos')\ncy.get('[data-cy=lista]').should('be.visible')"
+            "codigo": "cy.visit('www.exemplo.com.br/produtos')\ncy.get('[data-cy=lista]').should('be.visible')"
           },
           {
             "titulo": "Interações e asserções",
@@ -421,14 +637,26 @@
             "paragrafos": [
               "`cy.intercept` observa ou substitui respostas. `.as('nome')` define um apelido; `cy.wait('@nome')` espera aquela requisição antes de continuar."
             ],
-            "codigo": "cy.intercept('GET', '/api/items', { fixture: 'items.json' }).as('listItems')\ncy.visit('/produtos')\ncy.wait('@listItems')\ncy.get('[data-cy=item]').first().should('contain', 'Notebook')"
+            "codigo": "cy.intercept('GET', '**/api/items', { fixture: 'items.json' }).as('listItems')\ncy.visit('/produtos')\ncy.wait('@listItems')\ncy.get('[data-cy=item]').first().should('contain', 'Notebook')"
           }
         ],
         "links": [
-          { "titulo": "Cypress — API (índice de comandos)", "url": "https://docs.cypress.io/api/table-of-contents" },
-          { "titulo": "cy.visit", "url": "https://docs.cypress.io/api/commands/visit" },
-          { "titulo": "cy.intercept", "url": "https://docs.cypress.io/api/commands/intercept" },
-          { "titulo": "cy.wait (alias de rede)", "url": "https://docs.cypress.io/api/commands/wait" }
+          {
+            "titulo": "Cypress — API (índice de comandos)",
+            "url": "https://docs.cypress.io/api/table-of-contents"
+          },
+          {
+            "titulo": "cy.visit",
+            "url": "https://docs.cypress.io/api/commands/visit"
+          },
+          {
+            "titulo": "cy.intercept",
+            "url": "https://docs.cypress.io/api/commands/intercept"
+          },
+          {
+            "titulo": "cy.wait (alias de rede)",
+            "url": "https://docs.cypress.io/api/commands/wait"
+          }
         ]
       },
       "atividades": [
@@ -438,12 +666,26 @@
           "descricao": "Qual comando abre uma página no Cypress?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "cy.open('https://...')" },
-            { "id": "B", "texto": "cy.visit(...) — com endereço completo ou caminho do site" },
-            { "id": "C", "texto": "Só dá usando um comando avançado `cy.exec` com `window.location`" },
-            { "id": "D", "texto": "browser.goto(...)" }
+            {
+              "id": "A",
+              "texto": "cy.open('https://...')"
+            },
+            {
+              "id": "B",
+              "texto": "cy.visit(...) — com endereço completo ou caminho do site"
+            },
+            {
+              "id": "C",
+              "texto": "Só dá usando um comando avançado `cy.exec` com `window.location`"
+            },
+            {
+              "id": "D",
+              "texto": "browser.goto(...)"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "`cy.visit` carrega a URL (absoluta ou relativa ao `baseUrl` do cypress.config).",
           "codigoExplicacao": "cy.visit('/dashboard');"
         },
@@ -453,12 +695,26 @@
           "descricao": "Qual comando costuma ser usado para pegar um elemento na tela (por id, classe ou outro seletor)?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "cy.find('#id')" },
-            { "id": "B", "texto": "cy.get('#meu-id')" },
-            { "id": "C", "texto": "cy.selectElement('#id')" },
-            { "id": "D", "texto": "cy.query('#id')" }
+            {
+              "id": "A",
+              "texto": "cy.find('#id')"
+            },
+            {
+              "id": "B",
+              "texto": "cy.get('#meu-id')"
+            },
+            {
+              "id": "C",
+              "texto": "cy.selectElement('#id')"
+            },
+            {
+              "id": "D",
+              "texto": "cy.query('#id')"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "`cy.get` aceita seletores CSS, data attributes, etc. Boas práticas incluem `data-cy` para estabilidade.",
           "codigoExplicacao": "cy.get('[data-cy=submit]').click();"
         },
@@ -468,12 +724,26 @@
           "descricao": "Como conferir se um texto aparece dentro de um elemento (por exemplo a mensagem “Salvo”)?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "cy.get('.msg').should('contain', 'Salvo')" },
-            { "id": "B", "texto": "cy.get('.msg').assertText('Salvo')" },
-            { "id": "C", "texto": "cy.validate('.msg', 'Salvo')" },
-            { "id": "D", "texto": "Comparar texto na mesma linha, sem `.should`, costuma ser o jeito certo no Cypress" }
+            {
+              "id": "A",
+              "texto": "cy.get('.msg').should('contain', 'Salvo')"
+            },
+            {
+              "id": "B",
+              "texto": "cy.get('.msg').assertText('Salvo')"
+            },
+            {
+              "id": "C",
+              "texto": "cy.validate('.msg', 'Salvo')"
+            },
+            {
+              "id": "D",
+              "texto": "Comparar texto na mesma linha, sem `.should`, costuma ser o jeito certo no Cypress"
+            }
           ],
-          "corretas": ["A"],
+          "corretas": [
+            "A"
+          ],
           "explicacao": "Asserções idiomáticas usam `.should` com matchers do Chai jQuery ou encadeamentos como `contain`.",
           "codigoExplicacao": "cy.get('.msg').should('contain', 'Salvo');"
         },
@@ -483,12 +753,26 @@
           "descricao": "Como checar se um campo de e-mail está com o texto certo digitado?",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "cy.get('#email').should('have.value', '@example.com')" },
-            { "id": "B", "texto": "cy.get('#email').should('contain', '@example.com')" },
-            { "id": "C", "texto": "cy.get('#email').value('@example.com')" },
-            { "id": "D", "texto": "cy.get('#email').text('@example.com')" }
+            {
+              "id": "A",
+              "texto": "cy.get('#email').should('have.value', '@example.com')"
+            },
+            {
+              "id": "B",
+              "texto": "cy.get('#email').should('contain', '@example.com')"
+            },
+            {
+              "id": "C",
+              "texto": "cy.get('#email').value('@example.com')"
+            },
+            {
+              "id": "D",
+              "texto": "cy.get('#email').text('@example.com')"
+            }
           ],
-          "corretas": ["A"],
+          "corretas": [
+            "A"
+          ],
           "explicacao": "Inputs usam a propriedade `value`; `have.value` é o matcher adequado.",
           "codigoExplicacao": "cy.get('#email').clear().type('a@b.com').should('have.value', 'a@b.com');"
         },
@@ -498,12 +782,26 @@
           "descricao": "Qual comando faz o teste **parar e esperar** um tempo fixo em milissegundos? (Uso com moderação — o ideal é esperar a tela mudar.)",
           "codigo": null,
           "opcoes": [
-            { "id": "A", "texto": "cy.pause(2000)" },
-            { "id": "B", "texto": "cy.wait(2000)" },
-            { "id": "C", "texto": "cy.sleep(2000)" },
-            { "id": "D", "texto": "cy.delay(2000)" }
+            {
+              "id": "A",
+              "texto": "cy.pause(2000)"
+            },
+            {
+              "id": "B",
+              "texto": "cy.wait(2000)"
+            },
+            {
+              "id": "C",
+              "texto": "cy.sleep(2000)"
+            },
+            {
+              "id": "D",
+              "texto": "cy.delay(2000)"
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "`cy.wait(ms)` força espera. Prefira esperar elementos (`should`, `get`) ou aliases de rede.",
           "codigoExplicacao": "cy.wait(500); // use com parcimônia"
         },
@@ -513,12 +811,26 @@
           "descricao": "No trecho abaixo, depois do `intercept` com `.as('getUser')`, o que o `cy.wait('@getUser')` faz?",
           "codigo": "cy.intercept('GET', '/api/user', { fixture: 'user.json' }).as('getUser');\ncy.visit('/perfil');\ncy.wait('@getUser');\ncy.get('[data-cy=nome]').should('be.visible');",
           "opcoes": [
-            { "id": "A", "texto": "Procura na página um elemento com `id` igual a `getUser`." },
-            { "id": "B", "texto": "Aguarda a requisição de rede associada ao apelido `getUser` completar (ou atingir timeout)." },
-            { "id": "C", "texto": "Substitui qualquer `cy.get` seguinte por uma chamada à API." },
-            { "id": "D", "texto": "Só funciona com `cy.pause`; não tem relação com rede." }
+            {
+              "id": "A",
+              "texto": "Procura na página um elemento com `id` igual a `getUser`."
+            },
+            {
+              "id": "B",
+              "texto": "Aguarda a requisição de rede associada ao apelido `getUser` completar (ou atingir timeout)."
+            },
+            {
+              "id": "C",
+              "texto": "Substitui qualquer `cy.get` seguinte por uma chamada à API."
+            },
+            {
+              "id": "D",
+              "texto": "Só funciona com `cy.pause`; não tem relação com rede."
+            }
           ],
-          "corretas": ["B"],
+          "corretas": [
+            "B"
+          ],
           "explicacao": "O `@` no `cy.wait` aponta para o alias definido com `.as()` no `intercept`. Não é seletor CSS nem id de elemento.",
           "codigoExplicacao": "cy.intercept('POST', '/login').as('login');\ncy.get('form').submit();\ncy.wait('@login');"
         }
@@ -614,7 +926,7 @@
             },
             {
               "id": "chk-open",
-              "texto": "Rodar pela primeira vez o assistente com `npx cypress open` e concluir a configuração E2E sugerida.",
+              "texto": "Abrir a interface do Cypress e concluir a configuração E2E sugerida.",
               "detalhes": [
                 "No terminal, ainda na pasta raiz do projeto, digite exatamente o comando abaixo e pressione Enter:",
                 "`npx cypress open`",
@@ -629,6 +941,7 @@
               "texto": "Verificar a estrutura padrão do projeto com Cypress.",
               "detalhes": [
                 "Depois que você conclui o fluxo na interface do Cypress (**E2E Testing** e **Continue** nos passos do assistente), o próprio Cypress cria automaticamente a estrutura padrão — não é obrigatório criar manualmente `cypress/` nem o arquivo de config na primeira vez.",
+                "Para verificar com clareza, abra a pasta do projeto na sua IDE preferida — por exemplo, no **Visual Studio Code** use **Arquivo → Abrir pasta...** na raiz onde estão `package.json` e `node_modules`, e no explorador de arquivos confira o que foi gerado (`cypress/`, `cypress.config.js` ou `cypress.config.ts`, etc.). No **Cursor** ou em outro editor, o passo é o equivalente: abrir a pasta raiz do projeto e inspecionar a árvore de diretórios.",
                 "O que costuma aparecer: pasta `cypress/` com `e2e`, `fixtures` e `support`, e na raiz do projeto `cypress.config.js` ou `cypress.config.ts` (conforme a opção escolhida no wizard).",
                 "`cypress/e2e` guarda os arquivos de teste (specs); `fixtures` serve para dados estáticos; `support` costuma incluir entrada global (por exemplo `e2e.js` / `e2e.ts`) e pode hospedar `commands.js` para comandos customizados.",
                 "O `cypress.config.*` na raiz define opções como `baseUrl`, timeouts e pastas customizadas.",
@@ -646,12 +959,15 @@
             },
             {
               "id": "chk-spec",
-              "texto": "Criar ou editar um spec em `cypress/e2e` (por exemplo usar `cy.visit` em alguma URL pública) e executar o teste no Test Runner.",
+              "texto": "Criar um arquivo de teste com exemplos aprendidos nessa trilha.",
               "detalhes": [
-                "Um spec mínimo pode conter `describe`/`it` e um `cy.visit('https://example.com')` seguido de uma asserção simples com `cy.contains` ou `cy.get(...).should(...)`.",
-                "No Test Runner, clique no arquivo `.cy.js` ou `.cy.ts` para ver o navegador executar o teste.",
-                "Se a página bloquear automação, teste outra URL pública só para validar o ambiente (ex.: documentação estática)."
-              ]
+                "Na pasta cypress/e2e crie o arquivo trilha.cy.js (pela IDE de sua preferência, exemplo Visual Studio Code).",
+                "Copie o código de exemplo abaixo e cole no arquivo trilha.cy.js.",
+                "O arquivo de teste contém os exemplos aprendidos nessa trilha (incluindo .select com 'oranges' e validação do value no Kitchen Sink).",
+                "Execute o comando 'npx cypress open' para abrir a interface do Cypress e execute trilha.cy.js no Test Runner e acompanhe o navegador."
+              ],
+              "codigoExemploIntro": null,
+              "codigoExemplo": "/**\n * Arquivo sugerido: cypress/e2e/trilha.cy.js\n * Kitchen Sink (demos oficiais):\n * - https://example.cypress.io/commands/actions\n * - https://example.cypress.io/commands/storage\n */\n\ndescribe('Trilha de estudos — exemplos do curso', () => {\n  it('Kitchen Sink: actions + storage', () => {\n    cy.visit('https://example.cypress.io/commands/actions')\n\n    // cy.get + .type (campo tipo email) + validação do valor\n    cy.get('.action-email').clear().type('aluno@trilha.com')\n    cy.get('.action-email').should('have.value', 'aluno@trilha.com')\n\n    // Condicional if / else em cima do elemento retornado\n    cy.get('.action-email').then(($el) => {\n      if ($el.attr('type') === 'email') {\n        cy.wrap($el).should('have.value', 'aluno@trilha.com')\n      } else {\n        cy.wrap($el).should('be.visible')\n      }\n    })\n\n    // Outro .type: textarea com opção delay (teclas mais lentas, só para treino)\n    cy.get('.action-clear').clear().type('Texto da trilha - passo 8', { delay: 30 })\n    cy.get('.action-clear').should('have.value', 'Texto da trilha - passo 8')\n\n    // Formulário: preencher + cy.submit + validar mensagem\n    cy.get('.action-form').find('[type=\"text\"]').clear().type('TRILHAOK')\n    cy.get('.action-form').submit()\n    cy.get('.action-form').next().should('contain', 'Your form has been submitted!')\n\n    // Array + laço forEach: marcar duas opções (check) e validar\n    const checks = ['checkbox1', 'checkbox3']\n    checks.forEach((valor) => {\n      cy.get(`.action-checkboxes [type=\"checkbox\"][value=\"${valor}\"]`).check()\n    })\n    checks.forEach((valor) => {\n      cy.get(`.action-checkboxes [type=\"checkbox\"][value=\"${valor}\"]`).should('be.checked')\n    })\n\n    // .select: escolher 'oranges' e validar o value do <select> (Kitchen Sink)\n    cy.get('.action-select').select('oranges')\n    cy.get('.action-select').should('have.value', 'fr-oranges')\n\n    // Cliques no canvas em posições diferentes (Kitchen Sink)\n    cy.get('#action-canvas').click('topLeft')\n    cy.get('#action-canvas').click('top')\n\n    // localStorage (página dedicada — limpar, popular via botão, validar)\n    cy.visit('https://example.cypress.io/commands/storage')\n    cy.clearLocalStorage()\n    cy.get('.ls-btn').click()\n    cy.window().then((win) => {\n      expect(win.localStorage.getItem('prop1')).to.eq('red')\n      expect(win.localStorage.getItem('prop2')).to.eq('blue')\n    })\n  })\n})\n"
             }
           ]
         }

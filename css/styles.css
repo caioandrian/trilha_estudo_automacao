@@ -922,6 +922,11 @@ html[data-theme="light"] .theory-badge {
   margin-bottom: 0;
 }
 
+/* Respiro entre o texto da teoria e o snippet (ex.: seção XPath, fluxo de código). */
+.theory-section .theory-body + .code-block {
+  margin-top: 0.85rem;
+}
+
 .theory-links {
   margin-top: 1.15rem;
   padding-top: 1rem;

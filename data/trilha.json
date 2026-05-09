@@ -500,8 +500,18 @@
             "titulo": "Seletores e próximos passos",
             "paragrafos": [
               "IDs e classes mudam com o layout. Atributos como `data-cy` ou `data-testid` costumam deixar o teste mais estável.",
+              "**Pelo navegador (ex.: Chrome):** com a página aberta, pressione F12 ou clique com o botão direito no elemento e escolha **Inspecionar** para abrir as Ferramentas do desenvolvedor. Na aba **Elementos**, selecione o nó desejado e confira `id`, classes e atributos no painel. Com o botão direito no HTML do elemento, use **Copiar** > **copiar seletor** (ou caminho JS) para obter um seletor CSS de referência — avalie se é estável e, quando o projeto permitir, prefira `data-cy` ou `data-testid`.",
+              "**Pela interface do Cypress:** ao rodar testes com `npx cypress open`, no Test Runner use o **Selector Playground** (ícone em forma de mira na barra superior): aponte para um elemento na janela do aplicativo ou digite um seletor e veja o que corresponde na página, validando o que usar em `cy.get(...)` antes de fixar no código.",
               "Use a documentação oficial nos links abaixo para aprofundar depois deste resumo."
             ]
+          },
+          {
+            "titulo": "XPath",
+            "paragrafos": [
+              "Opcional: Caso necessário, siga os passos abaixo para instalar o pacote comunitário `cypress-xpath` e registrar o plugin no `support/e2e.js`;",
+              "Você pode usar o cy.xpath e os outros comandos nativos do Cypress para localizar elementos na página."
+            ],
+            "codigo": "// Terminal na pasta do projeto:\n// npm install -D cypress-xpath\n\n// cypress/support/e2e.js:\nrequire('cypress-xpath');\n\n// Exemplo no spec:\n// cy.xpath('//button[@type=\"submit\"]').click();"
           }
         ],
         "links": [
@@ -984,7 +994,7 @@
         {
           "id": "gh-checklist",
           "tipo": "checklist_trilha",
-          "descricao": "Fluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\n{{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
+          "descricao": "**Importante:** os comandos desta checklist rodam no **seu computador**, em um terminal aberto na pasta do projeto — não dentro do site do GitHub. No Windows, para abrir o **Prompt de Comando**, use a busca do menu Iniciar e digite `cmd` ou **prompt de comando**; **PowerShell** ou o terminal integrado do VS Code / Cursor também servem para os mesmos passos.\n\nFluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\n{{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
           "codigo": "# Guia rápido\n\n:: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\n\n# ***Importante*** — Criar o .gitignore ANTES de git add .\nNew-Item -ItemType File -Force -Path .gitignore -Value \"node_modules/`n.env\"\n\n#No Linux: printf 'node_modules/\\n.env\\n' > .gitignore\n\ngit add .\ngit commit -m \"chore: primeiro commit\"\n\n:: Depois que o repositório existir no GitHub (** Passo 6 **)\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit branch -M main\ngit push -u origin main",
           "passos": [
             {
@@ -1001,6 +1011,7 @@
               "id": "gh-cd",
               "texto": "Abrir terminal na pasta raiz do projeto que você quer versionar.",
               "detalhes": [
+                "No Windows, abra um terminal na pasta do projeto: pela busca do Iniciar, digite `cmd` ou **prompt de comando** e, ao abrir, use `cd` para entrar na pasta certa. PowerShell ou o terminal da IDE seguem o mesmo propósito.",
                 "Navegue até a pasta do projeto com `cd`. Exemplos: `cd C:\\Users\\seuusuario\\Documentos\\github\\meu-projeto` ou `cd \"D:\\Meus Projetos\\trilha-automacao\"` (aspas quando houver espaços).",
                 "Conferir pasta atual: no PowerShell `Get-Location` ou `pwd`; listar arquivos: `dir` ou `Get-ChildItem` — confira antes de rodar `git init` na raiz certa.",
                 "No VS Code / Cursor: Terminal > New Terminal costuma abrir já na raiz do workspace; use `cd` se precisar mudar de pasta."

@@ -891,7 +891,7 @@
         {
           "id": "cy-proj-checklist",
           "tipo": "checklist_trilha",
-          "descricao": "Siga na ordem que preferir — {{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
+          "descricao": "**Importante:** estes passos são feitos no **seu computador**: instalação do Node, comandos `npm`/`npx`, criação da pasta do projeto, terminal e abertura da interface do Cypress — a trilha no navegador só orienta; a execução real é na máquina. No Windows, para abrir o **Prompt de Comando**, use a busca do menu Iniciar e digite `cmd` ou **prompt de comando**; **PowerShell** ou o terminal integrado do VS Code / Cursor também servem.\n\nSiga na ordem que preferir — {{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
           "codigo": "# Guia rápido\n\n# Pasta do projeto\nmkdir trilha-automacao\n\ncd trilha-automacao\n\n# Iniciar projeto e instalar Cypress\nnpm init -y\nnpm install cypress --save-dev\n\n# Criar a pasta e2e + trilha.cy.js (será usado no passo 8)\nNew-Item -ItemType Directory -Force -Path cypress/e2e\nNew-Item -ItemType File -Force -Path cypress/e2e/trilha.cy.js\nNo linux: mkdir -p cypress/e2e && touch cypress/e2e/trilha.cy.js\n\n# Abrir a interface do Cypress\nnpx cypress open",
           "passos": [
             {

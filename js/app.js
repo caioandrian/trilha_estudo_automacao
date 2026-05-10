@@ -1663,6 +1663,10 @@ async function main() {
     if (isGithubContext(selectedContexto)) {
       sidebarEl?.classList.add("sidebar--github-context");
       enterMobileSidebarTopicActiveMode();
+      if (typeof window !== "undefined" && !window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ).matches) {
+        topicListEl?.classList.remove("collapsed");
+        sidebarToggle?.setAttribute("aria-expanded", "true");
+      }
     } else {
       sidebarEl?.classList.remove("sidebar--github-context");
       resetMobileSidebarTopicActiveMode();
@@ -1808,6 +1812,10 @@ async function main() {
     const sidebarBoot = document.querySelector(".sidebar");
     if (isGithubContext(selectedContexto)) {
       sidebarBoot?.classList.add("sidebar--github-context");
+      if (typeof window !== "undefined" && !window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ).matches) {
+        topicListEl?.classList.remove("collapsed");
+        sidebarToggle?.setAttribute("aria-expanded", "true");
+      }
     } else {
       sidebarBoot?.classList.remove("sidebar--github-context");
     }

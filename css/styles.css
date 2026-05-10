@@ -558,8 +558,17 @@ html[data-theme="light"] .context-nav__active-only--github {
   flex: 1;
 }
 
-.sidebar.sidebar--github-context #topicList {
-  display: none !important;
+/* GitHub: no mobile a lista fica sempre oculta; no desktop a lista aparece por padrão e o sidebarToggle fica oculto. */
+@media (max-width: 1024px) {
+  .sidebar.sidebar--github-context #topicList {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .sidebar.sidebar--github-context .sidebar__toggle {
+    display: none !important;
+  }
 }
 
 .topic-block {

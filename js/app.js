@@ -167,6 +167,11 @@ function topicHasDesafios(topico) {
   return Boolean(d && Array.isArray(d.blocos) && d.blocos.length > 0);
 }
 
+/** Conteúdo com único tópico passo a passo (GitHub): rótulo em trilha.json inclui "GitHub". */
+function isGithubContext(/** @type {string} */ contexto) {
+  return /GitHub/i.test(contexto || "");
+}
+
 function contextNavVariantClass(/** @type {string} */ label) {
   const ctx = label || "";
   if (/Cypress|Automação/i.test(ctx)) return "context-nav__btn--cypress";
@@ -411,6 +416,25 @@ function isMobileStudyLayout() {
 function scrollAnchorMainInner() {
   requestAnimationFrame(() => {
     const el = document.getElementById("main__inner");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+/** Ancora no topo do painel principal: #mainPanel é o scroll container (overflow-y: auto), então usa-se scrollTop, não só scrollIntoView no próprio main. */
+function scrollAnchorMainPanel() {
+  requestAnimationFrame(() => {
+    const el = document.getElementById("mainPanel");
+    if (!el) return;
+    el.scrollTo({ top: 0, behavior: "smooth" });
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+/** Ancora no painel de teoria ao trocar aba no subnav (mobile). */
+function scrollAnchorTheorySubpanel() {
+  requestAnimationFrame(() => {
+    const el = document.getElementById("theorySubpanel");
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   });
@@ -707,6 +731,7 @@ function renderTheory(topico, ctx) {
           panel.innerHTML = buildSingleTheorySectionHtml(secoesFiltered[idx]);
           panel.setAttribute("aria-labelledby", `theoryTab${idx}`);
         }
+        if (isMobileStudyLayout()) scrollAnchorTheorySubpanel();
       });
     });
   }
@@ -720,12 +745,10 @@ function renderTheory(topico, ctx) {
   });
 }
 
-function setFeedbackDesafiosHint(/** @type {boolean} */ onlyChecklistFollows) {
+function setFeedbackDesafiosHint() {
   const panel = document.getElementById("feedbackPanel");
   if (!panel) return;
-  panel.innerHTML = onlyChecklistFollows
-    ? `<p class="feedback__hint">Conteúdo de <strong>desafios práticos</strong>. Depois use <strong>Passo a passo</strong> na barra lateral para marcar a checklist do projeto.</p>`
-    : `<p class="feedback__hint">Desafios práticos: implemente no seu projeto e volte às atividades do tópico quando quiser.</p>`;
+  panel.innerHTML = `<p class="feedback__hint">Após concluir siga para o próximo conteúdo</p>`;
 }
 
 function renderDesafios(topico) {
@@ -779,11 +802,6 @@ function renderDesafios(topico) {
     })
     .join("");
 
-  const onlyChecklistFollows =
-    Array.isArray(topico.atividades) &&
-    topico.atividades.length > 0 &&
-    topico.atividades.every((a) => a.tipo === "checklist_trilha");
-
   view.innerHTML = `
     <div class="theory-shell">
       <article class="theory-panel desafios-panel" aria-labelledby="desafiosHeading">
@@ -798,7 +816,7 @@ function renderDesafios(topico) {
       </article>
     </div>`;
 
-  setFeedbackDesafiosHint(onlyChecklistFollows);
+  setFeedbackDesafiosHint();
 }
 
 function renderChecklistSidebar(atividade, checklistDict) {
@@ -1093,7 +1111,8 @@ function renderActivity(ctx) {
     paintQuizOptionHighlights(optionsRoot, atividade, matches);
   } else {
     clearQuizOptionHighlights(optionsRoot);
-    clearFeedbackHint();
+    if (isDesafioCodigo) setFeedbackDesafiosHint();
+    else clearFeedbackHint();
   }
 }
 
@@ -1204,7 +1223,8 @@ function applyQuestionFeedbackFromDom(ctx, topico, atividade) {
   );
   if (selected.size === 0) {
     clearQuizOptionHighlights(root);
-    clearFeedbackHint();
+    if (atividade.tipo === "desafio_codigo") setFeedbackDesafiosHint();
+    else clearFeedbackHint();
     scrollAnchorFeedbackPanel();
     return;
   }
@@ -1547,8 +1567,10 @@ async function main() {
       enterMobileSidebarTopicActiveMode();
       requestAnimationFrame(() => {
         syncLayoutChrome();
+        requestAnimationFrame(() => {
+          scrollAnchorMainPanel();
+        });
       });
-      if (isMobileStudyLayout()) scrollAnchorMainInner();
     }
   }
 
@@ -1569,8 +1591,10 @@ async function main() {
       enterMobileSidebarTopicActiveMode();
       requestAnimationFrame(() => {
         syncLayoutChrome();
+        requestAnimationFrame(() => {
+          scrollAnchorMainPanel();
+        });
       });
-      if (isMobileStudyLayout()) scrollAnchorMainInner();
     }
   }
 
@@ -1594,8 +1618,10 @@ async function main() {
     enterMobileSidebarTopicActiveMode();
     requestAnimationFrame(() => {
       syncLayoutChrome();
+      requestAnimationFrame(() => {
+        scrollAnchorMainPanel();
+      });
     });
-    if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
   function onOpenTopicDesafios(topicId) {
@@ -1615,8 +1641,10 @@ async function main() {
     enterMobileSidebarTopicActiveMode();
     requestAnimationFrame(() => {
       syncLayoutChrome();
+      requestAnimationFrame(() => {
+        scrollAnchorMainPanel();
+      });
     });
-    if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
   function onSelectContexto(contexto) {
@@ -1631,15 +1659,26 @@ async function main() {
       allDone(topicos, completedSet)
     );
     clearFeedbackHint();
-    resetMobileSidebarTopicActiveMode();
+    const sidebarEl = document.querySelector(".sidebar");
+    if (isGithubContext(selectedContexto)) {
+      sidebarEl?.classList.add("sidebar--github-context");
+      enterMobileSidebarTopicActiveMode();
+    } else {
+      sidebarEl?.classList.remove("sidebar--github-context");
+      resetMobileSidebarTopicActiveMode();
+    }
     paint();
     requestAnimationFrame(() => {
       syncLayoutChrome();
       requestAnimationFrame(() => {
         syncLayoutChrome();
+        if (isGithubContext(selectedContexto)) {
+          scrollAnchorMainPanel();
+        } else if (isMobileStudyLayout()) {
+          scrollAnchorMainInner();
+        }
       });
     });
-    if (isMobileStudyLayout()) scrollAnchorMainInner();
   }
 
   function paint() {
@@ -1658,6 +1697,7 @@ async function main() {
       );
       showCongratulations();
       resetMobileSidebarTopicActiveMode();
+      document.querySelector(".sidebar")?.classList.remove("sidebar--github-context");
       syncLayoutChrome();
       return;
     }
@@ -1689,7 +1729,7 @@ async function main() {
           }
           clearFeedbackHint();
           paint();
-          scrollAnchorMainInner();
+          scrollAnchorMainPanel();
         }
       },
       onNext: () => {
@@ -1703,7 +1743,7 @@ async function main() {
           }
           clearFeedbackHint();
           paint();
-          scrollAnchorMainInner();
+          scrollAnchorMainPanel();
         }
       },
     };
@@ -1761,9 +1801,32 @@ async function main() {
       onOpenTopicDesafios
     );
     resetMobileSidebarTopicActiveMode();
+    document.querySelector(".sidebar")?.classList.remove("sidebar--github-context");
     syncLayoutChrome();
   } else {
     paint();
+    const sidebarBoot = document.querySelector(".sidebar");
+    if (isGithubContext(selectedContexto)) {
+      sidebarBoot?.classList.add("sidebar--github-context");
+    } else {
+      sidebarBoot?.classList.remove("sidebar--github-context");
+    }
+    if (isMobileStudyLayout()) {
+      enterMobileSidebarTopicActiveMode();
+      requestAnimationFrame(() => {
+        syncLayoutChrome();
+        requestAnimationFrame(() => {
+          scrollAnchorMainPanel();
+        });
+      });
+    } else if (isGithubContext(selectedContexto)) {
+      requestAnimationFrame(() => {
+        syncLayoutChrome();
+        requestAnimationFrame(() => {
+          scrollAnchorMainPanel();
+        });
+      });
+    }
   }
 
   window.addEventListener("resize", () => {

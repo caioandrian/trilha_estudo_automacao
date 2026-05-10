@@ -558,6 +558,10 @@ html[data-theme="light"] .context-nav__active-only--github {
   flex: 1;
 }
 
+.sidebar.sidebar--github-context #topicList {
+  display: none !important;
+}
+
 .topic-block {
   margin-bottom: 0.5rem;
   display: flex;
@@ -787,6 +791,14 @@ html[data-theme="light"] .topic-btn--current.topic-btn--ctx-github .topic-btn__t
 
 #feedbackPanel {
   scroll-margin-top: calc(var(--topbar-offset, 7.5rem) + 0.4rem);
+}
+
+#mainPanel {
+  scroll-margin-top: calc(var(--topbar-offset, 7.5rem) + var(--sidebar-fixed-offset, 0px) + 0.4rem);
+}
+
+#theorySubpanel {
+  scroll-margin-top: calc(var(--topbar-offset, 7.5rem) + var(--sidebar-fixed-offset, 0px) + 0.4rem);
 }
 
 /* —— Teoria (destaque antes das questões) —— */

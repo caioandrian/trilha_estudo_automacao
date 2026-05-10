@@ -988,7 +988,7 @@
     {
       "id": "github",
       "ordem": 7,
-      "titulo": "GitHub: enviar seu projeto",
+      "titulo": "GitHub: criar versionamento",
       "contexto": "GitHub / Versionamento",
       "atividades": [
         {

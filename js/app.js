@@ -1196,7 +1196,7 @@ function renderFeedback(ok, atividade, selected, topico) {
   panel.innerHTML = `
     <div class="feedback-result ${cls}">
       <p class="feedback-result__title">${title}</p>
-      <p>Você marcou: <strong>${escapeHtml(selArr)}</strong>. Corretas: <strong>${escapeHtml(corrArr)}</strong>.</p>
+      <p>Você marcou: <strong>${escapeHtml(selArr)}</strong>. Correta: <strong>${escapeHtml(corrArr)}</strong>.</p>
     </div>
     <div class="feedback-section">
       <h3>Explicação</h3>

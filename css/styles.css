@@ -810,6 +810,12 @@ html[data-theme="light"] .topic-btn--current.topic-btn--ctx-github .topic-btn__t
   scroll-margin-top: calc(var(--topbar-offset, 7.5rem) + var(--sidebar-fixed-offset, 0px) + 0.4rem);
 }
 
+@media (max-width: 1024px) {
+  .activity-actions-wrap {
+    scroll-margin-top: calc(var(--topbar-offset, 7.5rem) + var(--sidebar-fixed-offset, 0px) + 0.4rem);
+  }
+}
+
 /* —— Teoria (destaque antes das questões) —— */
 
 .theory-shell {

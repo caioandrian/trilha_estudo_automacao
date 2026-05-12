@@ -449,6 +449,20 @@ function scrollAnchorFeedbackPanel() {
   });
 }
 
+/** Mobile: após marcar alternativa em pergunta/desafio, levar a barra Anterior/Próxima para o topo útil da viewport. */
+function scrollAnchorActivityActionsWrap() {
+  requestAnimationFrame(() => {
+    const el = document.querySelector(".activity-actions-wrap");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+function scrollQuizAnswerAnchorMobileElseFeedback() {
+  if (isMobileStudyLayout()) scrollAnchorActivityActionsWrap();
+  else scrollAnchorFeedbackPanel();
+}
+
 function renderTopicList(
   topicos,
   completedSet,
@@ -1240,7 +1254,7 @@ function applyQuestionFeedbackFromDom(ctx, topico, atividade) {
       ctx.paint();
       scrollAnchorMainInner();
     } else {
-      scrollAnchorFeedbackPanel();
+      scrollQuizAnswerAnchorMobileElseFeedback();
       renderTopicList(
         ctx.topicos,
         ctx.completedSet,
@@ -1261,7 +1275,7 @@ function applyQuestionFeedbackFromDom(ctx, topico, atividade) {
       updateProgress(ctx.topicos, ctx.completedSet);
     }
   } else {
-    scrollAnchorFeedbackPanel();
+    scrollQuizAnswerAnchorMobileElseFeedback();
   }
 }
 

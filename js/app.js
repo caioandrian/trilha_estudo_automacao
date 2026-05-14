@@ -35,7 +35,7 @@ Créditos ao @caioandrian por ter montado essa trilha de estudos gratuita pra co
 /** @typedef {{ id: string; texto: string; detalhes?: string | string[]; codigoExemplo?: string; codigoExemploIntro?: string }} ChecklistPasso */
 /** @typedef {{ id: string; tipo: string; descricao: string; codigo?: string | null; passos?: ChecklistPasso[]; opcoes?: { id: string; texto: string }[]; corretas?: string[]; explicacao?: string; codigoExplicacao?: string }} Atividade */
 /** @typedef {{ titulo: string; url: string }} TeoriaLink */
-/** @typedef {{ titulo?: string; paragrafos?: string[]; codigo?: string | null }} TeoriaSecao */
+/** @typedef {{ titulo?: string; paragrafos?: string[]; codigo?: string | null; codigoCompletoParaCopiar?: boolean }} TeoriaSecao */
 /** @typedef {{ titulo: string; paragrafos?: string[]; codigo?: string | null; links?: TeoriaLink[]; secoes?: TeoriaSecao[] }} Teoria */
 /** @typedef {{ titulo: string; passos: string[]; codigoFinal: string }} DesafioBloco */
 /** @typedef {{ titulo?: string; introducao?: string[]; siteUrl?: string; credenciais?: { usuario: string; senha: string }; blocos: DesafioBloco[] }} Desafios */
@@ -174,14 +174,16 @@ function isGithubContext(/** @type {string} */ contexto) {
 
 function contextNavVariantClass(/** @type {string} */ label) {
   const ctx = label || "";
+  if (/CI\/CD|pipeline/i.test(ctx)) return "context-nav__btn--cicd";
   if (/Cypress|Automação/i.test(ctx)) return "context-nav__btn--cypress";
   if (/GitHub|Versionamento/i.test(ctx)) return "context-nav__btn--github";
   return "context-nav__btn--logica";
 }
 
-/** @returns {"topic-btn--ctx-logica" | "topic-btn--ctx-cypress" | "topic-btn--ctx-github"} */
+/** @returns {"topic-btn--ctx-logica" | "topic-btn--ctx-cypress" | "topic-btn--ctx-github" | "topic-btn--ctx-cicd"} */
 function topicBtnContextClass(/** @type {string} */ contextoLabel) {
   const v = contextNavVariantClass(contextoLabel);
+  if (v.includes("cicd")) return "topic-btn--ctx-cicd";
   if (v.includes("cypress")) return "topic-btn--ctx-cypress";
   if (v.includes("github")) return "topic-btn--ctx-github";
   return "topic-btn--ctx-logica";
@@ -222,7 +224,16 @@ function firstActivityIndexForContext(contexto, flat, completedSet, /** @type {b
     if (firstAny < 0) firstAny = i;
     if (!completedSet.has(flat[i].atividade.id)) return i;
   }
-  return firstAny >= 0 ? firstAny : 0;
+  return firstAny >= 0 ? firstAny : -1;
+}
+
+function contextHasFlatActivities(contexto, flat) {
+  return flat.some((x) => x.topico.contexto === contexto);
+}
+
+function firstTopicIdInContext(topicos, contexto) {
+  const list = [...topicos].filter((t) => t.contexto === contexto).sort((a, b) => a.ordem - b.ordem);
+  return list[0]?.id ?? null;
 }
 
 function renderContextNav(contextos, selectedContexto, topicos, completedSet, onSelectContexto) {
@@ -292,7 +303,10 @@ function wireContextNavMobileToggle() {
   });
 }
 
-function topicDone(topico, completedSet) {
+function topicDone(topico, completedSet, theoryVisitedSet) {
+  if (!topico.atividades || topico.atividades.length === 0) {
+    return theoryVisitedSet.has(topico.id);
+  }
   return topico.atividades.every((a) => completedSet.has(a.id));
 }
 
@@ -359,7 +373,6 @@ function checklistMarkedCount(atividade, checklistDict) {
 
 function topicSidebarKindLabel(topico) {
   const acts = topico.atividades || [];
-  if (acts.length === 0) return "Perguntas";
   const allChecklist = acts.every((a) => a.tipo === "checklist_trilha");
   return allChecklist ? "Passo a passo" : "Perguntas";
 }
@@ -466,6 +479,7 @@ function scrollQuizAnswerAnchorMobileElseFeedback() {
 function renderTopicList(
   topicos,
   completedSet,
+  theoryVisitedSet,
   activeTopicId,
   selectedContexto,
   onSelectTopic,
@@ -479,11 +493,12 @@ function renderTopicList(
   const visible = sorted.filter((t) => t.contexto === selectedContexto);
   nav.innerHTML = visible
     .map((t) => {
-      const done = topicDone(t, completedSet);
+      const done = topicDone(t, completedSet, theoryVisitedSet);
       const ctxCls = topicBtnContextClass(t.contexto);
       const isCurrent = t.id === activeTopicId;
       const hasTheory = topicHasTheory(t);
       const hasDesafios = topicHasDesafios(t);
+      const hasActivities = Array.isArray(t.atividades) && t.atividades.length > 0;
       const kindLabel = topicSidebarKindLabel(t);
       const theoryBtn = hasTheory
         ? `<button type="button" class="btn-topic-theory" data-topic-theory="${escapeHtml(t.id)}" aria-label="Abrir teoria: ${escapeHtml(t.titulo)}">Teoria</button>`
@@ -491,7 +506,9 @@ function renderTopicList(
       const desafiosBtn = hasDesafios
         ? `<button type="button" class="btn-topic-theory" data-topic-desafios="${escapeHtml(t.id)}" aria-label="Abrir desafios: ${escapeHtml(t.titulo)}">Desafios</button>`
         : "";
-      const kindBtn = `<button type="button" class="btn-topic-theory" data-topic-activities="${escapeHtml(t.id)}" aria-label="Ir para: ${escapeHtml(kindLabel)} — ${escapeHtml(t.titulo)}">${escapeHtml(kindLabel)}</button>`;
+      const kindBtn = hasActivities
+        ? `<button type="button" class="btn-topic-theory" data-topic-activities="${escapeHtml(t.id)}" aria-label="Ir para: ${escapeHtml(kindLabel)} — ${escapeHtml(t.titulo)}">${escapeHtml(kindLabel)}</button>`
+        : "";
       const currentAttr = isCurrent ? ' aria-current="true"' : "";
       return `
         <div class="topic-block">
@@ -597,9 +614,16 @@ function formatChecklistDetalhesHtml(detalhes) {
   return parts.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
 }
 
-function setFeedbackTheoryHint(/** @type {boolean} */ onlyChecklistFollows) {
+function setFeedbackTheoryHint(
+  /** @type {boolean} */ onlyChecklistFollows,
+  /** @type {boolean | undefined} */ theoryOnlyExtra
+) {
   const panel = document.getElementById("feedbackPanel");
   if (!panel) return;
+  if (theoryOnlyExtra) {
+    panel.innerHTML = `<p class="feedback__hint">Bloco de <strong>teoria</strong>. Este material é só leitura: <strong>não há questões</strong> nem checklist e <strong>não altera</strong> a percentagem da barra de progresso principal.</p>`;
+    return;
+  }
   panel.innerHTML = onlyChecklistFollows
     ? `<p class="feedback__hint">Bloco de <strong>teoria</strong>. Depois abra <strong>Ir para a checklist</strong> e marque cada passo ao executá-lo na sua máquina.</p>`
     : `<p class="feedback__hint">Bloco de <strong>teoria</strong>. Quando estiver pronto, use <strong>Ir para as questões</strong> para avaliar o que você aprendeu.</p>`;
@@ -615,6 +639,15 @@ function theoryCodeBlockHtml(/** @type {string | null | undefined} */ codigo) {
   const c = codigo == null ? "" : String(codigo).trim();
   if (!c) return "";
   return `<div class="code-block"><pre>${escapeHtml(c)}</pre></div>`;
+}
+
+/** Código opcionalmente com botão para copiar o arquivo completo (blocos marcados na trilha). */
+function theoryCodeSectionFromSec(/** @type {TeoriaSecao} */ sec) {
+  const c = sec.codigo == null ? "" : String(sec.codigo).trim();
+  if (!c) return "";
+  if (!sec.codigoCompletoParaCopiar)
+    return `<div class="code-block"><pre>${escapeHtml(c)}</pre></div>`;
+  return `<div class="theory-copyable-block"><button type="button" class="btn btn--ghost theory-copyable__btn" aria-label="Copiar arquivo completo">Copiar arquivo completo</button><div class="theory-copyable__pre-wrap"><pre>${escapeHtml(c)}</pre></div></div>`;
 }
 
 /** @param {Teoria} teoria */
@@ -641,7 +674,7 @@ function buildSingleTheorySectionHtml(sec) {
     .map((p) => `<p>${escapeHtml(p)}</p>`)
     .join("");
   const body = paras ? `<div class="theory-body">${paras}</div>` : "";
-  return `<section class="theory-section">${titulo}${body}${theoryCodeBlockHtml(sec.codigo)}</section>`;
+  return `<section class="theory-section">${titulo}${body}${theoryCodeSectionFromSec(sec)}</section>`;
 }
 
 /** @param {Teoria} teoria */
@@ -652,6 +685,43 @@ function renderTheoryBodyLegacy(teoria) {
     .join("");
   const body = paragraphs ? `<div class="theory-body">${paragraphs}</div>` : "";
   return `${body}${theoryCodeBlockHtml(teoria.codigo)}`;
+}
+
+function setFeedbackTheoryOnlyReadHint() {
+  const panel = document.getElementById("feedbackPanel");
+  if (!panel) return;
+  panel.innerHTML = `<p class="feedback__hint">Este tópico é <strong>somente leitura</strong> (sem questões). Você já marcou como lido: o progresso principal da trilha <strong>não</strong> aumenta só por este extra.</p>`;
+}
+
+/** Vista após “Marcar como lido” em tópicos só com teoria (sem lista de atividades). */
+function renderTheoryOnlyStub(topico, ctx) {
+  const view = document.getElementById("main__inner");
+  if (!view) return;
+
+  view.innerHTML = `
+    <div class="theory-shell">
+      <article class="theory-panel theory-panel--theory-only-done" aria-labelledby="theoryOnlyDoneHeading">
+        <div class="theory-panel__inner">
+          <span class="theory-badge" aria-hidden="true">● Leitura</span>
+          <h2 class="theory-heading" id="theoryOnlyDoneHeading">${escapeHtml(topico.titulo)}</h2>
+          <div class="theory-body">
+            <p>Você marcou esta leitura como concluída. Não há questões nem checklist neste tópico — escolha <strong>Teoria</strong> na lista ao lado se quiser rever o texto e os exemplos.</p>
+            <p class="theory-follow">Este conteúdo <strong>não altera</strong> a percentagem na barra de progresso nem o critério de “parabéns” da trilha.</p>
+          </div>
+          <div class="theory-actions">
+            <button type="button" class="btn btn--primary" id="btnTheoryOnlyReopen">Reabrir teoria</button>
+          </div>
+        </div>
+      </article>
+    </div>`;
+
+  document.getElementById("btnTheoryOnlyReopen")?.addEventListener("click", () => {
+    ctx.theoryVisitedSet.delete(topico.id);
+    persist(ctx.completedSet, ctx.theoryVisitedSet, ctx.checklistDict, ctx.selectionsDict);
+    clearFeedbackHint();
+    ctx.paint();
+  });
+  setFeedbackTheoryOnlyReadHint();
 }
 
 function renderTheory(topico, ctx) {
@@ -702,14 +772,26 @@ function renderTheory(topico, ctx) {
         </div>`
       : "";
 
+  const theoryOnlyExtra = topico.atividades.length === 0;
   const onlyChecklistFollows =
     Array.isArray(topico.atividades) &&
     topico.atividades.length > 0 &&
     topico.atividades.every((a) => a.tipo === "checklist_trilha");
-  const btnTheoryLabel = onlyChecklistFollows ? "Ir para a checklist" : "Ir para as questões";
-  const theoryFollowText = onlyChecklistFollows
-    ? `O passo a passo seguinte está em formato <strong>checklist</strong>: marque o que já fez até concluir o tópico.`
-    : `As questões a seguir servem só para <strong>fixar e avaliar</strong> o conteúdo acima.`;
+
+  /** @type {string} */
+  let btnTheoryLabel;
+  /** @type {string} */
+  let theoryFollowText;
+  if (theoryOnlyExtra) {
+    btnTheoryLabel = "Marcar como lido";
+    theoryFollowText = `Este módulo é só leitura: <strong>não há</strong> perguntas depois da teoria. Ao continuar você regista que leu por aqui; a percentagem principal da trilha <strong>não muda</strong>.`;
+  } else if (onlyChecklistFollows) {
+    btnTheoryLabel = "Ir para a checklist";
+    theoryFollowText = `O passo a passo seguinte está em formato <strong>checklist</strong>: marque o que já fez até concluir o tópico.`;
+  } else {
+    btnTheoryLabel = "Ir para as questões";
+    theoryFollowText = `As questões a seguir servem só para <strong>fixar e avaliar</strong> o conteúdo acima.`;
+  }
 
   view.innerHTML = `
     <div class="theory-shell">
@@ -727,7 +809,9 @@ function renderTheory(topico, ctx) {
       </article>
     </div>`;
 
-  setFeedbackTheoryHint(onlyChecklistFollows);
+  setFeedbackTheoryHint(onlyChecklistFollows, theoryOnlyExtra);
+
+  wireTheoryCopyableBlocks(view);
 
   if (secoesFiltered.length > 1) {
     const panel = document.getElementById("theorySubpanel");
@@ -743,6 +827,7 @@ function renderTheory(topico, ctx) {
         });
         if (panel) {
           panel.innerHTML = buildSingleTheorySectionHtml(secoesFiltered[idx]);
+          wireTheoryCopyableBlocks(panel);
           panel.setAttribute("aria-labelledby", `theoryTab${idx}`);
         }
         if (isMobileStudyLayout()) scrollAnchorTheorySubpanel();
@@ -866,20 +951,26 @@ function wireChecklistDetailsAccordion(/** @type {Element | null | undefined} */
   });
 }
 
-function wireChecklistCodeCopy(/** @type {ParentNode | null} */ root) {
+/**
+ * @param {ParentNode | null | undefined} root
+ * @param {{ blockSelector?: string; buttonSelector?: string; copyLabel?: string }} [options]
+ */
+function wireCodeCopyButtons(root, options) {
+  const blockSelector = options?.blockSelector ?? ".checklist__code-block";
+  const buttonSelector = options?.buttonSelector ?? ".checklist__copy-btn";
+  const copyLabel = options?.copyLabel ?? "Copiar código";
   if (!root) return;
-  root.querySelectorAll(".checklist__copy-btn").forEach((btn) => {
+  root.querySelectorAll(buttonSelector).forEach((btn) => {
     if (!(btn instanceof HTMLButtonElement)) return;
     btn.addEventListener("click", async () => {
-      const block /** @type {HTMLElement | null} */ = btn.closest(".checklist__code-block");
+      const block = btn.closest(blockSelector);
       const pre = block?.querySelector("pre");
       const text = pre?.textContent ?? "";
-      const label = "Copiar código";
       try {
         await navigator.clipboard.writeText(text);
         btn.textContent = "Copiado!";
         window.setTimeout(() => {
-          btn.textContent = label;
+          btn.textContent = copyLabel;
         }, 2000);
       } catch {
         if (pre) {
@@ -893,13 +984,29 @@ function wireChecklistCodeCopy(/** @type {ParentNode | null} */ root) {
           document.execCommand("copy");
           btn.textContent = "Copiado!";
           window.setTimeout(() => {
-            btn.textContent = label;
+            btn.textContent = copyLabel;
           }, 2000);
         } catch {
-          btn.textContent = label;
+          btn.textContent = copyLabel;
         }
       }
     });
+  });
+}
+
+function wireChecklistCodeCopy(/** @type {ParentNode | null} */ root) {
+  wireCodeCopyButtons(root, {
+    blockSelector: ".checklist__code-block",
+    buttonSelector: ".checklist__copy-btn",
+    copyLabel: "Copiar código",
+  });
+}
+
+function wireTheoryCopyableBlocks(/** @type {ParentNode | null | undefined} */ root) {
+  wireCodeCopyButtons(root, {
+    blockSelector: ".theory-copyable-block",
+    buttonSelector: ".theory-copyable__btn",
+    copyLabel: "Copiar arquivo completo",
   });
 }
 
@@ -1010,6 +1117,7 @@ function renderChecklistActivity(ctx, topico, atividade) {
         renderTopicList(
           topicos,
           completedSet,
+          theoryVisitedSet,
           topico.id,
           selectedContexto,
           onSelectTopic,
@@ -1258,6 +1366,7 @@ function applyQuestionFeedbackFromDom(ctx, topico, atividade) {
       renderTopicList(
         ctx.topicos,
         ctx.completedSet,
+        ctx.theoryVisitedSet,
         topico.id,
         ctx.selectedContexto,
         ctx.onSelectTopic,
@@ -1499,9 +1608,26 @@ async function main() {
   }
 
   const doneGlobal = allDone(topicos, completedSet);
+  let theoryOnlyTopicId = /** @type {string | null} */ (null);
   let currentIndex = firstActivityIndexForContext(selectedContexto, flat, completedSet, doneGlobal);
+  if (!contextHasFlatActivities(selectedContexto, flat)) {
+    theoryOnlyTopicId = firstTopicIdInContext(topicos, selectedContexto);
+  }
+  if (currentIndex < 0) currentIndex = 0;
+
+  function resolveFocusTopico() {
+    if (!theoryOnlyTopicId) return null;
+    const t = topicos.find((x) => x.id === theoryOnlyTopicId);
+    if (t && t.contexto === selectedContexto) return t;
+    theoryOnlyTopicId = null;
+    return null;
+  }
 
   function activeTopicId() {
+    if (theoryOnlyTopicId) {
+      const tp = topicos.find((x) => x.id === theoryOnlyTopicId);
+      if (tp && tp.contexto === selectedContexto) return theoryOnlyTopicId;
+    }
     if (currentIndex < 0 || currentIndex >= flat.length) return "";
     const cur = flat[currentIndex].topico;
     if (cur.contexto !== selectedContexto) return "";
@@ -1525,7 +1651,11 @@ async function main() {
     if (typeof window === "undefined" || !window.matchMedia(MOBILE_SIDEBAR_FIXED_MQ).matches) return;
     const sidebar = document.querySelector(".sidebar");
     if (!sidebar?.classList.contains("sidebar--mobile-topic-active")) return;
-    const top = currentTopicoFromIndex();
+    const top =
+      theoryOnlyTopicId &&
+      topicos.find((x) => x.id === theoryOnlyTopicId && x.contexto === selectedContexto)
+        ? topicos.find((x) => x.id === theoryOnlyTopicId)
+        : currentTopicoFromIndex();
     const headTitle = document.querySelector(".sidebar__head h2");
     if (headTitle && top) headTitle.textContent = top.titulo;
   }
@@ -1570,6 +1700,7 @@ async function main() {
     desafiosFocusTopicId = null;
     const idx = flat.findIndex((x) => x.topico.id === topicId);
     if (idx >= 0) {
+      theoryOnlyTopicId = null;
       currentIndex = idx;
       const ctxTop = flat[currentIndex].topico.contexto;
       if (ctxTop && ctxTop !== selectedContexto) {
@@ -1585,42 +1716,70 @@ async function main() {
           scrollAnchorMainPanel();
         });
       });
+      return;
     }
+    const top = topicos.find((t) => t.id === topicId);
+    if (!top || (top.atividades && top.atividades.length > 0)) return;
+    theoryOnlyTopicId = topicId;
+    const ctxTop = top.contexto;
+    if (ctxTop && ctxTop !== selectedContexto) {
+      selectedContexto = ctxTop;
+      localStorage.setItem(CONTEXT_KEY, selectedContexto);
+    }
+    clearFeedbackHint();
+    paint();
+    enterMobileSidebarTopicActiveMode();
+    requestAnimationFrame(() => {
+      syncLayoutChrome();
+      requestAnimationFrame(() => {
+        scrollAnchorMainPanel();
+      });
+    });
   }
 
   function onOpenTopicTheory(topicId) {
     desafiosFocusTopicId = null;
     const idx = flat.findIndex((x) => x.topico.id === topicId);
+    const topKnown = topicos.find((t) => t.id === topicId);
+    if (!topKnown) return;
     if (idx >= 0) {
+      theoryOnlyTopicId = null;
       currentIndex = idx;
-      const ctxTop = flat[currentIndex].topico.contexto;
-      if (ctxTop && ctxTop !== selectedContexto) {
-        selectedContexto = ctxTop;
-        localStorage.setItem(CONTEXT_KEY, selectedContexto);
-      }
-      theoryVisitedSet.delete(topicId);
-      persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
-      clearFeedbackHint();
-      paint();
-      enterMobileSidebarTopicActiveMode();
-      requestAnimationFrame(() => {
-        syncLayoutChrome();
-        requestAnimationFrame(() => {
-          scrollAnchorMainPanel();
-        });
-      });
+    } else {
+      theoryOnlyTopicId = topicId;
     }
+    const ctxTop = topKnown.contexto;
+    if (ctxTop && ctxTop !== selectedContexto) {
+      selectedContexto = ctxTop;
+      localStorage.setItem(CONTEXT_KEY, selectedContexto);
+    }
+    theoryVisitedSet.delete(topicId);
+    persist(completedSet, theoryVisitedSet, checklistDict, selectionsDict);
+    clearFeedbackHint();
+    paint();
+    enterMobileSidebarTopicActiveMode();
+    requestAnimationFrame(() => {
+      syncLayoutChrome();
+      requestAnimationFrame(() => {
+        scrollAnchorMainPanel();
+      });
+    });
   }
 
   function onOpenTopicActivities(topicId) {
     desafiosFocusTopicId = null;
+    const top = topicos.find((t) => t.id === topicId);
+    if (!top) return;
     const idx = flat.findIndex((x) => x.topico.id === topicId);
-    if (idx < 0) return;
-    const top = flat[idx].topico;
-    if (topicHasTheory(top)) {
-      theoryVisitedSet.add(top.id);
+    if (idx >= 0) {
+      theoryOnlyTopicId = null;
+      if (topicHasTheory(top)) theoryVisitedSet.add(top.id);
+      currentIndex = idx;
+    } else if (!top.atividades || top.atividades.length === 0) {
+      theoryOnlyTopicId = topicId;
+    } else {
+      return;
     }
-    currentIndex = idx;
     const ctxTop = top.contexto;
     if (ctxTop && ctxTop !== selectedContexto) {
       selectedContexto = ctxTop;
@@ -1665,13 +1824,20 @@ async function main() {
     desafiosFocusTopicId = null;
     if (!contextos.includes(contexto)) return;
     selectedContexto = contexto;
-    localStorage.setItem(CONTEXT_KEY, selectedContexto);
-    currentIndex = firstActivityIndexForContext(
+    localStorage.setItem(CONTEXT_KEY, contexto);
+    const idxFlat = firstActivityIndexForContext(
       selectedContexto,
       flat,
       completedSet,
       allDone(topicos, completedSet)
     );
+    if (contextHasFlatActivities(selectedContexto, flat)) {
+      theoryOnlyTopicId = null;
+      currentIndex = idxFlat >= 0 ? idxFlat : 0;
+    } else {
+      theoryOnlyTopicId = firstTopicIdInContext(topicos, selectedContexto);
+      currentIndex = idxFlat >= 0 ? idxFlat : 0;
+    }
     clearFeedbackHint();
     const sidebarEl = document.querySelector(".sidebar");
     if (isGithubContext(selectedContexto)) {
@@ -1706,6 +1872,7 @@ async function main() {
       renderTopicList(
         topicos,
         completedSet,
+        theoryVisitedSet,
         activeTopicId(),
         selectedContexto,
         onSelectTopic,
@@ -1739,6 +1906,7 @@ async function main() {
       onPrev: () => {
         if (currentIndex > 0) {
           desafiosFocusTopicId = null;
+          theoryOnlyTopicId = null;
           currentIndex--;
           const ctxTop = flat[currentIndex]?.topico.contexto;
           if (ctxTop && ctxTop !== selectedContexto) {
@@ -1753,6 +1921,7 @@ async function main() {
       onNext: () => {
         if (currentIndex < flat.length - 1) {
           desafiosFocusTopicId = null;
+          theoryOnlyTopicId = null;
           currentIndex++;
           const ctxTop = flat[currentIndex]?.topico.contexto;
           if (ctxTop && ctxTop !== selectedContexto) {
@@ -1770,6 +1939,7 @@ async function main() {
     renderTopicList(
       topicos,
       completedSet,
+      theoryVisitedSet,
       activeTopicId(),
       selectedContexto,
       onSelectTopic,
@@ -1778,6 +1948,22 @@ async function main() {
       onOpenTopicDesafios
     );
     updateProgress(topicos, completedSet);
+
+    const focusExtras = resolveFocusTopico();
+    if (
+      focusExtras &&
+      focusExtras.atividades.length === 0 &&
+      focusExtras.contexto === selectedContexto
+    ) {
+      if (topicHasTheory(focusExtras) && !theoryVisitedSet.has(focusExtras.id)) {
+        renderTheory(focusExtras, ctx);
+      } else {
+        renderTheoryOnlyStub(focusExtras, ctx);
+      }
+      refreshMobileSidebarHeadTitle();
+      syncLayoutChrome();
+      return;
+    }
 
     const curTop = currentTopicoFromIndex();
     if (
@@ -1811,6 +1997,7 @@ async function main() {
     renderTopicList(
       topicos,
       completedSet,
+      theoryVisitedSet,
       activeTopicId(),
       selectedContexto,
       onSelectTopic,

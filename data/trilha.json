@@ -1088,6 +1088,118 @@
           ]
         }
       ]
+    },
+    {
+      "id": "cicd-github-actions",
+      "ordem": 8,
+      "titulo": "GitHub Actions",
+      "contexto": "CI/CD",
+      "atividades": [],
+      "teoria": {
+        "titulo": "CI/CD: pipeline com GitHub Actions e Cypress",
+        "secoes": [
+          {
+            "titulo": "Para que serve CI/CD e pipelines",
+            "paragrafos": [
+              "**CI/CD** (Continuous Integration / Continuous Delivery) é o hábito de integrar mudanças ao repositório **com verificação automática** (build e testes). Uma **pipeline** é a receita: _quando X acontecer, rode estes passos em ordem_.",
+              "O objetivo é **feedback rápido**: falhas aparecem antes de chegar ao utilizador final, o time confia mais nos deploys e regressões custam menos tempo de correção."
+            ]
+          },
+          {
+            "titulo": "Estrutura básica",
+            "paragrafos": [
+              "Cada fluxo fica em `.github/workflows/` (extensão `.yml` ou `.yaml`). O ficheiro define **quando** rodar (`on`) e **o quê** rodar (`jobs`). Cada **job** usa um **runner** (`runs-on`, por exemplo `ubuntu-latest`) e lista **steps** — passos com `uses` (ações reutilizáveis) ou `run` (linha de comando shell).",
+              "Abaixo aparecem apenas **partes** do ficheiro para ver o papel de cada nome: o exemplo completo está na última secção, com botão para copiar o ficheiro inteiro."
+            ],
+            "codigo": "name: Nome do workflow   # opcional, aparece na aba Actions\n\non:\n  push: {}                 # gatilhos (ver secção seguinte)\n\njobs:\n  exemplo:\n    runs-on: ubuntu-latest   # onde o job executa\n    steps:\n      - uses: actions/checkout@v4   # checkout do repositório\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n      - name: Instalar e testar\n        run: |\n          npm ci\n          npx cypress run"
+          },
+          {
+            "titulo": "Gatilhos",
+            "paragrafos": [
+              "**`push` sem filtro de branch** faz o workflow correr em push a **qualquer** branch. Para restringir só à `main`, use `push.branches: [main]`. São **dois usos comuns** do mesmo evento `push`, com escopos diferentes.",
+              "**`schedule`** usa **cron** em UTC (formato de cinco campos: minuto, hora, dia do mês, mês, dia da semana). Exemplo: `0 18 * * 1` = toda segunda-feira às 18:00 UTC.",
+              "Também existe `workflow_dispatch` para **disparo manual** pela interface do GitHub — útil para testar a pipeline sem novo commit."
+            ],
+            "codigo": "# Push em qualquer branch\non:\n  push: {}\n\n---\n\n# Push apenas na branch main\non:\n  push:\n    branches: [main]\n\n---\n\n# Agenda (UTC) + disparo manual\non:\n  schedule:\n    - cron: '0 18 * * 1'   # segunda, 18h UTC\n  workflow_dispatch:\n"
+          },
+          {
+            "titulo": "Exemplo completo",
+            "paragrafos": [
+              "Guarde como **`.github/workflows/cypress-ci.yml`** no **mesmo projeto** onde criou o Cypress no tópico **Cypress: novo projeto do zero** (o spec **`cypress/e2e/trilha.cy.js`**).",
+              "**Node 20+**, `actions/checkout@v4`, `actions/setup-node@v4`, `cypress-io/github-action@v6`. O passo **`npm ci`** assume que existe **`package-lock.json`**; caso ainda use só `npm install` no dia a dia, troque por `npm install` ou gere o lock com `npm install` antes de versionar.",
+              "O job abaixo combina **`push` na `main`**, **`schedule`** (exemplo semanal) e **`workflow_dispatch`**."
+            ],
+            "codigoCompletoParaCopiar": true,
+            "codigo": "name: Cypress CI\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\n  schedule:\n    - cron: '0 6 * * 1' # toda segunda-feira, 06:00 UTC — ajuste se quiser\n\njobs:\n  cypress-e2e:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n\n      - name: Node 20\n        uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n\n      - name: Dependências\n        run: npm ci\n\n      - name: Cypress (spec da trilha)\n        uses: cypress-io/github-action@v6\n        with:\n          install: false\n          command: npx cypress run --spec \"cypress/e2e/trilha.cy.js\"\n"
+          }
+        ],
+        "links": [
+          {
+            "titulo": "GitHub Docs — Sintaxe do workflow",
+            "url": "https://docs.github.com/pt/actions/reference/workflows-and-actions/workflow-syntax"
+          },
+          {
+            "titulo": "GitHub Docs — Workflow schedule e cron",
+            "url": "https://docs.github.com/pt/actions/using-workflows/events-that-trigger-workflows#schedule"
+          },
+          {
+            "titulo": "Repositório cypress-io/github-action",
+            "url": "https://github.com/cypress-io/github-action"
+          },
+          {
+            "titulo": "Cypress Docs",
+            "url": "https://docs.cypress.io/"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cicd-jenkins",
+      "ordem": 9,
+      "titulo": "Jenkins",
+      "contexto": "CI/CD",
+      "atividades": [],
+      "teoria": {
+        "titulo": "CI/CD: Jenkins com repositório no GitHub",
+        "secoes": [
+          {
+            "titulo": "Sobre",
+            "paragrafos": [
+              "**Jenkins** é servidor de CI muito usado **on-premises** ou em infra própria: define-se **Pipeline as Code** (em geral um `Jenkinsfile` no repo) e o servidor executa estágios (checkout, install, testes). O **fonte dos commits** pode continuar a ser **GitHub** — o Jenkins apenas **clone/fetch** a branch **`main`** (ou a que configurar no job).",
+              "Comparando com GitHub Actions: no Actions os agentes ficam nos **runners da GitHub**; no Jenkins costuma-se ter **agents** ou máquinas controladas pela equipa, com ferramentas (Node, browsers) pré-instaladas ou em imagens Docker."
+            ]
+          },
+          {
+            "titulo": "Estrutura básica",
+            "paragrafos": [
+              "Um `Jenkinsfile` declarativo começa com **`pipeline { }`**. Dentro: **`agent`** (onde corre), **`options`**, **`environment`**, e **`stages`** com vários **`stage`** nomeados.",
+              "**`checkout scm`** traz o código do repositório e da branch configurada no job (**Pipeline multibranch** ou job apontando para `main`). **`steps`** contém comandos **`sh`** em Linux ou **`bat`** no Windows.",
+              "O exemplo completo está na última secção."
+            ],
+            "codigo": "pipeline {\n  agent any\n  tools {\n    // Configure no Jenkins uma instalação \"Node JS\" com nome exato abaixo (ex.: Tool Node 20)\n    nodejs \"nodejs-20\"\n  }\n  stages {\n    stage('Checkout') {\n      steps {\n        checkout scm   // mesmo GitHub configurado como SCM da pipeline\n      }\n    }\n    // ... outros stages ...\n  }\n}\n"
+          },
+          {
+            "titulo": "Exemplo completo",
+            "paragrafos": [
+              "Coloque **`Jenkinsfile`** na raiz do **mesmo repositório** no GitHub. No Jenkins, crie uma pipeline **Pipeline from SCM**, tipo Git, URL do repo HTTPS/SSH e branch **`main`**.",
+              "**`nodejs 'nodejs-20'`** só funciona após registar esse nome nas **Manage Jenkins → Tools → NodeJS installations** — ajuste o identificador ao que usar na sua empresa.",
+              "O estágio seguinte instala dependências com **`npm ci`** (requer **`package-lock.json`**; senão use `npm install`) e corre o **mesmo spec** da trilha: **`cypress/e2e/trilha.cy.js`**."
+            ],
+            "codigoCompletoParaCopiar": true,
+            "codigo": "pipeline {\n  agent any\n  options {\n    timestamps()\n  }\n  tools {\n    nodejs 'nodejs-20'\n  }\n  stages {\n    stage('Checkout') {\n      steps {\n        checkout scm\n      }\n    }\n    stage('Dependências') {\n      steps {\n        sh 'npm ci'\n      }\n    }\n    stage('Cypress E2E') {\n      steps {\n        sh 'npx cypress run --spec \"cypress/e2e/trilha.cy.js\"'\n      }\n    }\n  }\n}\n"
+          }
+        ],
+        "links": [
+          {
+            "titulo": "Jenkins — Pipeline",
+            "url": "https://www.jenkins.io/doc/book/pipeline/"
+          },
+          {
+            "titulo": "Jenkins — Pipeline syntax",
+            "url": "https://www.jenkins.io/doc/book/pipeline/syntax/"
+          }
+        ]
+      }
     }
   ]
 }

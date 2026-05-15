@@ -663,6 +663,29 @@ function filterTheorySecoes(teoria) {
   });
 }
 
+/**
+ * Formata um parágrafo de teoria:
+ * - `code` vira <code>code</code>
+ * - **bold** vira <strong>bold</strong>
+ * - \n vira <br>
+ * Todo o conteúdo textual passa por escapeHtml antes de ser emitido.
+ */
+function formatTheoryParagraph(/** @type {string} */ raw) {
+  const parts = raw.split("`");
+  let out = "";
+  parts.forEach((part, i) => {
+    if (i % 2 === 1) {
+      out += `<code>${escapeHtml(part)}</code>`;
+    } else {
+      const boldParts = part.split("**");
+      out += boldParts
+        .map((bit, j) => (j % 2 === 1 ? `<strong>${escapeHtml(bit)}</strong>` : escapeHtml(bit)))
+        .join("");
+    }
+  });
+  return out.replace(/\n/g, "<br>");
+}
+
 /** @param {NonNullable<Teoria["secoes"]>[number]} sec */
 function buildSingleTheorySectionHtml(sec) {
   const titulo =
@@ -671,7 +694,7 @@ function buildSingleTheorySectionHtml(sec) {
       : "";
   const paras = (sec.paragrafos || [])
     .filter(Boolean)
-    .map((p) => `<p>${escapeHtml(p)}</p>`)
+    .map((p) => `<p>${formatTheoryParagraph(p)}</p>`)
     .join("");
   const body = paras ? `<div class="theory-body">${paras}</div>` : "";
   return `<section class="theory-section">${titulo}${body}${theoryCodeSectionFromSec(sec)}</section>`;
@@ -681,7 +704,7 @@ function buildSingleTheorySectionHtml(sec) {
 function renderTheoryBodyLegacy(teoria) {
   const paragraphs = (teoria.paragrafos || [])
     .filter(Boolean)
-    .map((p) => `<p>${escapeHtml(p)}</p>`)
+    .map((p) => `<p>${formatTheoryParagraph(p)}</p>`)
     .join("");
   const body = paragraphs ? `<div class="theory-body">${paragraphs}</div>` : "";
   return `${body}${theoryCodeBlockHtml(teoria.codigo)}`;

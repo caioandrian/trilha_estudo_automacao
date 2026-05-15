@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const fs = require\\('fs'\\); try { JSON.parse\\(fs.readFileSync\\('C:/Users/csant/Documents/github/trilha_estudo_automacao/data/trilha.json', 'utf8'\\)\\); console.log\\('JSON válido'\\); } catch\\(e\\) { console.error\\('ERRO:', e.message\\); }\")",
+      "Bash(node -e \"require\\('C:/Users/csant/Documents/github/trilha_estudo_automacao/js/app.js'\\)\")"
+    ]
+  }
+}

@@ -12,77 +12,88 @@
           {
             "titulo": "Variáveis",
             "paragrafos": [
-              "Variável é um nome que guarda um valor na memória. Em testes você usa para URLs, textos esperados, contadores e flags.",
-              "Use `let` quando o valor pode mudar depois. Use `const` quando você não vai apontar a variável para outra referência (por exemplo URL base ou um objeto de configuração). O que está **dentro** de um objeto ou array ainda pode mudar.",
-              "Em código novo, prefira `let` ou `const` e evite `var`, que tem regras de escopo mais antigas e confusas."
+              "Imagine que o computador tem uma memória enorme, como um armário cheio de gavetas. Uma variável é como uma gaveta com etiqueta: você dá um nome para ela (a etiqueta) e guarda um valor dentro. Quando precisar daquele valor mais tarde, basta chamar pelo nome. Sem variáveis, você teria que escrever o mesmo número ou texto repetidamente — e qualquer mudança viraria um trabalhão.",
+              "Use `let` quando o conteúdo pode mudar ao longo do programa — como um contador que aumenta a cada tentativa. Use `const` para valores que não devem ser substituídos — como a URL base do site que você está testando. Detalhe importante: `const` impede você de jogar fora a gaveta e colocar outra no lugar, mas você ainda pode mexer nos itens dentro dela (como alterar propriedades de um objeto ou adicionar itens a uma lista).",
+              "Em código moderno, prefira `let` ou `const`. Evite `var`: ele tem um comportamento de escopo mais antigo e pode causar confusão desnecessária."
             ],
-            "codigo": "// Valor que muda (ex.: contador)\nlet tentativas = 0;\ntentativas = tentativas + 1;\n\n// Mesma referência; conteúdo do objeto/array pode mudar\nconst baseUrl = 'https://api.exemplo.com';"
+            "codigo": "// Gaveta que pode trocar de conteúdo:\nlet tentativas = 0;\ntentativas = tentativas + 1; // agora vale 1\n\n// Gaveta cujo rótulo não muda de lugar:\nconst baseUrl = 'https://api.exemplo.com';"
           },
           {
             "titulo": "Número (number)",
             "paragrafos": [
-              "JavaScript trata números como `number` (inteiros e decimais no mesmo tipo). Você usa em contagens, timeouts, preços e resultados de cálculos."
+              "Em muitas linguagens de programação, número inteiro (1, 2, 3) e número decimal (1.5, 2.7) são tipos diferentes e precisam ser declarados separadamente. No JavaScript existe apenas um tipo para todos os números, chamado `number`. Isso simplifica o início — você não precisa escolher entre `int` e `float` como em outras linguagens.",
+              "Você usa `number` em contagens, cálculos de preço, tempo de espera (timeout) e qualquer valor numérico do sistema."
             ],
-            "codigo": "const quantidade = 3;\nconst preco = 19.99;\nconst soma = quantidade * preco;\nconsole.log(soma);"
+            "codigo": "const quantidade = 3;\nconst preco = 19.99;\nconst total = quantidade * preco;\nconsole.log(total); // 59.97"
           },
           {
             "titulo": "Texto (string)",
             "paragrafos": [
-              "String é cadeia de caracteres. Aspas simples ou duplas delimitam o texto; entre crases (template literal) você pode embutir variáveis com ${...}."
+              "String é qualquer sequência de texto: um nome, uma frase, um endereço de e-mail, um link. Você define uma string colocando o texto entre aspas simples, duplas ou crases.",
+              "As crases são especiais: permitem misturar texto fixo e variáveis usando `${variavel}` — isso se chama template literal. Em vez de juntar pedaços com `+`, você escreve o texto e coloca as variáveis dentro de `${ }`. O resultado é o mesmo, mas o código fica muito mais fácil de ler."
             ],
-            "codigo": "const usuario = 'qa@site.com';\nconst linha = 'Login: ' + usuario;\nconst outra = `Usuário atual: ${usuario}`;"
+            "codigo": "const usuario = 'qa@site.com';\n\n// Jeito antigo: concatenar com +\nconst msg1 = 'Login: ' + usuario;\n\n// Jeito moderno: template literal com crases\nconst msg2 = `Usuário atual: ${usuario}`;"
           },
           {
-            "titulo": "Boolean (verdadeiro / falso)",
+            "titulo": "Boolean (verdadeiro ou falso)",
             "paragrafos": [
-              "Valores `true` e `false` aparecem em condições, flags de “passou/falhou” e combinações com `&&`, `||` e `!`."
+              "Boolean é o tipo mais simples do JavaScript: só tem dois valores possíveis, `true` (verdadeiro) ou `false` (falso). Pense em uma pergunta de sim ou não.",
+              "Você usa booleans para controlar o fluxo do programa. Exemplo: 'O usuário está logado? Se sim (`true`), mostra o painel. Se não (`false`), redireciona para a tela de login.'",
+              "Para combinar condições, use os operadores lógicos:\n`&&` — E: ambas as condições precisam ser verdadeiras.\n`||` — OU: basta uma das condições ser verdadeira.\n`!` — NÃO: inverte o valor (`!true` vira `false`, `!false` vira `true`)."
             ],
-            "codigo": "const testePassou = true;\nconst bloqueado = false;\nif (testePassou && !bloqueado) {\n  console.log('liberado');\n}"
+            "codigo": "const estaLogado = true;\nconst contaBloqueada = false;\n\nif (estaLogado && !contaBloqueada) {\n  console.log('Bem-vindo!');\n}"
           },
           {
             "titulo": "Objeto (object)",
             "paragrafos": [
-              "Objeto agrupa várias propriedades nomeadas (`chave: valor`). Útil para configurações, dados de usuário ou respostas de API."
+              "Imagine uma ficha de cadastro: ela tem nome, e-mail, telefone e endereço. Um objeto JavaScript funciona assim — agrupa vários dados relacionados em um único lugar, cada um com seu nome (chamado de chave) e seu valor.",
+              "Para acessar uma propriedade, use `objeto.propriedade`. Para alterar, basta atribuir um novo valor da mesma forma. Objetos são muito usados em configurações de testes e em respostas de APIs."
             ],
-            "codigo": "const config = {\n  baseUrl: 'https://api.exemplo.com',\n  timeout: 5000\n};\nconsole.log(config.baseUrl);\nconfig.timeout = 3000;"
+            "codigo": "const config = {\n  baseUrl: 'https://api.exemplo.com',\n  timeout: 5000\n};\n\nconsole.log(config.baseUrl); // https://api.exemplo.com\nconfig.timeout = 3000;        // altera o timeout"
           },
           {
             "titulo": "null e undefined",
             "paragrafos": [
-              "`undefined` costuma significar “ainda não tem valor” (variável declarada sem atribuir, ou propriedade inexistente).",
-              "`null` é um valor explício de “vazio intencional” ou “sem objeto”, usado quando você quer deixar claro que foi proposital."
+              "Esses dois valores parecem iguais, mas têm origens diferentes.",
+              "`undefined` aparece quando algo existe no código mas ainda não recebeu um valor — como uma variável declarada sem atribuição, ou uma propriedade que não existe no objeto. É o JavaScript dizendo: 'Esta gaveta existe, mas está vazia e ninguém colocou nada aqui ainda.'",
+              "`null` é uma ausência intencional: o programador colocou `null` de propósito para dizer 'aqui não tem nada, e foi uma escolha'. Em testes, encontrar `undefined` onde você esperava um valor real costuma indicar que algo não carregou ou foi digitado errado no código."
             ],
-            "codigo": "let a;\nconsole.log(a); // undefined\n\nconst b = null;\nconsole.log(b); // null — ausência escolhida no código"
+            "codigo": "let a;\nconsole.log(a); // undefined — gaveta existe mas está vazia\n\nconst b = null;\nconsole.log(b); // null — ausência proposital"
           },
           {
             "titulo": "Array (lista)",
             "paragrafos": [
-              "Array é uma lista ordenada; o primeiro item está no índice `0`. Com `const lista = [ ... ]` você não substitui a variável por outra lista, mas pode usar métodos como `push`, `pop`, `shift` e `unshift` para mudar os itens."
+              "Array é uma lista ordenada de valores. Pense em uma lista de compras numerada — mas aqui a contagem começa no zero, não no um! Isso é chamado de indexação zero (zero-based indexing) e é uma das primeiras coisas que surpreendem quem está começando.",
+              "Para uma lista com 5 itens, o primeiro está na posição 0 e o último na posição 4. Para acessar: `lista[0]` retorna o primeiro item, `lista[4]` retorna o quinto.",
+              "Para adicionar e remover itens, use:\n`push(item)` — adiciona ao final.\n`unshift(item)` — adiciona ao início.\n`pop()` — remove e retorna o último item.\n`shift()` — remove e retorna o primeiro item.",
+              "Ao declarar com `const`, você não pode substituir a lista inteira por outra, mas pode usar todos esses métodos normalmente."
             ],
-            "codigo": "const tags = ['smoke', 'regressao'];\ntags.push('e2e');         // entra no final\ntags.unshift('critico');  // entra no início\nconst ultima = tags.pop();     // remove do final\nconst primeira = tags.shift(); // remove do início"
+            "codigo": "const tags = ['smoke', 'regressao'];\ntags.push('e2e');         // final:   ['smoke', 'regressao', 'e2e']\ntags.unshift('critico');  // início:  ['critico', 'smoke', 'regressao', 'e2e']\n\nconst ultima   = tags.pop();   // remove 'e2e' do final\nconst primeira = tags.shift(); // remove 'critico' do início"
           },
           {
             "titulo": "Condicionais (if / else)",
             "paragrafos": [
-              "`if` decide qual bloco rodar quando a condição é verdadeira. Use `else if` para outras condições e `else` para o caso restante.",
-              "Combine comparações (`===`, `!==`, `<`, `>`) e operadores lógicos (`&&`, `||`, `!`)."
+              "O `if` é o 'se' do código. Você dá uma condição, e o programa decide qual caminho seguir — como um semáforo: 'Se estiver verde, avance. Senão, pare.'",
+              "Use `else if` para testar várias condições em sequência. Use `else` para o caso em que nenhuma condição anterior foi verdadeira.",
+              "Para comparar valores, use os operadores de comparação:\n`===` — igualdade estrita (mesmo valor e mesmo tipo) — prefira sempre.\n`!==` — diferença estrita.\n`<`, `>`, `<=`, `>=` — comparações numéricas.\n\nEvite `==` e `!=` (igualdade solta): podem ter comportamento inesperado quando os tipos são diferentes."
             ],
-            "codigo": "const nota = 7;\nif (nota >= 6) {\n  console.log('aprovado');\n} else {\n  console.log('reprovado');\n}"
+            "codigo": "const nota = 7;\n\nif (nota >= 7) {\n  console.log('aprovado');\n} else if (nota >= 5) {\n  console.log('recuperação');\n} else {\n  console.log('reprovado');\n}"
           },
           {
             "titulo": "Laço for",
             "paragrafos": [
-              "O `for` repete um bloco várias vezes. Entre parênteses há três partes: início (ex.: `let i = 0`), condição de continuar (`i < n`) e passo ao fim de cada volta (`i++` aumenta o contador em 1)."
+              "Um laço (ou loop) serve para repetir um bloco de código automaticamente, sem precisar escrever a mesma coisa várias vezes. O `for` é o mais comum e tem três partes separadas por ponto-e-vírgula dentro dos parênteses:",
+              "1. Início — executa uma vez antes de tudo (ex.: `let i = 0` cria um contador).\n2. Condição — enquanto for verdadeira, o laço continua.\n3. Passo — executa ao final de cada volta (ex.: `i++` soma 1 ao contador).\n\nQuando a condição vira `false`, o laço para."
             ],
-            "codigo": "// Três voltas: imprime 0, depois 1, depois 2\nfor (let i = 0; i < 3; i++) {\n  console.log(i);\n}"
+            "codigo": "// Três voltas: imprime 0, depois 1, depois 2\nfor (let i = 0; i < 3; i++) {\n  console.log(i);\n}\n// volta 1: i=0 → 0<3 sim → imprime 0 → i vira 1\n// volta 2: i=1 → 1<3 sim → imprime 1 → i vira 2\n// volta 3: i=2 → 2<3 sim → imprime 2 → i vira 3\n// checagem: i=3 → 3<3 não → para"
           },
           {
             "titulo": "Laço forEach em arrays",
             "paragrafos": [
-              "`forEach` é um método de lista: percorre cada item **na ordem** e chama a função que você passa (por exemplo `(item) => { ... }`).",
-              "Você não precisa gerenciar o índice manualmente — o método faz isso internamente. É útil quando você quer fazer a mesma ação para cada elemento."
+              "O `forEach` é uma forma mais direta de percorrer uma lista quando você quer fazer a mesma coisa para cada item. Em vez de criar um contador manualmente como no `for`, você passa uma função: o `forEach` chama essa função para cada elemento da lista, um por um, na ordem.",
+              "É como dizer: 'Para cada aluno da turma, leia o nome em voz alta.' Você não precisa saber quantos alunos existem — o `forEach` cuida disso automaticamente."
             ],
-            "codigo": "const nomes = ['Ana', 'Bruno'];\nnomes.forEach((nome) => {\n  console.log('Olá, ' + nome);\n});"
+            "codigo": "const nomes = ['Ana', 'Bruno', 'Carol'];\n\nnomes.forEach((nome) => {\n  console.log('Olá, ' + nome + '!');\n});\n// Imprime:\n// Olá, Ana!\n// Olá, Bruno!\n// Olá, Carol!"
           }
         ],
         "links": [
@@ -116,176 +127,92 @@
         {
           "id": "js-var-1",
           "tipo": "multipla_escolha",
-          "descricao": "Você precisa de um contador que aumenta a cada tentativa. Qual palavra costuma acompanhar esse valor em JavaScript?",
+          "descricao": "Você está criando um contador de tentativas de login que aumenta a cada vez que o usuário erra a senha. Esse valor vai mudar repetidamente durante a execução. Qual palavra-chave é a mais adequada para declarar esse contador em JavaScript?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "`var`"
-            },
-            {
-              "id": "B",
-              "texto": "`let`"
-            },
-            {
-              "id": "C",
-              "texto": "`const`"
-            },
-            {
-              "id": "D",
-              "texto": "`def`"
-            }
+            {"id": "A", "texto": "`var`"},
+            {"id": "B", "texto": "`let`"},
+            {"id": "C", "texto": "`const`"},
+            {"id": "D", "texto": "`def`"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "`let` permite atribuir de novo o mesmo nome a um novo valor. `const` não serve para um contador que muda a cada passo.",
-          "codigoExplicacao": "let contador = 0;\ncontador = contador + 1;"
+          "corretas": ["B"],
+          "explicacao": "`let` permite que o valor seja reatribuído quantas vezes for necessário — ideal para um contador que muda. `const` não aceita reatribuição e quebraria na segunda tentativa. `var` até funcionaria, mas tem comportamento de escopo imprevisível em código moderno. `def` não existe em JavaScript (é de Python).",
+          "codigoExplicacao": "let tentativas = 0;\ntentativas = tentativas + 1; // 1ª tentativa\ntentativas = tentativas + 1; // 2ª tentativa — funciona normalmente"
         },
         {
           "id": "js-const-1",
           "tipo": "multipla_escolha",
-          "descricao": "Depois que o código abaixo roda por completo, qual é o valor de `usuario.nome`?",
+          "descricao": "A variável `usuario` foi declarada com `const` e recebeu um objeto. Em seguida, a propriedade `nome` é alterada. O programa quebra ou continua? Qual é o valor de `usuario.nome` ao final?",
           "codigo": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno';",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "`'Ana'`"
-            },
-            {
-              "id": "B",
-              "texto": "`'Bruno'`"
-            },
-            {
-              "id": "C",
-              "texto": "`undefined`"
-            },
-            {
-              "id": "D",
-              "texto": "O programa encerra com erro antes de terminar"
-            }
+            {"id": "A", "texto": "`'Ana'` — `const` congela tudo, nenhuma alteração é permitida"},
+            {"id": "B", "texto": "`'Bruno'` — `const` impede trocar o objeto, mas permite alterar propriedades"},
+            {"id": "C", "texto": "`undefined` — a propriedade é apagada após a reatribuição"},
+            {"id": "D", "texto": "O programa encerra com erro antes de terminar"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "`const` impede você de fazer `usuario = outroObjeto`, mas **não** impede mudar propriedades como `usuario.nome`.",
-          "codigoExplicacao": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno'; // nome vira Bruno"
+          "corretas": ["B"],
+          "explicacao": "`const` impede que você substitua o objeto inteiro por outro (ex.: `usuario = {}` quebraria). Mas alterar uma propriedade dentro do objeto, como `usuario.nome = 'Bruno'`, é permitido normalmente — você está mexendo no conteúdo da gaveta, não trocando a gaveta de lugar.",
+          "codigoExplicacao": "const usuario = { nome: 'Ana' };\nusuario.nome = 'Bruno';    // permitido — altera propriedade\n// usuario = { nome: 'Carlos' }; // isso sim quebraria"
         },
         {
           "id": "js-array-1",
           "tipo": "multipla_escolha",
-          "descricao": "No exemplo abaixo, o que a linha `fila.push('c')` faz?",
+          "descricao": "Você tem uma lista com dois itens e executa `fila.push('c')`. O que acontece com a lista após essa linha?",
           "codigo": "const fila = ['a', 'b'];\nfila.push('c');",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Coloca `'c'` no início da lista."
-            },
-            {
-              "id": "B",
-              "texto": "Coloca `'c'` no final da lista."
-            },
-            {
-              "id": "C",
-              "texto": "Remove o último item da lista."
-            },
-            {
-              "id": "D",
-              "texto": "Remove o primeiro item da lista."
-            }
+            {"id": "A", "texto": "A lista vira `['c', 'a', 'b']` — `push` coloca o item no início"},
+            {"id": "B", "texto": "A lista vira `['a', 'b', 'c']` — `push` coloca o item no final"},
+            {"id": "C", "texto": "A lista perde o último item e fica `['a']`"},
+            {"id": "D", "texto": "Gera um erro porque `fila` foi declarada com `const`"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "`push` adiciona um elemento ao **final** do array. Para o início, usa-se `unshift`.",
-          "codigoExplicacao": "const n = [1, 2];\nn.push(3); // [1, 2, 3]"
+          "corretas": ["B"],
+          "explicacao": "`push` sempre adiciona o novo elemento ao final da lista. Para adicionar no início, usaria `unshift`. E lembre-se: `const` não impede alterar o conteúdo de um array — apenas impede substituir o array inteiro por outro.",
+          "codigoExplicacao": "const n = [1, 2];\nn.push(3);    // [1, 2, 3] — adicionou no final\nn.unshift(0); // [0, 1, 2, 3] — adicionaria no início"
         },
         {
           "id": "js-if-1",
           "tipo": "multipla_escolha",
-          "descricao": "Com o `if` e o `else` abaixo, qual mensagem aparece no console?",
-          "codigo": "const limite = 10;\nconst valor = 5;\nif (valor > limite) {\n  console.log('maior');\n} else {\n  console.log('menor ou igual');\n}",
+          "descricao": "Avalie a condição do `if` passo a passo: `valor` é 5 e `limite` é 10. A condição é `valor > limite`. Qual mensagem aparece no console?",
+          "codigo": "const limite = 10;\nconst valor = 5;\n\nif (valor > limite) {\n  console.log('maior');\n} else {\n  console.log('menor ou igual');\n}",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "`maior`"
-            },
-            {
-              "id": "B",
-              "texto": "`menor ou igual`"
-            },
-            {
-              "id": "C",
-              "texto": "Nenhuma — o `if` não imprime nada."
-            },
-            {
-              "id": "D",
-              "texto": "Erro de sintaxe no console."
-            }
+            {"id": "A", "texto": "`maior` — o `if` sempre executa o primeiro bloco"},
+            {"id": "B", "texto": "`menor ou igual` — a condição é falsa, então o `else` roda"},
+            {"id": "C", "texto": "Nenhuma — `if` não usa `console.log` diretamente"},
+            {"id": "D", "texto": "Erro de sintaxe no console"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "A condição é `5 > 10`, que é falsa. Só o bloco do `else` roda, imprimindo `menor ou igual`.",
-          "codigoExplicacao": "if (valor > limite) { /* verdadeiro */ } else { /* falso */ }"
+          "corretas": ["B"],
+          "explicacao": "Avalie passo a passo: `valor > limite` é `5 > 10`, que é `false`. Quando a condição é falsa, o bloco do `if` é ignorado e o bloco do `else` executa — imprimindo `menor ou igual`.",
+          "codigoExplicacao": "// 5 > 10 → false → o else roda\nconsole.log('menor ou igual');"
         },
         {
           "id": "loop-for-1",
           "tipo": "multipla_escolha",
-          "descricao": "O que este `for` faz no console?",
+          "descricao": "O laço abaixo começa com `i = 0`, continua enquanto `i < 3` e soma 1 ao contador a cada volta. Trace mentalmente cada volta e diga o que aparece no console.",
           "codigo": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Imprime os números 0, 1 e 2 (uma linha por número)."
-            },
-            {
-              "id": "B",
-              "texto": "Imprime os números 1, 2 e 3."
-            },
-            {
-              "id": "C",
-              "texto": "Imprime só o número 3."
-            },
-            {
-              "id": "D",
-              "texto": "Não imprime nada."
-            }
+            {"id": "A", "texto": "Imprime 0, depois 1, depois 2 — uma linha por volta"},
+            {"id": "B", "texto": "Imprime 1, 2 e 3 — porque começa em 1"},
+            {"id": "C", "texto": "Imprime só o número 3 — que é o valor final de `i`"},
+            {"id": "D", "texto": "Não imprime nada — o laço só roda se `i > 0`"}
           ],
-          "corretas": [
-            "A"
-          ],
-          "explicacao": "O `i` começa em 0. Enquanto `i < 3`, o bloco roda e depois `i++` soma 1. São três execuções com `i` igual a 0, 1 e 2.",
-          "codigoExplicacao": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}"
+          "corretas": ["A"],
+          "explicacao": "O contador `i` começa em 0. A cada volta `i++` soma 1 e o console registra o valor atual. Resultado: volta 1 → 0, volta 2 → 1, volta 3 → 2. Na verificação seguinte, `i` é 3 e `3 < 3` é falso — o laço para. Total: três linhas com 0, 1 e 2.",
+          "codigoExplicacao": "// volta 1: i=0 → imprime 0\n// volta 2: i=1 → imprime 1\n// volta 3: i=2 → imprime 2\n// i=3 → 3<3 é false → para"
         },
         {
           "id": "loop-foreach-1",
           "tipo": "multipla_escolha",
-          "descricao": "O que o `forEach` faz neste exemplo?",
+          "descricao": "O código usa `forEach` para percorrer uma lista com duas palavras. Quantas vezes o `console.log` é chamado e o que ele imprime?",
           "codigo": "['olá', 'mundo'].forEach((palavra) => {\n  console.log(palavra);\n});",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Chama `console.log` uma vez para cada item da lista, na ordem."
-            },
-            {
-              "id": "B",
-              "texto": "Junta tudo em uma única string e imprime uma vez."
-            },
-            {
-              "id": "C",
-              "texto": "Apaga os itens do array após imprimir."
-            },
-            {
-              "id": "D",
-              "texto": "Só imprime o último item."
-            }
+            {"id": "A", "texto": "Duas vezes — uma para `'olá'` e outra para `'mundo'`, na ordem"},
+            {"id": "B", "texto": "Uma vez — junta as palavras e imprime `'olá mundo'`"},
+            {"id": "C", "texto": "Duas vezes — mas apaga os itens do array após imprimir"},
+            {"id": "D", "texto": "Uma vez — só imprime o último item da lista"}
           ],
-          "corretas": [
-            "A"
-          ],
-          "explicacao": "`forEach` percorre o array do primeiro ao último item e executa a função passada para cada elemento — a duas palavras geram duas linhas no console.",
-          "codigoExplicacao": "['a', 'b'].forEach((x) => console.log(x));"
+          "corretas": ["A"],
+          "explicacao": "`forEach` percorre cada item da lista e chama a função passada uma vez por item, na ordem. Como a lista tem dois itens, `console.log` é chamado duas vezes — primeiro com `'olá'`, depois com `'mundo'`. A lista original não é modificada.",
+          "codigoExplicacao": "['a', 'b'].forEach((x) => console.log(x));\n// Imprime:\n// a\n// b"
         }
       ]
     },
@@ -300,18 +227,20 @@
           {
             "titulo": "localStorage e sessionStorage",
             "paragrafos": [
-              "`localStorage` grava pares chave/valor como texto na origem do site até o usuário limpar dados do site ou o código apagar. Volta na próxima visita à mesma origem.",
-              "`sessionStorage` funciona de forma parecida, mas os dados existem só enquanto a aba está aberta."
+              "Você provavelmente já notou que alguns sites lembram suas preferências mesmo após fechar o navegador — como o tema escuro ou o idioma escolhido. Isso é possível graças ao `localStorage`: um espaço de armazenamento dentro do próprio navegador, vinculado àquele site específico, que persiste os dados até você limpar o histórico ou o código apagar explicitamente.",
+              "`sessionStorage` funciona de forma parecida, mas os dados existem apenas enquanto a aba está aberta. Feche a aba e os dados somem — como a memória RAM do computador: rápida e temporária.",
+              "Ambos armazenam dados no formato de pares chave/valor, como um dicionário: uma chave (nome) aponta para um valor. Os métodos principais são `setItem` (salvar), `getItem` (ler) e `removeItem` (apagar)."
             ],
-            "codigo": "localStorage.setItem('preferencia', 'escuro');\nconst tema = localStorage.getItem('preferencia');"
+            "codigo": "localStorage.setItem('tema', 'escuro');    // salva\nconst tema = localStorage.getItem('tema'); // lê → 'escuro'\nlocalStorage.removeItem('tema');           // apaga essa chave\nlocalStorage.clear();                      // apaga tudo do site"
           },
           {
             "titulo": "Objetos e JSON",
             "paragrafos": [
-              "O storage guarda string. Para persistir objeto JavaScript, converta com `JSON.stringify` ao salvar e `JSON.parse` ao ler.",
-              "Em testes automatizados, evite depender só de dados deixados manualmente no storage entre execuções: prefira dados controlados ou mocks quando possível."
+              "O `localStorage` só aceita texto (strings). Se você tentar salvar um objeto JavaScript diretamente, ele vai virar a string `[object Object]` — o que é completamente inútil.",
+              "A solução é converter o objeto para texto no formato JSON antes de salvar, usando `JSON.stringify`. Para ler de volta, use `JSON.parse`, que transforma o texto JSON em objeto JavaScript novamente. Pense nessa dupla como um tradutor: `stringify` traduz objeto → texto, `parse` traduz texto → objeto.",
+              "Em testes automatizados, evite depender de dados deixados manualmente no `localStorage` entre execuções. Prefira dados controlados ou use `cy.clearLocalStorage()` no Cypress para começar cada teste com um estado limpo."
             ],
-            "codigo": "const prefs = { tema: 'escuro' };\nlocalStorage.setItem('prefs', JSON.stringify(prefs));\nconst carregado = JSON.parse(localStorage.getItem('prefs') || '{}');"
+            "codigo": "const prefs = { tema: 'escuro', idioma: 'pt-BR' };\n\n// Salvar: objeto → texto JSON\nlocalStorage.setItem('prefs', JSON.stringify(prefs));\n\n// Ler: texto JSON → objeto\nconst carregado = JSON.parse(localStorage.getItem('prefs') || '{}');\nconsole.log(carregado.tema); // 'escuro'"
           }
         ],
         "links": [
@@ -333,31 +262,17 @@
         {
           "id": "storage-1",
           "tipo": "multipla_escolha",
-          "descricao": "Guardar algo no navegador e achar de novo depois de fechar o site. O que usar?",
+          "descricao": "Um usuário escolhe o tema escuro no site e fecha o navegador. Na próxima vez que ele abrir o site, a preferência deve ser lembrada automaticamente. Qual mecanismo de armazenamento do navegador é adequado para esse caso?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "sessionStorage (some ao fechar a aba)"
-            },
-            {
-              "id": "B",
-              "texto": "localStorage"
-            },
-            {
-              "id": "C",
-              "texto": "só IndexedDB"
-            },
-            {
-              "id": "D",
-              "texto": "só cookies HTTP"
-            }
+            {"id": "A", "texto": "`sessionStorage` — persiste entre visitas"},
+            {"id": "B", "texto": "`localStorage` — os dados ficam mesmo após fechar o navegador"},
+            {"id": "C", "texto": "Apenas `IndexedDB` resolve esse caso"},
+            {"id": "D", "texto": "Cookies HTTP são os únicos que persistem entre visitas"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "`localStorage` fica naquele site até você limpar os dados ou o código apagar. `sessionStorage` some quando a aba fecha.",
-          "codigoExplicacao": "localStorage.setItem('token', 'abc123');\nconst t = localStorage.getItem('token');"
+          "corretas": ["B"],
+          "explicacao": "`localStorage` mantém os dados salvos até o usuário limpar o armazenamento do site ou o código apagar explicitamente — mesmo após fechar e reabrir o navegador. `sessionStorage` some quando a aba é fechada, portanto não serviria aqui.",
+          "codigoExplicacao": "localStorage.setItem('tema', 'escuro');\n// Na próxima visita (dias depois):\nconst tema = localStorage.getItem('tema'); // ainda retorna 'escuro'"
         }
       ]
     },
@@ -370,107 +285,67 @@
         {
           "id": "des-1",
           "tipo": "desafio_codigo",
-          "descricao": "Roda até o fim sem erro?",
+          "descricao": "Uma variável foi declarada com `const` e depois o código tenta atribuir um novo valor a ela. O programa termina normalmente ou para com erro?",
           "codigo": "const x = 1;\nx = 2;\nconsole.log(x);",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Sim — imprime 2"
-            },
-            {
-              "id": "B",
-              "texto": "Não — `const` não pode mudar de valor assim"
-            }
+            {"id": "A", "texto": "Sim — imprime 2 normalmente"},
+            {"id": "B", "texto": "Não — `const` não permite reatribuição, gera erro"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "Com `const`, você não pode atribuir de novo à mesma variável. Para mudar o valor, use `let`.",
-          "codigoExplicacao": "let x = 1;\nx = 2; // OK"
+          "corretas": ["B"],
+          "explicacao": "Com `const`, a variável não pode receber um novo valor depois que foi criada. A linha `x = 2` gera um `TypeError: Assignment to constant variable` e o programa para nesse ponto. Se precisar mudar o valor, use `let`.",
+          "codigoExplicacao": "let x = 1;\nx = 2; // funciona normalmente com let\nconsole.log(x); // 2"
         },
         {
           "id": "des-2",
           "tipo": "desafio_codigo",
-          "descricao": "Lista tem 2 itens. O que acontece ao ler `nums[5]`?",
+          "descricao": "A lista tem apenas 2 itens (nas posições 0 e 1). O código tenta acessar a posição 5, que não existe. O que acontece?",
           "codigo": "const nums = [10, 20];\nconsole.log(nums[5]);",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Quebra com erro"
-            },
-            {
-              "id": "B",
-              "texto": "Não quebra — devolve vazio (`undefined`)"
-            }
+            {"id": "A", "texto": "Quebra com erro — posição inválida"},
+            {"id": "B", "texto": "Não quebra — retorna `undefined` quando a posição não existe"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "Ler uma posição que não existe na lista não estoura erro; o JavaScript devolve `undefined`.",
-          "codigoExplicacao": "const nums = [10, 20];\nconsole.log(nums[5]); // undefined"
+          "corretas": ["B"],
+          "explicacao": "Em JavaScript, acessar uma posição que não existe em um array não gera erro. O valor retornado é `undefined`, que significa 'não encontrado nessa posição'. Isso pode esconder bugs, então fique atento quando o resultado de `array[n]` for `undefined` inesperadamente.",
+          "codigoExplicacao": "const nums = [10, 20];\nconsole.log(nums[0]); // 10 — existe\nconsole.log(nums[5]); // undefined — não existe, mas não quebra"
         },
         {
           "id": "des-3",
           "tipo": "desafio_codigo",
-          "descricao": "O que esse código mostra no `console`?",
+          "descricao": "O operador `+` está sendo usado entre uma string e um número. O JavaScript vai somar ou concatenar (juntar como texto)?",
           "codigo": "console.log('10' + 5);",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "15 — pois soma 10 com 5"
-            },
-            {
-              "id": "B",
-              "texto": "105 — o `+` junta texto com número, como colar strings"
-            }
+            {"id": "A", "texto": "15 — o `+` soma 10 com 5"},
+            {"id": "B", "texto": "'105' — o `+` junta texto com número como se fossem duas strings"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "Quando um dos lados do `+` é string, o JavaScript converte o outro valor para texto e concatena. `'10' + 5` vira `'10' + '5'`, resultado `'105'`, não a soma 15.",
-          "codigoExplicacao": "console.log('10' + 5);   // 105\nconsole.log(10 + 5);   // 15 (dois números, aí sim soma)"
+          "corretas": ["B"],
+          "explicacao": "Quando um dos lados do `+` é string, o JavaScript converte o outro valor para texto automaticamente e concatena. `'10' + 5` vira `'10' + '5'`, resultando na string `'105'`, não na soma 15. Esse comportamento se chama coerção de tipo (type coercion) e é uma fonte comum de bugs para iniciantes.",
+          "codigoExplicacao": "console.log('10' + 5);  // '105' — concatena\nconsole.log(10 + 5);    // 15  — soma dois números\nconsole.log(Number('10') + 5); // 15 — forçar número"
         },
         {
           "id": "des-4",
           "tipo": "desafio_codigo",
-          "descricao": "`JSON.parse` nessa string. O que ocorre?",
+          "descricao": "O código tenta converter uma string para objeto com `JSON.parse`. Mas a string está no formato de um objeto JavaScript comum, não JSON válido. O que acontece?",
           "codigo": "JSON.parse('{ nome: \"teste\" }');",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "vira objeto JavaScript normalmente"
-            },
-            {
-              "id": "B",
-              "texto": "dá erro — JSON exige aspas nas chaves"
-            }
+            {"id": "A", "texto": "Vira objeto JavaScript normalmente"},
+            {"id": "B", "texto": "Gera erro — JSON exige aspas duplas nas chaves também"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "JSON é mais rígido que objeto JavaScript: chaves precisam de aspas duplas, por exemplo `{\"nome\":\"teste\"}`.",
-          "codigoExplicacao": "JSON.parse('{\"nome\":\"teste\"}'); // OK"
+          "corretas": ["B"],
+          "explicacao": "JSON (JavaScript Object Notation) é um formato de texto mais rígido que o objeto JavaScript. No JSON, as chaves obrigatoriamente precisam estar entre aspas duplas: `{\"nome\":\"teste\"}`. A chave sem aspas (`nome:`) é sintaxe JavaScript, não JSON válido — então `JSON.parse` lança um `SyntaxError`.",
+          "codigoExplicacao": "// Errado (JSON inválido):\nJSON.parse('{ nome: \"teste\" }'); // SyntaxError\n\n// Correto:\nJSON.parse('{\"nome\":\"teste\"}'); // retorna { nome: 'teste' }"
         },
         {
           "id": "des-5",
           "tipo": "desafio_codigo",
-          "descricao": "A chamada vem antes da `function`. Funciona?",
+          "descricao": "A função `ola()` é chamada antes de ser declarada no código. Em JavaScript, isso funciona com funções declaradas com a palavra `function`?",
           "codigo": "ola();\nfunction ola() { console.log('oi'); }",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Sim — `function ola()` pode ser chamada antes"
-            },
-            {
-              "id": "B",
-              "texto": "Não — erro de “ainda não definida”"
-            }
+            {"id": "A", "texto": "Sim — declarações `function` sobem para o topo antes de rodar"},
+            {"id": "B", "texto": "Não — o JavaScript executa linha a linha e ainda não conhece `ola`"}
           ],
-          "corretas": [
-            "A"
-          ],
-          "explicacao": "Declaração com `function` sobe no arquivo (hoisting). Com `const ola = () => {}` a ordem importa.",
-          "codigoExplicacao": "ola();\nfunction ola() { console.log('oi'); } // imprime oi"
+          "corretas": ["A"],
+          "explicacao": "Declarações com a palavra `function` passam por um processo chamado hoisting: antes de executar o código, o JavaScript 'sobe' essas declarações para o topo do escopo. Por isso a chamada `ola()` funciona mesmo aparecendo antes da declaração. Atenção: isso só vale para `function nome() {}`. Com `const ola = () => {}` o hoisting não ocorre da mesma forma e a ordem importa.",
+          "codigoExplicacao": "ola(); // funciona!\nfunction ola() { console.log('oi'); }\n\n// Com arrow function, a ordem importa:\n// saudacao(); // ReferenceError!\nconst saudacao = () => console.log('oi');"
         }
       ]
     },
@@ -485,31 +360,33 @@
           {
             "titulo": "Papel do Cypress",
             "paragrafos": [
-              "Cypress automatiza o navegador para testes end-to-end: abre a página, encontra elementos, interage como um usuário e verifica resultados.",
-              "A ferramenta oferece comandos pensados para teste (`visit`, `get`, `click`, etc.), com fila de execução e novas tentativas até o elemento ou a condição aparecer."
+              "Imagine contratar um robô para testar o seu site. Esse robô abre o navegador, digita texto nos campos, clica nos botões e verifica se tudo apareceu certo na tela — depois entrega um relatório dizendo o que passou e o que falhou. O Cypress é esse robô para desenvolvedores e testadores.",
+              "Ele automatiza ações que você faria manualmente — como fazer login, adicionar um produto ao carrinho ou preencher um formulário — e verifica se o resultado foi o esperado. Isso é chamado de teste end-to-end (E2E): o teste simula uma jornada completa do usuário, do início ao fim.",
+              "A ferramenta oferece comandos pensados para teste (`visit`, `get`, `click`, etc.) com fila de execução e novas tentativas automáticas até o elemento ou a condição aparecer na tela."
             ]
           },
           {
             "titulo": "Fluxo típico no código",
             "paragrafos": [
-              "Você encadeia comandos para navegar, localizar por seletor e interagir. Ao rodar `npx cypress open`, o assistente permite escolher E2E e listar specs em `cypress/e2e` (padrão nas versões recentes)."
+              "No Cypress, os comandos são encadeados como uma fila: primeiro abre a página, depois encontra um elemento, depois interage com ele. Uma vantagem importante: se um elemento ainda não apareceu na tela porque a página estava carregando, o Cypress espera automaticamente antes de desistir — evitando que testes falhem apenas por diferenças de velocidade.",
+              "Ao rodar `npx cypress open`, o assistente permite escolher E2E e listar os specs em `cypress/e2e` (padrão nas versões recentes)."
             ],
-            "codigo": "// exemplo da API fluenta\ncy.visit('www.exemplo.com.br/login')\ncy.get('[data-cy=usuario]').type('qa@site.com')\ncy.get('[data-cy=entrar]').click()"
+            "codigo": "// Sequência típica: abrir → localizar → interagir\ncy.visit('https://exemplo.com/login')\ncy.get('[data-cy=usuario]').type('qa@site.com')\ncy.get('[data-cy=entrar]').click()"
           },
           {
             "titulo": "Seletores e próximos passos",
             "paragrafos": [
-              "IDs e classes mudam com o layout. Atributos como `data-cy` ou `data-testid` costumam deixar o teste mais estável.",
-              "**Pelo navegador (ex.: Chrome):** com a página aberta, pressione F12 ou clique com o botão direito no elemento e escolha **Inspecionar** para abrir as Ferramentas do desenvolvedor. Na aba **Elementos**, selecione o nó desejado e confira `id`, classes e atributos no painel. Com o botão direito no HTML do elemento, use **Copiar** > **copiar seletor** (ou caminho JS) para obter um seletor CSS de referência — avalie se é estável e, quando o projeto permitir, prefira `data-cy` ou `data-testid`.",
-              "**Pela interface do Cypress:** ao rodar testes com `npx cypress open`, no Test Runner use o **Selector Playground** (ícone em forma de mira na barra superior): aponte para um elemento na janela do aplicativo ou digite um seletor e veja o que corresponde na página, validando o que usar em `cy.get(...)` antes de fixar no código.",
+              "Para interagir com um elemento, o Cypress precisa encontrá-lo na página usando um seletor CSS — uma forma de descrever qual elemento você quer (por id, classe, atributo, etc.). IDs e classes mudam com frequência quando o layout é redesenhado. Atributos como `data-cy` ou `data-testid` são colocados especificamente para os testes e costumam ser mais estáveis.",
+              "Pelo navegador (ex.: Chrome): com a página aberta, pressione F12 ou clique com o botão direito no elemento e escolha Inspecionar para abrir as Ferramentas do desenvolvedor. Na aba Elementos, selecione o nó desejado e confira `id`, classes e atributos no painel.",
+              "Pela interface do Cypress: ao rodar testes com `npx cypress open`, use o Selector Playground (ícone em forma de mira na barra superior): aponte para um elemento na janela do aplicativo para ver o seletor sugerido e validar o que usar em `cy.get(...)` antes de escrever no código.",
               "Use a documentação oficial nos links abaixo para aprofundar depois deste resumo."
             ]
           },
           {
             "titulo": "XPath",
             "paragrafos": [
-              "Opcional: Caso necessário, siga os passos abaixo para instalar o pacote comunitário `cypress-xpath` e registrar o plugin no `support/e2e.js`;",
-              "Você pode usar o cy.xpath e os outros comandos nativos do Cypress para localizar elementos na página."
+              "Opcional: caso o projeto precise localizar elementos por XPath (uma alternativa ao seletor CSS), instale o pacote comunitário `cypress-xpath` e registre o plugin no `support/e2e.js`.",
+              "Você pode usar `cy.xpath` junto com os outros comandos nativos do Cypress para localizar elementos na página."
             ],
             "codigo": "// Terminal na pasta do projeto:\n// npm install -D cypress-xpath\n\n// cypress/support/e2e.js:\nrequire('cypress-xpath');\n\n// Exemplo no spec:\n// cy.xpath('//button[@type=\"submit\"]').click();"
           }
@@ -520,7 +397,7 @@
             "url": "https://docs.cypress.io/"
           },
           {
-            "titulo": "Cypress — guia ”Why Cypress”",
+            "titulo": "Cypress — guia \"Why Cypress\"",
             "url": "https://docs.cypress.io/guides/overview/why-cypress"
           },
           {
@@ -533,89 +410,47 @@
         {
           "id": "cy-1",
           "tipo": "multipla_escolha",
-          "descricao": "O que é o Cypress na prática de automação de testes?",
+          "descricao": "Uma equipe quer automatizar os testes do site de e-commerce que desenvolveu. Eles querem simular um usuário fazendo login, colocando um produto no carrinho e finalizando a compra. O Cypress serviria para isso?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Um servidor de banco de dados relacional"
-            },
-            {
-              "id": "B",
-              "texto": "Framework que testa o site pelo próprio navegador, como se fosse uma pessoa clicando"
-            },
-            {
-              "id": "C",
-              "texto": "Substituto do Git para versionamento"
-            },
-            {
-              "id": "D",
-              "texto": "Compilador de TypeScript para Java"
-            }
+            {"id": "A", "texto": "Não — Cypress é um servidor de banco de dados"},
+            {"id": "B", "texto": "Sim — Cypress automatiza o navegador e simula ações de um usuário real"},
+            {"id": "C", "texto": "Não — Cypress substitui o Git para versionamento de testes"},
+            {"id": "D", "texto": "Não — Cypress só funciona para testar código JavaScript puro, não páginas"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "Cypress é focado em testes E2E (e outros fluxos) executando no contexto do browser, com API fluente (`cy.*`).",
-          "codigoExplicacao": "// Exemplo mínimo\ncy.visit('https://exemplo.com');"
+          "corretas": ["B"],
+          "explicacao": "Cypress é um framework focado em testes end-to-end (E2E): ele abre o navegador, interage com a página como um usuário faria (clicar, digitar, navegar) e verifica se os resultados estão corretos. Ideal para automatizar fluxos como login, carrinho e checkout.",
+          "codigoExplicacao": "// Exemplo mínimo de login com Cypress\ncy.visit('https://exemplo.com/login');\ncy.get('#usuario').type('meu@email.com');\ncy.get('#senha').type('minha-senha');\ncy.get('#entrar').click();"
         },
         {
           "id": "cy-2",
           "tipo": "multipla_escolha",
-          "descricao": "Na primeira vez que você roda `npx cypress open`, o que costuma aparecer na tela?",
+          "descricao": "Você acabou de instalar o Cypress em um projeto e roda `npx cypress open` pela primeira vez. O que normalmente aparece na tela?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Só o terminal preto, sem janela gráfica"
-            },
-            {
-              "id": "B",
-              "texto": "Uma tela que pergunta o tipo de teste (por exemplo E2E) e depois o painel dos testes"
-            },
-            {
-              "id": "C",
-              "texto": "O editor Visual Studio Code já aberto dentro do programa"
-            },
-            {
-              "id": "D",
-              "texto": "Somente as ferramentas de desenvolvedor do Chrome"
-            }
+            {"id": "A", "texto": "Só o terminal preto, sem nenhuma janela gráfica"},
+            {"id": "B", "texto": "Uma tela que pergunta o tipo de teste (ex.: E2E) e depois abre o painel com a lista de testes"},
+            {"id": "C", "texto": "O Visual Studio Code já aberto com o projeto dentro"},
+            {"id": "D", "texto": "Somente as ferramentas de desenvolvedor do Chrome"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "O fluxo guiado permite configurar E2E ou component tests e depois abre o runner com lista de specs.",
+          "corretas": ["B"],
+          "explicacao": "Na primeira execução, o Cypress abre um assistente visual que guia a configuração inicial: você escolhe o tipo de teste (E2E ou component), confirma as opções e o assistente cria a estrutura de pastas. Depois, o Test Runner mostra a lista de specs que você pode executar.",
           "codigoExplicacao": "npx cypress open"
         },
         {
           "id": "cy-3",
           "tipo": "multipla_escolha",
-          "descricao": "Qual afirmação descreve melhor como o Cypress trata comandos como `cy.get` em relação ao carregamento da página?",
+          "descricao": "Um teste usa `cy.get('.botao-enviar')` em uma página que demora 2 segundos para carregar. O botão não existe no HTML ainda quando o comando é alcançado. O que o Cypress faz?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Cada linha roda no instante exato; não há nova tentativa se o elemento ainda não existir."
-            },
-            {
-              "id": "B",
-              "texto": "`cy.get` não pode ser usado antes de `click` ou `type` no mesmo elemento."
-            },
-            {
-              "id": "C",
-              "texto": "O teste só passa se todos os elementos já estiverem no HTML antes do arquivo de teste começar."
-            },
-            {
-              "id": "D",
-              "texto": "Os comandos costumam ir para uma fila: o Cypress espera e tenta de novo até o elemento ou a condição ficar pronta (dentro do timeout)."
-            }
+            {"id": "A", "texto": "Falha imediatamente — o Cypress não espera, executa na hora"},
+            {"id": "B", "texto": "`cy.get` só pode ser usado depois de um `cy.wait(2000)` explícito"},
+            {"id": "C", "texto": "O teste só passa se todos os elementos já estiverem no HTML antes do arquivo carregar"},
+            {"id": "D", "texto": "O Cypress enfileira o comando e fica tentando encontrar o elemento até ele aparecer ou o tempo limite ser atingido"}
           ],
-          "corretas": [
-            "D"
-          ],
-          "explicacao": "A API enfileira ações e faz *retry* integrado ao comando, diferente de um script que dispara um clique uma única vez.",
-          "codigoExplicacao": "cy.get('button').should('be.visible').click();"
+          "corretas": ["D"],
+          "explicacao": "O Cypress tem retry (nova tentativa) integrado: quando um elemento não é encontrado na primeira vez, ele continua tentando automaticamente até o elemento aparecer ou até o timeout configurado ser atingido. Isso evita a necessidade de `cy.wait(ms)` fixos e torna os testes mais confiáveis em páginas com carregamento assíncrono.",
+          "codigoExplicacao": "// O Cypress vai esperar o botão aparecer\n// antes de tentar clicar:\ncy.get('.botao-enviar').should('be.visible').click();"
         }
       ]
     },
@@ -630,24 +465,26 @@
           {
             "titulo": "Navegar e localizar",
             "paragrafos": [
-              "`cy.visit(url)` carrega a página. `cy.get(seletor)` busca elementos. Encadeie com `.should(...)` para afirmar o que deve ser verdade no teste."
+              "`cy.visit(url)` carrega a página no navegador — é sempre o primeiro passo de um teste E2E. `cy.get(seletor)` busca elementos na página usando seletores CSS, da mesma forma que você inspeciona elementos no Chrome.",
+              "Encadeie `.should(...)` logo após o `get` para declarar o que precisa ser verdade antes de continuar — o Cypress vai esperar e tentar de novo até a condição se cumprir ou o tempo limite ser atingido."
             ],
-            "codigo": "cy.visit('www.exemplo.com.br/produtos')\ncy.get('[data-cy=lista]').should('be.visible')"
+            "codigo": "cy.visit('https://exemplo.com/produtos')\ncy.get('[data-cy=lista]').should('be.visible')"
           },
           {
             "titulo": "Interações e asserções",
             "paragrafos": [
-              "Interações comuns: `click`, `type`, `clear`, `check`, `select`.",
-              "Asserções frequentes: texto (`contain`), visível (`be.visible`), existe (`exist`), valor de input (`have.value`).",
-              "Evite `cy.wait(milissegundos)` longo e fixo; prefira esperar o estado da tela com `should`. Para rede, use `intercept` e `wait` com alias quando o fluxo depender da resposta da API."
+              "Interações mais usadas: `click()` (clicar), `type('texto')` (digitar), `clear()` (limpar campo), `check()` (marcar checkbox), `select('opcao')` (escolher em dropdown).",
+              "Asserções mais usadas: `should('contain', 'texto')` (verifica se um texto está presente), `should('be.visible')` (elemento está visível), `should('exist')` (elemento existe no DOM), `should('have.value', 'texto')` (valor de um campo de formulário).",
+              "Evite `cy.wait(milissegundos)` longo e fixo — ele pausa o teste por um tempo arbitrário. Prefira esperar que a tela mude com `should`. Para chamadas de rede, use `intercept` e `wait` com alias."
             ]
           },
           {
             "titulo": "Rede: intercept e wait",
             "paragrafos": [
-              "`cy.intercept` observa ou substitui respostas. `.as('nome')` define um apelido; `cy.wait('@nome')` espera aquela requisição antes de continuar."
+              "`cy.intercept` observa (ou substitui) respostas de requisições de rede. `.as('nome')` define um apelido para essa interceptação. `cy.wait('@nome')` pausa o teste e espera aquela requisição específica ser concluída antes de continuar.",
+              "Isso é útil quando a página exibe dados que vêm de uma API: o teste espera a resposta chegar antes de verificar o que apareceu na tela."
             ],
-            "codigo": "cy.intercept('GET', '**/api/items', { fixture: 'items.json' }).as('listItems')\ncy.visit('/produtos')\ncy.wait('@listItems')\ncy.get('[data-cy=item]').first().should('contain', 'Notebook')"
+            "codigo": "cy.intercept('GET', '**/api/items', { fixture: 'items.json' }).as('listItems')\ncy.visit('/produtos')\ncy.wait('@listItems')   // espera a API responder\ncy.get('[data-cy=item]').first().should('contain', 'Notebook')"
           }
         ],
         "links": [
@@ -673,176 +510,92 @@
         {
           "id": "cy-p1",
           "tipo": "multipla_escolha",
-          "descricao": "Qual comando abre uma página no Cypress?",
+          "descricao": "Qual comando do Cypress é usado para abrir uma página no navegador antes de interagir com ela?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "cy.open('https://...')"
-            },
-            {
-              "id": "B",
-              "texto": "cy.visit(...) — com endereço completo ou caminho do site"
-            },
-            {
-              "id": "C",
-              "texto": "Só dá usando um comando avançado `cy.exec` com `window.location`"
-            },
-            {
-              "id": "D",
-              "texto": "browser.goto(...)"
-            }
+            {"id": "A", "texto": "cy.open('https://...')"},
+            {"id": "B", "texto": "cy.visit('https://...') — navega até a URL informada"},
+            {"id": "C", "texto": "cy.exec('window.location')"},
+            {"id": "D", "texto": "browser.goto('https://...')"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "`cy.visit` carrega a URL (absoluta ou relativa ao `baseUrl` do cypress.config).",
-          "codigoExplicacao": "cy.visit('/dashboard');"
+          "corretas": ["B"],
+          "explicacao": "`cy.visit` é o comando padrão para navegar até uma URL. Você pode passar a URL completa (`https://...`) ou apenas o caminho (`/dashboard`) quando a `baseUrl` está configurada no `cypress.config`.",
+          "codigoExplicacao": "cy.visit('https://www.saucedemo.com/');\n// ou com baseUrl configurado:\ncy.visit('/login');"
         },
         {
           "id": "cy-p2",
           "tipo": "multipla_escolha",
-          "descricao": "Qual comando costuma ser usado para pegar um elemento na tela (por id, classe ou outro seletor)?",
+          "descricao": "Você precisa localizar um botão na tela usando o atributo `data-cy`. Qual comando do Cypress faz isso?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "cy.find('#id')"
-            },
-            {
-              "id": "B",
-              "texto": "cy.get('#meu-id')"
-            },
-            {
-              "id": "C",
-              "texto": "cy.selectElement('#id')"
-            },
-            {
-              "id": "D",
-              "texto": "cy.query('#id')"
-            }
+            {"id": "A", "texto": "cy.find('[data-cy=botao]')"},
+            {"id": "B", "texto": "cy.get('[data-cy=botao]')"},
+            {"id": "C", "texto": "cy.selectElement('[data-cy=botao]')"},
+            {"id": "D", "texto": "cy.query('[data-cy=botao]')"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "`cy.get` aceita seletores CSS, data attributes, etc. Boas práticas incluem `data-cy` para estabilidade.",
-          "codigoExplicacao": "cy.get('[data-cy=submit]').click();"
+          "corretas": ["B"],
+          "explicacao": "`cy.get` é o comando principal para localizar elementos e aceita qualquer seletor CSS — incluindo IDs (`#meu-id`), classes (`.minha-classe`) e atributos de dados como `[data-cy=botao]`. Usar `data-cy` é uma boa prática porque deixa o seletor mais estável e independente de mudanças visuais.",
+          "codigoExplicacao": "cy.get('[data-cy=login-button]').click();\ncy.get('#campo-email').type('usuario@site.com');\ncy.get('.mensagem-erro').should('be.visible');"
         },
         {
           "id": "cy-p3",
           "tipo": "multipla_escolha",
-          "descricao": "Como conferir se um texto aparece dentro de um elemento (por exemplo a mensagem “Salvo”)?",
+          "descricao": "Após salvar um formulário, você quer verificar se a mensagem 'Salvo com sucesso' aparece no elemento com classe `.msg`. Qual código faz essa verificação da forma idiomática no Cypress?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "cy.get('.msg').should('contain', 'Salvo')"
-            },
-            {
-              "id": "B",
-              "texto": "cy.get('.msg').assertText('Salvo')"
-            },
-            {
-              "id": "C",
-              "texto": "cy.validate('.msg', 'Salvo')"
-            },
-            {
-              "id": "D",
-              "texto": "Comparar texto na mesma linha, sem `.should`, costuma ser o jeito certo no Cypress"
-            }
+            {"id": "A", "texto": "cy.get('.msg').should('contain', 'Salvo com sucesso')"},
+            {"id": "B", "texto": "cy.get('.msg').assertText('Salvo com sucesso')"},
+            {"id": "C", "texto": "cy.validate('.msg', 'Salvo com sucesso')"},
+            {"id": "D", "texto": "Comparar o texto diretamente sem `.should` é o jeito certo"}
           ],
-          "corretas": [
-            "A"
-          ],
-          "explicacao": "Asserções idiomáticas usam `.should` com matchers do Chai jQuery ou encadeamentos como `contain`.",
-          "codigoExplicacao": "cy.get('.msg').should('contain', 'Salvo');"
+          "corretas": ["A"],
+          "explicacao": "No Cypress, asserções são feitas com `.should` encadeado ao `cy.get`. O matcher `contain` verifica se o texto esperado está presente no elemento — não precisa ser o texto completo, apenas parte dele. `assertText`, `validate` e comparação direta não são a forma padrão do Cypress.",
+          "codigoExplicacao": "cy.get('.msg').should('contain', 'Salvo com sucesso');\n// Também funciona:\ncy.get('.msg').should('be.visible').and('contain', 'Salvo');"
         },
         {
           "id": "cy-p4",
           "tipo": "multipla_escolha",
-          "descricao": "Como checar se um campo de e-mail está com o texto certo digitado?",
+          "descricao": "Depois de digitar um e-mail em um campo, você quer confirmar que o valor digitado ficou correto no campo. Qual asserção é a adequada para verificar o valor de um input?",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "cy.get('#email').should('have.value', '@example.com')"
-            },
-            {
-              "id": "B",
-              "texto": "cy.get('#email').should('contain', '@example.com')"
-            },
-            {
-              "id": "C",
-              "texto": "cy.get('#email').value('@example.com')"
-            },
-            {
-              "id": "D",
-              "texto": "cy.get('#email').text('@example.com')"
-            }
+            {"id": "A", "texto": "cy.get('#email').should('have.value', 'usuario@exemplo.com')"},
+            {"id": "B", "texto": "cy.get('#email').should('contain', 'usuario@exemplo.com')"},
+            {"id": "C", "texto": "cy.get('#email').value('usuario@exemplo.com')"},
+            {"id": "D", "texto": "cy.get('#email').text('usuario@exemplo.com')"}
           ],
-          "corretas": [
-            "A"
-          ],
-          "explicacao": "Inputs usam a propriedade `value`; `have.value` é o matcher adequado.",
-          "codigoExplicacao": "cy.get('#email').clear().type('a@b.com').should('have.value', 'a@b.com');"
+          "corretas": ["A"],
+          "explicacao": "Inputs de formulário têm a propriedade `value` (não `text`). O matcher `have.value` verifica exatamente essa propriedade. `contain` funciona para texto visível em elementos como `<p>` ou `<span>`, mas não para o valor de campos de formulário.",
+          "codigoExplicacao": "cy.get('#email')\n  .clear()\n  .type('usuario@exemplo.com')\n  .should('have.value', 'usuario@exemplo.com');"
         },
         {
           "id": "cy-p5",
           "tipo": "multipla_escolha",
-          "descricao": "Qual comando faz o teste **parar e esperar** um tempo fixo em milissegundos? (Uso com moderação — o ideal é esperar a tela mudar.)",
+          "descricao": "Qual comando faz o teste pausar por um tempo fixo em milissegundos? (Atenção: use com moderação — o ideal é esperar a mudança na tela, não um tempo fixo.)",
           "codigo": null,
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "cy.pause(2000)"
-            },
-            {
-              "id": "B",
-              "texto": "cy.wait(2000)"
-            },
-            {
-              "id": "C",
-              "texto": "cy.sleep(2000)"
-            },
-            {
-              "id": "D",
-              "texto": "cy.delay(2000)"
-            }
+            {"id": "A", "texto": "cy.pause(2000)"},
+            {"id": "B", "texto": "cy.wait(2000)"},
+            {"id": "C", "texto": "cy.sleep(2000)"},
+            {"id": "D", "texto": "cy.delay(2000)"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "`cy.wait(ms)` força espera. Prefira esperar elementos (`should`, `get`) ou aliases de rede.",
-          "codigoExplicacao": "cy.wait(500); // use com parcimônia"
+          "corretas": ["B"],
+          "explicacao": "`cy.wait(ms)` pausa a execução por um número fixo de milissegundos. É útil em situações pontuais, mas não é a melhor prática: prefira esperar elementos ficarem visíveis com `should('be.visible')` ou aguardar requisições de rede com aliases do `intercept`.",
+          "codigoExplicacao": "// Use com parcimônia:\ncy.wait(500);\n\n// Prefira esperar o estado da tela:\ncy.get('.loading').should('not.exist');\ncy.get('.conteudo').should('be.visible');"
         },
         {
           "id": "cy-p6",
           "tipo": "multipla_escolha",
-          "descricao": "No trecho abaixo, depois do `intercept` com `.as('getUser')`, o que o `cy.wait('@getUser')` faz?",
+          "descricao": "O código abaixo intercepta uma requisição GET e dá a ela o apelido `getUser`. Logo depois chama `cy.wait('@getUser')`. O que esse `wait` está fazendo exatamente?",
           "codigo": "cy.intercept('GET', '/api/user', { fixture: 'user.json' }).as('getUser');\ncy.visit('/perfil');\ncy.wait('@getUser');\ncy.get('[data-cy=nome]').should('be.visible');",
           "opcoes": [
-            {
-              "id": "A",
-              "texto": "Procura na página um elemento com `id` igual a `getUser`."
-            },
-            {
-              "id": "B",
-              "texto": "Aguarda a requisição de rede associada ao apelido `getUser` completar (ou atingir timeout)."
-            },
-            {
-              "id": "C",
-              "texto": "Substitui qualquer `cy.get` seguinte por uma chamada à API."
-            },
-            {
-              "id": "D",
-              "texto": "Só funciona com `cy.pause`; não tem relação com rede."
-            }
+            {"id": "A", "texto": "Procura na página um elemento HTML com `id='getUser'`"},
+            {"id": "B", "texto": "Aguarda a requisição de rede associada ao apelido `getUser` ser concluída"},
+            {"id": "C", "texto": "Substitui qualquer `cy.get` seguinte por uma chamada à API"},
+            {"id": "D", "texto": "Só funciona junto com `cy.pause`; não tem relação com rede"}
           ],
-          "corretas": [
-            "B"
-          ],
-          "explicacao": "O `@` no `cy.wait` aponta para o alias definido com `.as()` no `intercept`. Não é seletor CSS nem id de elemento.",
-          "codigoExplicacao": "cy.intercept('POST', '/login').as('login');\ncy.get('form').submit();\ncy.wait('@login');"
+          "corretas": ["B"],
+          "explicacao": "O `@` no `cy.wait` indica um alias de rede — não um seletor CSS. O alias `getUser` foi definido com `.as('getUser')` no `intercept`. O `cy.wait('@getUser')` pausa o teste até aquela requisição de rede específica completar, garantindo que os dados já estão disponíveis antes de verificar a tela.",
+          "codigoExplicacao": "cy.intercept('POST', '/api/login').as('postLogin');\ncy.get('form').submit();\ncy.wait('@postLogin'); // espera a requisição POST completar\ncy.get('.painel').should('be.visible');"
         }
       ]
     },
@@ -869,7 +622,7 @@
             "passos": [
               "Em `cypress/e2e`, crie um spec (por exemplo `sauce-demo.cy.js`).",
               "Com `cy.visit`, abra a URL do Sauce Demo indicada acima.",
-              "Preencha usuário e senha com os valores fornecidos nesta página. O site usa atributos `data-test`: use `cy.get('[data-test=\"username\"]').clear().type(...)` e o mesmo padrão para a senha em `[data-test=\"password\"]'`.",
+              "Preencha usuário e senha com os valores fornecidos nesta página. O site usa atributos `data-test`: use `cy.get('[data-test=\"username\"]').clear().type(...)` e o mesmo padrão para a senha em `[data-test=\"password\"]`.",
               "Clique no botão de login `[data-test=\"login-button\"]`.",
               "Asserções sugeridas: a URL deve refletir a área logada (por exemplo conter `inventory`) e a listagem de produtos deve aparecer (ex.: pelo menos um `.inventory_item` visível)."
             ],
@@ -891,7 +644,7 @@
         {
           "id": "cy-proj-checklist",
           "tipo": "checklist_trilha",
-          "descricao": "**Importante:** estes passos são feitos no **seu computador**: instalação do Node, comandos `npm`/`npx`, criação da pasta do projeto, terminal e abertura da interface do Cypress — a trilha no navegador só orienta; a execução real é na máquina. No Windows, para abrir o **Prompt de Comando**, use a busca do menu Iniciar e digite `cmd` ou **prompt de comando**; **PowerShell** ou o terminal integrado do VS Code / Cursor também servem.\n\nSiga na ordem que preferir — {{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
+          "descricao": "Importante: estes passos são feitos no seu computador — instalação do Node, comandos `npm`/`npx`, criação da pasta do projeto, terminal e abertura da interface do Cypress. A trilha no navegador só orienta; a execução real é na sua máquina. No Windows, para abrir o Prompt de Comando, use a busca do menu Iniciar e digite `cmd` ou prompt de comando; PowerShell ou o terminal integrado do VS Code / Cursor também servem.\n\nSiga na ordem que preferir — {{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}. Expanda Ver detalhes quando precisar de orientação (instalação, comandos, links). Documentação oficial: https://docs.cypress.io/guides/getting-started/installing-cypress",
           "codigo": "# Guia rápido\n\n# Pasta do projeto\nmkdir trilha-automacao\n\ncd trilha-automacao\n\n# Iniciar projeto e instalar Cypress\nnpm init -y\nnpm install cypress --save-dev\n\n# Criar a pasta e2e + trilha.cy.js (será usado no passo 8)\nNew-Item -ItemType Directory -Force -Path cypress/e2e\nNew-Item -ItemType File -Force -Path cypress/e2e/trilha.cy.js\nNo linux: mkdir -p cypress/e2e && touch cypress/e2e/trilha.cy.js\n\n# Abrir a interface do Cypress\nnpx cypress open",
           "passos": [
             {
@@ -941,10 +694,9 @@
                 "No terminal, ainda na pasta raiz do projeto, digite exatamente o comando abaixo e pressione Enter:",
                 "`npx cypress open`",
                 "`npx` executa o binário do Cypress instalado em `node_modules`, sem precisar de instalação global do CLI.",
-                "Na primeira execução, o Cypress abre o assistente na interface: escolha **E2E Testing** e avance com **Continue** em cada etapa até **finalizar** a configuração inicial (pastas, arquivos de suporte e spec padrão, conforme o assistente mostrar).",
-                "Quando o fluxo oferecer **Create New Spec** (ou equivalente para criar uma spec padrão), **aceite e conclua** a criação desse arquivo de teste — isso costuma gerar o primeiro `.cy.js`/`.cy.ts` em `cypress/e2e`.",
-                "No **Test Runner**, **execute o primeiro teste** (clique no spec recém-criado) para confirmar que o ambiente está ok e o navegador roda o Cypress.",
-                "Em seguida você pode continuar usando o Test Runner normalmente (lista de specs, escolha do navegador).",
+                "Na primeira execução, o Cypress abre o assistente na interface: escolha E2E Testing e avance com Continue em cada etapa até finalizar a configuração inicial (pastas, arquivos de suporte e spec padrão, conforme o assistente mostrar).",
+                "Quando o fluxo oferecer Create New Spec (ou equivalente para criar uma spec padrão), aceite e conclua a criação desse arquivo de teste — isso costuma gerar o primeiro `.cy.js`/`.cy.ts` em `cypress/e2e`.",
+                "No Test Runner, execute o primeiro teste (clique no spec recém-criado) para confirmar que o ambiente está ok e o navegador roda o Cypress.",
                 "Se o firewall ou antivírus bloquear, autorize o Cypress ou consulte a seção de troubleshooting na documentação oficial."
               ]
             },
@@ -952,8 +704,8 @@
               "id": "chk-estrutura",
               "texto": "Verificar a estrutura padrão do projeto com Cypress.",
               "detalhes": [
-                "Depois que você conclui o fluxo na interface do Cypress (**E2E Testing** e **Continue** nos passos do assistente), o próprio Cypress cria automaticamente a estrutura padrão — não é obrigatório criar manualmente `cypress/` nem o arquivo de config na primeira vez.",
-                "Para verificar com clareza, abra a pasta do projeto na sua IDE preferida — por exemplo, no **Visual Studio Code** use **Arquivo → Abrir pasta...** na raiz onde estão `package.json` e `node_modules`, e no explorador de arquivos confira o que foi gerado (`cypress/`, `cypress.config.js` ou `cypress.config.ts`, etc.). No **Cursor** ou em outro editor, o passo é o equivalente: abrir a pasta raiz do projeto e inspecionar a árvore de diretórios.",
+                "Depois que você conclui o fluxo na interface do Cypress (E2E Testing e Continue nos passos do assistente), o próprio Cypress cria automaticamente a estrutura padrão — não é obrigatório criar manualmente `cypress/` nem o arquivo de config na primeira vez.",
+                "Para verificar, abra a pasta do projeto na sua IDE preferida — por exemplo, no Visual Studio Code use Arquivo → Abrir pasta... na raiz onde estão `package.json` e `node_modules`, e no explorador de arquivos confira o que foi gerado (`cypress/`, `cypress.config.js` ou `cypress.config.ts`, etc.).",
                 "O que costuma aparecer: pasta `cypress/` com `e2e`, `fixtures` e `support`, e na raiz do projeto `cypress.config.js` ou `cypress.config.ts` (conforme a opção escolhida no wizard).",
                 "`cypress/e2e` guarda os arquivos de teste (specs); `fixtures` serve para dados estáticos; `support` costuma incluir entrada global (por exemplo `e2e.js` / `e2e.ts`) e pode hospedar `commands.js` para comandos customizados.",
                 "O `cypress.config.*` na raiz define opções como `baseUrl`, timeouts e pastas customizadas.",
@@ -994,7 +746,7 @@
         {
           "id": "gh-checklist",
           "tipo": "checklist_trilha",
-          "descricao": "**Importante:** os comandos desta checklist rodam no **seu computador**, em um terminal aberto na pasta do projeto — não dentro do site do GitHub. No Windows, para abrir o **Prompt de Comando**, use a busca do menu Iniciar e digite `cmd` ou **prompt de comando**; **PowerShell** ou o terminal integrado do VS Code / Cursor também servem para os mesmos passos.\n\nFluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\n{{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
+          "descricao": "Importante: os comandos desta checklist rodam no seu computador, em um terminal aberto na pasta do projeto — não dentro do site do GitHub. No Windows, para abrir o Prompt de Comando, use a busca do menu Iniciar e digite `cmd` ou prompt de comando; PowerShell ou o terminal integrado do VS Code / Cursor também servem para os mesmos passos.\n\nFluxo típico: configurar seu usuário Git, inicializar repo local, commit, criar repo no GitHub e dar push.\n\n{{iu:Marque o passo como finalizado após a ação ter sido realizada no seu ambiente}}; use Ver detalhes quando precisar. Guias oficiais: https://docs.github.com/pt/get-started e https://git-scm.com/",
           "codigo": "# Guia rápido\n\n:: Configuração única no Windows (usuário Git)\ngit config --global user.name \"Seu Nome\"\ngit config --global user.email voce@email.com\n\n:: Na pasta do seu projeto local\ngit init\n\n# ***Importante*** — Criar o .gitignore ANTES de git add .\nNew-Item -ItemType File -Force -Path .gitignore -Value \"node_modules/`n.env\"\n\n#No Linux: printf 'node_modules/\\n.env\\n' > .gitignore\n\ngit add .\ngit commit -m \"chore: primeiro commit\"\n\n:: Depois que o repositório existir no GitHub (** Passo 6 **)\ngit remote add origin https://github.com/USUARIO/REPO.git\ngit branch -M main\ngit push -u origin main",
           "passos": [
             {
@@ -1011,7 +763,7 @@
               "id": "gh-cd",
               "texto": "Abrir terminal na pasta raiz do projeto que você quer versionar.",
               "detalhes": [
-                "No Windows, abra um terminal na pasta do projeto: pela busca do Iniciar, digite `cmd` ou **prompt de comando** e, ao abrir, use `cd` para entrar na pasta certa. PowerShell ou o terminal da IDE seguem o mesmo propósito.",
+                "No Windows, abra um terminal na pasta do projeto: pela busca do Iniciar, digite `cmd` ou prompt de comando e, ao abrir, use `cd` para entrar na pasta certa. PowerShell ou o terminal da IDE seguem o mesmo propósito.",
                 "Navegue até a pasta do projeto com `cd`. Exemplos: `cd C:\\Users\\seuusuario\\Documentos\\github\\meu-projeto` ou `cd \"D:\\Meus Projetos\\trilha-automacao\"` (aspas quando houver espaços).",
                 "Conferir pasta atual: no PowerShell `Get-Location` ou `pwd`; listar arquivos: `dir` ou `Get-ChildItem` — confira antes de rodar `git init` na raiz certa.",
                 "No VS Code / Cursor: Terminal > New Terminal costuma abrir já na raiz do workspace; use `cd` se precisar mudar de pasta."
@@ -1022,7 +774,7 @@
               "texto": "Inicializar repositório local com `git init`. Apenas na primeira vez que você estiver iniciando o projeto.",
               "detalhes": [
                 "Na raiz do projeto, execute uma vez: `git init` — o Git cria a pasta oculta `.git` com o histórico local.",
-                "Não rode de novo dentro de um clone ou repositório existente só para “ligar” ao GitHub; use `git remote` e `git push` nos passos seguintes.",
+                "Não rode de novo dentro de um clone ou repositório existente só para ligar ao GitHub; use `git remote` e `git push` nos passos seguintes.",
                 "Se já existe `.git` (por exemplo você clonou o repo ou já inicializou antes), pule esta etapa e siga para add/commit conforme o estado dos arquivos."
               ]
             },
@@ -1044,14 +796,14 @@
                 "Sequência típica no terminal (na pasta do repo):\n`git add .`\n`git status`\n`git commit -m \"chore: primeiro commit\"` — a mensagem deve descrever a mudança; o exemplo acima vale para o primeiro commit.",
                 "Adicionar só alguns arquivos: `git add caminho/arquivo.ext` ou `git add pasta/`. Ver diff antes de commitar: `git diff` (não staged) ou `git diff --staged` (já no stage).",
                 "Se o Git reclamar de identidade, volte ao passo de configuração com `git config --global user.name` e `user.email`.",
-                "**Observação:** Em vez do terminal, você pode preparar o stage, o commit e o push pela IDE (ex.: Visual Studio Code → **Source Control**, Ctrl+Shift+G: **Commit** e depois **Push** ou **Sync Changes** quando o remoto estiver configurado)."
+                "Observação: em vez do terminal, você pode preparar o stage, o commit e o push pela IDE (ex.: Visual Studio Code → Source Control, Ctrl+Shift+G: Commit e depois Push ou Sync Changes quando o remoto estiver configurado)."
               ]
             },
             {
               "id": "gh-repo",
               "texto": "No site do GitHub, criar um repositório vazio para este projeto e copiar a URL HTTPS (ou SSH).",
               "detalhes": [
-                "Pelo site: https://github.com/ → **New repository** → nome e visibilidade (público/privado). Para o fluxo desta trilha, pode deixar sem README/licença e evitar conflito no primeiro `git push` (se criar com README, será preciso `git pull` antes ou alinhar histórico).",
+                "Pelo site: https://github.com/ → New repository → nome e visibilidade (público/privado). Para o fluxo desta trilha, pode deixar sem README/licença e evitar conflito no primeiro `git push` (se criar com README, será preciso `git pull` antes ou alinhar histórico).",
                 "Depois de criar, copie a URL que o GitHub mostra. Exemplos de formato: HTTPS `https://github.com/SEU_USUARIO/SEU_REPO.git` ou SSH `git@github.com:SEU_USUARIO/SEU_REPO.git` — você usará no próximo passo com `git remote add origin ...`.",
                 "Guia oficial: https://docs.github.com/pt/repositories/creating-and-managing-repositories/creating-a-new-repository",
                 "Opcional (GitHub CLI instalada e logada: `gh auth login`): criar e já apontar remoto na pasta atual, por exemplo `gh repo create nome-do-repo --private --source=. --remote=origin --push` — só use se souber o que o comando faz; o fluxo padrão aqui é criar pelo site e copiar a URL."
@@ -1077,12 +829,12 @@
             },
             {
               "id": "gh-push",
-              "texto": "Enviar o alterações para o repositório remoto.",
+              "texto": "Enviar as alterações para o repositório remoto.",
               "detalhes": [
                 "Primeiro envio da branch `main` e já deixar rastrear o remoto: `git push -u origin main` — nas próximas vezes bastará `git push` na mesma branch.",
                 "Se o GitHub recusar porque o remoto tem commits que você não tem (ex.: README criado no site), alinhe antes com `git pull origin main --rebase` (ou `merge`) e só então `git push -u origin main`.",
                 "HTTPS costuma pedir autenticação com token pessoal (PAT), não a senha da conta — guia: https://docs.github.com/pt/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token",
-                "**Observação:** Em vez do terminal, você pode fazer o envio para o GitHub pela própria IDE: preparar os arquivos (stage), criar o commit e dar push no painel integrado de controle de versão. No Visual Studio Code, por exemplo, use **Source Control** (atalho Ctrl+Shift+G): marque as alterações, confirme com **Commit** e, quando o remoto já estiver configurado, use **Push** ou **Sync Changes** para publicar no repositório remoto."
+                "Observação: em vez do terminal, você pode fazer o envio para o GitHub pela própria IDE: preparar os arquivos (stage), criar o commit e dar push no painel integrado de controle de versão. No Visual Studio Code, por exemplo, use Source Control (atalho Ctrl+Shift+G): marque as alterações, confirme com Commit e, quando o remoto já estiver configurado, use Push ou Sync Changes para publicar no repositório remoto."
               ]
             }
           ]
@@ -1094,40 +846,38 @@
       "ordem": 8,
       "titulo": "GitHub Actions",
       "contexto": "CI/CD",
-      "atividades": [],
       "teoria": {
         "titulo": "CI/CD: pipeline com GitHub Actions e Cypress",
         "secoes": [
           {
             "titulo": "Para que serve CI/CD e pipelines",
             "paragrafos": [
-              "**CI/CD** (Continuous Integration / Continuous Delivery) é o hábito de integrar mudanças ao repositório **com verificação automática** (build e testes). Uma **pipeline** é a receita: _quando X acontecer, rode estes passos em ordem_.",
-              "O objetivo é **feedback rápido**: falhas aparecem antes de chegar ao utilizador final, o time confia mais nos deploys e regressões custam menos tempo de correção."
+              "Imagine uma fábrica de carros: cada vez que um operário instala uma nova peça, um sistema automático verifica se o carro ainda funciona corretamente. CI/CD faz o equivalente com software.",
+              "CI (Integração Contínua) significa que cada mudança enviada ao repositório é automaticamente verificada — o código é compilado, os testes rodam e você recebe um relatório em minutos. CD (Entrega Contínua) vai além: se os testes passaram, o software pode ser enviado para o ambiente de produção automaticamente.",
+              "Uma pipeline é a receita desse processo — uma lista de passos que o computador executa sozinho sempre que acontece um determinado evento, como um push de código. O objetivo é detectar erros cedo, quando ainda são baratos de corrigir, em vez de descobrir problemas depois que o software chegou ao usuário final."
             ]
           },
           {
             "titulo": "Estrutura básica",
             "paragrafos": [
-              "Cada fluxo fica em `.github/workflows/` (extensão `.yml` ou `.yaml`). O ficheiro define **quando** rodar (`on`) e **o quê** rodar (`jobs`). Cada **job** usa um **runner** (`runs-on`, por exemplo `ubuntu-latest`) e lista **steps** — passos com `uses` (ações reutilizáveis) ou `run` (linha de comando shell).",
-              "Abaixo aparecem apenas **partes** do ficheiro para ver o papel de cada nome: o exemplo completo está na última secção, com botão para copiar o ficheiro inteiro."
+              "Cada workflow fica em um arquivo `.yml` dentro de `.github/workflows/`. As partes principais são:\n`name` — nome do workflow (aparece na aba Actions do GitHub).\n`on` — quando o workflow dispara (ex.: push, schedule, workflow_dispatch).\n`jobs` — agrupa os trabalhos a executar.\n`runs-on` — sistema onde o job roda (ex.: `ubuntu-latest`).\n`steps` — lista de passos: `uses` para ações reutilizáveis, `run` para comandos de terminal.",
+              "Abaixo aparecem apenas partes do arquivo para ilustrar cada nome. O exemplo completo está na última seção, com botão para copiar."
             ],
-            "codigo": "name: Nome do workflow   # opcional, aparece na aba Actions\n\non:\n  push: {}                 # gatilhos (ver secção seguinte)\n\njobs:\n  exemplo:\n    runs-on: ubuntu-latest   # onde o job executa\n    steps:\n      - uses: actions/checkout@v4   # checkout do repositório\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n      - name: Instalar e testar\n        run: |\n          npm ci\n          npx cypress run"
+            "codigo": "name: Nome do workflow   # opcional, aparece na aba Actions\n\non:\n  push: {}                 # gatilhos (ver seção seguinte)\n\njobs:\n  exemplo:\n    runs-on: ubuntu-latest   # onde o job executa\n    steps:\n      - uses: actions/checkout@v4   # checkout do repositório\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n      - name: Instalar e testar\n        run: |\n          npm ci\n          npx cypress run"
           },
           {
             "titulo": "Gatilhos",
             "paragrafos": [
-              "**`push` sem filtro de branch** faz o workflow correr em push a **qualquer** branch. Para restringir só à `main`, use `push.branches: [main]`. São **dois usos comuns** do mesmo evento `push`, com escopos diferentes.",
-              "**`schedule`** usa **cron** em UTC (formato de cinco campos: minuto, hora, dia do mês, mês, dia da semana). Exemplo: `0 18 * * 1` = toda segunda-feira às 18:00 UTC.",
-              "Também existe `workflow_dispatch` para **disparo manual** pela interface do GitHub — útil para testar a pipeline sem novo commit."
+              "Os três gatilhos mais usados são:\n`push` — dispara quando há push em uma branch. Sem filtro, roda em qualquer branch; com `branches: [main]`, roda apenas na `main`.\n`schedule` — agenda execuções com cron em UTC (5 campos: minuto, hora, dia do mês, mês, dia da semana). Exemplo: `0 18 * * 1` = toda segunda-feira às 18h UTC.\n`workflow_dispatch` — disparo manual pela interface do GitHub, sem precisar de novo commit."
             ],
             "codigo": "# Push em qualquer branch\non:\n  push: {}\n\n---\n\n# Push apenas na branch main\non:\n  push:\n    branches: [main]\n\n---\n\n# Agenda (UTC) + disparo manual\non:\n  schedule:\n    - cron: '0 18 * * 1'   # segunda, 18h UTC\n  workflow_dispatch:\n"
           },
           {
             "titulo": "Exemplo completo",
             "paragrafos": [
-              "Guarde como **`.github/workflows/cypress-ci.yml`** no **mesmo projeto** onde criou o Cypress no tópico **Cypress: novo projeto do zero** (o spec **`cypress/e2e/trilha.cy.js`**).",
-              "**Node 20+**, `actions/checkout@v4`, `actions/setup-node@v4`, `cypress-io/github-action@v6`. O passo **`npm ci`** assume que existe **`package-lock.json`**; caso ainda use só `npm install` no dia a dia, troque por `npm install` ou gere o lock com `npm install` antes de versionar.",
-              "O job abaixo combina **`push` na `main`**, **`schedule`** (exemplo semanal) e **`workflow_dispatch`**."
+              "Guarde como `.github/workflows/cypress-ci.yml` no mesmo projeto onde criou o Cypress no tópico Cypress: novo projeto do zero (o spec `cypress/e2e/trilha.cy.js`).",
+              "Node 20+, `actions/checkout@v4`, `actions/setup-node@v4`, `cypress-io/github-action@v6`. O passo `npm ci` assume que existe `package-lock.json`; caso ainda use só `npm install` no dia a dia, troque por `npm install` ou gere o lock com `npm install` antes de versionar.",
+              "O job abaixo combina `push` na `main`, `schedule` (exemplo semanal) e `workflow_dispatch`."
             ],
             "codigoCompletoParaCopiar": true,
             "codigo": "name: Cypress CI\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\n  schedule:\n    - cron: '0 6 * * 1' # toda segunda-feira, 06:00 UTC — ajuste se quiser\n\njobs:\n  cypress-e2e:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n\n      - name: Node 20\n        uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n\n      - name: Dependências\n        run: npm ci\n\n      - name: Cypress (spec da trilha)\n        uses: cypress-io/github-action@v6\n        with:\n          install: false\n          command: npx cypress run --spec \"cypress/e2e/trilha.cy.js\"\n"
@@ -1151,39 +901,71 @@
             "url": "https://docs.cypress.io/"
           }
         ]
-      }
+      },
+      "atividades": [
+        {
+          "id": "gha-1",
+          "tipo": "multipla_escolha",
+          "descricao": "Em qual pasta do repositório os arquivos de workflow do GitHub Actions devem ser criados?",
+          "codigo": null,
+          "opcoes": [
+            {"id": "A", "texto": "Na raiz do projeto, junto com o `package.json`"},
+            {"id": "B", "texto": "Dentro de `.github/workflows/`, com extensão `.yml` ou `.yaml`"},
+            {"id": "C", "texto": "Dentro de `cypress/e2e/`, junto com os specs"},
+            {"id": "D", "texto": "Em qualquer pasta — o GitHub encontra automaticamente"}
+          ],
+          "corretas": ["B"],
+          "explicacao": "O GitHub Actions lê os workflows apenas da pasta `.github/workflows/` na raiz do repositório. O arquivo precisa ter extensão `.yml` ou `.yaml`. Arquivos em outras pastas são ignorados pelo sistema.",
+          "codigoExplicacao": "# Estrutura esperada:\n.github/\n  workflows/\n    cypress-ci.yml   ← seu workflow aqui"
+        },
+        {
+          "id": "gha-2",
+          "tipo": "multipla_escolha",
+          "descricao": "Você quer que o workflow rode automaticamente toda vez que alguém fizer push na branch `main`, mas não em outras branches. Qual configuração de gatilho usa?",
+          "codigo": null,
+          "opcoes": [
+            {"id": "A", "texto": "`on: push: {}` — sem filtro, roda em qualquer push"},
+            {"id": "B", "texto": "`on: push: branches: [main]` — restringe ao push na branch `main`"},
+            {"id": "C", "texto": "`on: schedule: '* * * * *'` — agenda por cron"},
+            {"id": "D", "texto": "`on: workflow_dispatch:` — só roda quando acionado manualmente"}
+          ],
+          "corretas": ["B"],
+          "explicacao": "Para restringir o gatilho `push` a uma branch específica, use `branches: [main]`. Sem essa restrição (`push: {}`), o workflow rodaria em push para qualquer branch. `schedule` é para agendamento periódico e `workflow_dispatch` é para disparo manual.",
+          "codigoExplicacao": "on:\n  push:\n    branches: [main]   # só dispara no push à main"
+        }
+      ]
     },
     {
       "id": "cicd-jenkins",
       "ordem": 9,
       "titulo": "Jenkins",
       "contexto": "CI/CD",
-      "atividades": [],
       "teoria": {
         "titulo": "CI/CD: Jenkins com repositório no GitHub",
         "secoes": [
           {
             "titulo": "Sobre",
             "paragrafos": [
-              "**Jenkins** é servidor de CI muito usado **on-premises** ou em infra própria: define-se **Pipeline as Code** (em geral um `Jenkinsfile` no repo) e o servidor executa estágios (checkout, install, testes). O **fonte dos commits** pode continuar a ser **GitHub** — o Jenkins apenas **clone/fetch** a branch **`main`** (ou a que configurar no job).",
-              "Comparando com GitHub Actions: no Actions os agentes ficam nos **runners da GitHub**; no Jenkins costuma-se ter **agents** ou máquinas controladas pela equipa, com ferramentas (Node, browsers) pré-instaladas ou em imagens Docker."
+              "Jenkins é um servidor de CI muito usado em ambientes on-premises (dentro da empresa) ou em infraestrutura própria. Você define a pipeline como código — em geral um arquivo `Jenkinsfile` na raiz do repositório — e o servidor executa os estágios: checkout, instalação, testes.",
+              "O código-fonte pode continuar no GitHub normalmente: o Jenkins apenas faz o clone/fetch da branch `main` (ou a que você configurar no job) para executar os passos.",
+              "Comparando com GitHub Actions: no Actions os agentes ficam nos runners da própria GitHub; no Jenkins você costuma ter agents ou máquinas controladas pela equipe, com ferramentas (Node, navegadores) pré-instaladas ou em imagens Docker. O Jenkins oferece mais controle sobre o ambiente, mas exige mais configuração inicial."
             ]
           },
           {
             "titulo": "Estrutura básica",
             "paragrafos": [
-              "Um `Jenkinsfile` declarativo começa com **`pipeline { }`**. Dentro: **`agent`** (onde corre), **`options`**, **`environment`**, e **`stages`** com vários **`stage`** nomeados.",
-              "**`checkout scm`** traz o código do repositório e da branch configurada no job (**Pipeline multibranch** ou job apontando para `main`). **`steps`** contém comandos **`sh`** em Linux ou **`bat`** no Windows.",
-              "O exemplo completo está na última secção."
+              "Um `Jenkinsfile` declarativo tem esta hierarquia:\n`pipeline { }` — envolve tudo.\n`agent` — onde o job roda (ex.: `any` usa qualquer agente disponível).\n`tools` — ferramentas pré-instaladas no Jenkins (ex.: `nodejs 'nodejs-20'`).\n`stages` — agrupa os estágios.\n`stage('Nome')` — um passo nomeado (ex.: Checkout, Dependências, Testes).\n`steps` — comandos que executam dentro do stage.",
+              "Para trazer o código do repositório, use `checkout scm` dentro de um `steps`. Para executar comandos: `sh 'comando'` no Linux/Mac ou `bat 'comando'` no Windows.",
+              "O exemplo completo está na última seção."
             ],
-            "codigo": "pipeline {\n  agent any\n  tools {\n    // Configure no Jenkins uma instalação \"Node JS\" com nome exato abaixo (ex.: Tool Node 20)\n    nodejs \"nodejs-20\"\n  }\n  stages {\n    stage('Checkout') {\n      steps {\n        checkout scm   // mesmo GitHub configurado como SCM da pipeline\n      }\n    }\n    // ... outros stages ...\n  }\n}\n"
+            "codigo": "pipeline {\n  agent any\n  tools {\n    // Configure no Jenkins uma instalação \"Node JS\" com nome exato abaixo\n    nodejs \"nodejs-20\"\n  }\n  stages {\n    stage('Checkout') {\n      steps {\n        checkout scm   // busca o código do GitHub configurado no job\n      }\n    }\n    // ... outros stages ...\n  }\n}\n"
           },
           {
             "titulo": "Exemplo completo",
             "paragrafos": [
-              "Coloque **`Jenkinsfile`** na raiz do **mesmo repositório** no GitHub. No Jenkins, crie uma pipeline **Pipeline from SCM**, tipo Git, URL do repo HTTPS/SSH e branch **`main`**.",
-              "**`nodejs 'nodejs-20'`** só funciona após registar esse nome nas **Manage Jenkins → Tools → NodeJS installations** — ajuste o identificador ao que usar na sua empresa.",
-              "O estágio seguinte instala dependências com **`npm ci`** (requer **`package-lock.json`**; senão use `npm install`) e corre o **mesmo spec** da trilha: **`cypress/e2e/trilha.cy.js`**."
+              "Coloque `Jenkinsfile` na raiz do mesmo repositório no GitHub. No Jenkins, crie uma pipeline Pipeline from SCM, tipo Git, URL do repo HTTPS/SSH e branch `main`.",
+              "`nodejs 'nodejs-20'` só funciona após registrar esse nome nas Manage Jenkins → Tools → NodeJS installations — ajuste o identificador ao que for usado na sua empresa.",
+              "O estágio abaixo instala dependências com `npm ci` (requer `package-lock.json`; senão use `npm install`) e roda o mesmo spec da trilha: `cypress/e2e/trilha.cy.js`."
             ],
             "codigoCompletoParaCopiar": true,
             "codigo": "pipeline {\n  agent any\n  options {\n    timestamps()\n  }\n  tools {\n    nodejs 'nodejs-20'\n  }\n  stages {\n    stage('Checkout') {\n      steps {\n        checkout scm\n      }\n    }\n    stage('Dependências') {\n      steps {\n        sh 'npm ci'\n      }\n    }\n    stage('Cypress E2E') {\n      steps {\n        sh 'npx cypress run --spec \"cypress/e2e/trilha.cy.js\"'\n      }\n    }\n  }\n}\n"
@@ -1199,7 +981,39 @@
             "url": "https://www.jenkins.io/doc/book/pipeline/syntax/"
           }
         ]
-      }
+      },
+      "atividades": [
+        {
+          "id": "jenkins-1",
+          "tipo": "multipla_escolha",
+          "descricao": "Onde deve estar o arquivo `Jenkinsfile` para que o Jenkins o encontre automaticamente ao executar um job do tipo Pipeline from SCM?",
+          "codigo": null,
+          "opcoes": [
+            {"id": "A", "texto": "Dentro da pasta `.github/workflows/`, junto com os workflows do GitHub Actions"},
+            {"id": "B", "texto": "Na raiz do repositório, no mesmo nível do `package.json`"},
+            {"id": "C", "texto": "Dentro de `cypress/e2e/`, junto com os specs"},
+            {"id": "D", "texto": "O Jenkins não usa arquivo — a pipeline é configurada apenas pela interface web"}
+          ],
+          "corretas": ["B"],
+          "explicacao": "O `Jenkinsfile` deve ficar na raiz do repositório. Quando o job é configurado como Pipeline from SCM, o Jenkins clona o repositório e procura o `Jenkinsfile` na raiz automaticamente. Ele pode ter outro nome se você configurar explicitamente, mas o padrão e mais comum é `Jenkinsfile` na raiz.",
+          "codigoExplicacao": "# Estrutura esperada:\nmeu-projeto/\n  Jenkinsfile        ← Jenkins encontra aqui\n  package.json\n  cypress/\n    e2e/\n      trilha.cy.js"
+        },
+        {
+          "id": "jenkins-2",
+          "tipo": "multipla_escolha",
+          "descricao": "No Jenkinsfile, qual bloco contém os passos de um estágio — ou seja, os comandos que de fato serão executados (como `sh 'npm ci'`)?",
+          "codigo": "pipeline {\n  agent any\n  stages {\n    stage('Dependências') {\n      steps {\n        sh 'npm ci'\n      }\n    }\n  }\n}",
+          "opcoes": [
+            {"id": "A", "texto": "O bloco `agent`"},
+            {"id": "B", "texto": "O bloco `stages`"},
+            {"id": "C", "texto": "O bloco `steps`, dentro de cada `stage`"},
+            {"id": "D", "texto": "O bloco `pipeline` diretamente"}
+          ],
+          "corretas": ["C"],
+          "explicacao": "No Jenkinsfile declarativo, a hierarquia é: `pipeline` → `stages` → `stage('Nome')` → `steps`. Os comandos reais (`sh`, `bat`, `checkout scm`, etc.) ficam dentro do bloco `steps` de cada `stage`. O bloco `stages` organiza os estágios e `agent` define onde o job roda.",
+          "codigoExplicacao": "pipeline {\n  agent any\n  stages {\n    stage('Instalar') {   // nome do estágio\n      steps {             // aqui ficam os comandos\n        sh 'npm ci'\n      }\n    }\n  }\n}"
+        }
+      ]
     }
   ]
 }
